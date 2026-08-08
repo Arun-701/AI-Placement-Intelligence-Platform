@@ -1,55 +1,135 @@
-const { geminiModel, geminiModelName } = require("../config/gemini");
+const OpenAI = require("openai");
+const { aiProviders } = require("../config/aiProviders");
 
-const extractTextFromResponse = (response) => {
-    if (typeof response?.text === "string" && response.text.trim()) {
-        return response.text.trim();
+const DEFAULT_SYSTEM_PROMPT =
+    "You are an expert AI career assistant for the Placement Intelligence Platform. " +
+    "Answer accurately, concisely, and with valid JSON when the user requests a structured output.";
+
+const callOpenAICompatible = async (provider, prompt, systemPrompt = DEFAULT_SYSTEM_PROMPT, attempt = 1) => {
+    const client = new OpenAI({
+        baseURL: provider.baseUrl.replace(/\/+$/, ""),
+        apiKey: provider.apiKey,
+        timeout: provider.timeoutMs,
+        maxRetries: provider.retries || 2
+    });
+
+    try {
+        const response = await client.chat.completions.create({
+            model: provider.model,
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: prompt }
+            ],
+            max_tokens: 1500,
+            temperature: 0.3
+        });
+
+        const content = response?.choices?.[0]?.message?.content;
+
+        if (!content || !content.trim()) {
+            throw new Error(`${provider.name} returned empty content.`);
+        }
+
+        return content.trim();
+    } catch (error) {
+        if (error?.status === 429 || error?.code === "rate_limit_exceeded") {
+            if (attempt <= (provider.retries || 2)) {
+                const waitMs = 5000 * attempt;
+                console.log(`[AI] ${provider.name} rate limited. Retrying in ${waitMs}ms (attempt ${attempt + 1})...`);
+                await new Promise((resolve) => setTimeout(resolve, waitMs));
+                return callOpenAICompatible(provider, prompt, systemPrompt, attempt + 1);
+            }
+        }
+        throw new Error(`${provider.name} failed: ${error?.message || error}`);
     }
-
-    const candidates = response?.candidates || [];
-    const textParts = candidates
-        .map((candidate) =>
-            candidate?.content?.parts
-                ?.map((part) => part?.text || "")
-                .join("") || ""
-        )
-        .filter(Boolean);
-
-    return textParts.join("\n").trim();
 };
 
-const generateAIResponse = async (prompt) => {
-    if (!geminiModel) {
-        throw new Error("Gemini client is not initialized. Please set GEMINI_API_KEY.");
-    }
+const callGemini = async (provider, prompt, systemPrompt = DEFAULT_SYSTEM_PROMPT) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), provider.timeoutMs);
 
+    try {
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${provider.model}:generateContent?key=${provider.apiKey}`,
+            {
+                method: "POST",
+                signal: controller.signal,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: { maxOutputTokens: 1500, temperature: 0.3 }
+                })
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = (await response.text()).slice(0, 300);
+            throw new Error(`${provider.name} HTTP ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        const text = data?.candidates?.[0]?.content?.parts
+            ?.map((part) => part?.text || "")
+            .join("")
+            .trim();
+
+        if (!text) {
+            throw new Error(`${provider.name} returned empty content.`);
+        }
+
+        return text;
+    } catch (error) {
+        if (error.name === "AbortError") {
+            throw new Error(`${provider.name} request timed out after ${provider.timeoutMs}ms.`);
+        }
+        throw error;
+    } finally {
+        clearTimeout(timeout);
+    }
+};
+
+const generateAIResponse = async (prompt, systemPrompt = DEFAULT_SYSTEM_PROMPT) => {
     const normalizedPrompt = prompt?.trim();
 
     if (!normalizedPrompt) {
         throw new Error("Prompt cannot be empty.");
     }
 
-    try {
-        const response = await geminiModel.generateContent({
-            model: geminiModelName,
-            contents: [
-                {
-                    role: "user",
-                    parts: [{ text: normalizedPrompt }]
-                }
-            ]
+    const errors = [];
+
+    const providerAttempts = [
+        { name: aiProviders.primary.name, run: () => callOpenAICompatible(aiProviders.primary, normalizedPrompt, systemPrompt) },
+        { name: aiProviders.fallback.name, run: () => callOpenAICompatible(aiProviders.fallback, normalizedPrompt, systemPrompt) }
+    ];
+
+    if (aiProviders.gemini.apiKey) {
+        providerAttempts.push({
+            name: aiProviders.gemini.name,
+            run: () => callGemini(aiProviders.gemini, normalizedPrompt, systemPrompt)
         });
-
-        const text = extractTextFromResponse(response);
-
-        if (!text) {
-            throw new Error("No response text returned by Gemini.");
-        }
-
-        return text;
-    } catch (error) {
-        console.error("Gemini service error:", error.message);
-        throw new Error("Unable to generate AI response.");
     }
+
+    for (const attempt of providerAttempts) {
+        try {
+            const text = await attempt.run();
+            if (text) {
+                console.log(`[AI] Response generated via ${attempt.name} (model: ${
+                    attempt.name === aiProviders.primary.name
+                        ? aiProviders.primary.model
+                        : attempt.name === aiProviders.fallback.name
+                            ? aiProviders.fallback.model
+                            : aiProviders.gemini.model
+                })`);
+                return text;
+            }
+        } catch (error) {
+            console.error(`[AI] ${attempt.name} failed: ${error.message}`);
+            errors.push(`${attempt.name}: ${error.message}`);
+        }
+    }
+
+    throw new Error(`All AI providers failed. ${errors.join(" | ")}`);
 };
 
 module.exports = {

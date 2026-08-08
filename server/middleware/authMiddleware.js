@@ -59,7 +59,7 @@ const verifyToken = async (req, res, next) => {
             });
         }
 
-        const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() / 1000 : 0;
+        const passwordChangedAt = user.passwordChangedAt ? Math.floor(new Date(user.passwordChangedAt).getTime() / 1000) : 0;
         const issuedAt = decoded.iat || 0;
 
         if (passwordChangedAt && issuedAt < passwordChangedAt) {

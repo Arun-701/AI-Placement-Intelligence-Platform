@@ -1,121 +1,108 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './AuthContext'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import Layout from './pages/Layout'
+import StudentDashboard from './pages/student/Dashboard'
+import AssessmentList from './pages/student/AssessmentList'
+import TakeAssessment from './pages/student/TakeAssessment'
+import AssessmentResult from './pages/student/AssessmentResult'
+import MyResults from './pages/student/MyResults'
+import ResumeAnalysis from './pages/student/ResumeAnalysis'
+import CodingProfile from './pages/student/CodingProfile'
+import Roadmap from './pages/student/Roadmap'
+import CareerRecommendation from './pages/student/CareerRecommendation'
+import AIChat from './pages/student/AIChat'
+import FacultyDashboard from './pages/faculty/Dashboard'
+import FacultyStudents from './pages/faculty/Students'
+import FacultyResults from './pages/faculty/Results'
+import AdminDashboard from './pages/admin/Dashboard'
+import AdminStudents from './pages/admin/Students'
+import AdminFaculties from './pages/admin/Faculties'
+import AdminReports from './pages/admin/Reports'
+import Notifications from './pages/Notifications'
+import Profile from './pages/Profile'
+
+function Protected({ role, children }) {
+  const { user, loading } = useAuth()
+  if (loading) return <div className="loading">Loading...</div>
+  if (!user) return <Navigate to="/login" replace />
+  if (role && user.role !== role) {
+    if (user.role === 'student') return <Navigate to="/student" replace />
+    if (user.role === 'faculty') return <Navigate to="/faculty" replace />
+    return <Navigate to="/admin" replace />
+  }
+  return children
+}
+
+function PublicOnly({ children }) {
+  const { user, loading } = useAuth()
+  if (loading) return <div className="loading">Loading...</div>
+  if (user) {
+    if (user.role === 'faculty') return <Navigate to="/faculty" replace />
+    if (user.role === 'admin') return <Navigate to="/admin" replace />
+    return <Navigate to="/student" replace />
+  }
+  return children
+}
+
+function Home() {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role === 'faculty') return <Navigate to="/faculty" replace />
+  if (user.role === 'admin') return <Navigate to="/admin" replace />
+  return <Navigate to="/student" replace />
+}
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<PublicOnly><Login /></PublicOnly>} />
+          <Route path="/register" element={<PublicOnly><Register /></PublicOnly>} />
+          <Route path="/forgot-password" element={<PublicOnly><ForgotPassword /></PublicOnly>} />
+          <Route path="/reset-password" element={<PublicOnly><ResetPassword /></PublicOnly>} />
 
-      <div className="ticks"></div>
+          <Route path="/student" element={<Protected role="student"><Layout /></Protected>}>
+            <Route index element={<StudentDashboard />} />
+            <Route path="assessments" element={<AssessmentList />} />
+            <Route path="assessments/:id/take" element={<TakeAssessment />} />
+            <Route path="assessments/result/:resultId" element={<AssessmentResult />} />
+            <Route path="results" element={<MyResults />} />
+            <Route path="resume" element={<ResumeAnalysis />} />
+            <Route path="coding" element={<CodingProfile />} />
+            <Route path="roadmap" element={<Roadmap />} />
+            <Route path="career" element={<CareerRecommendation />} />
+            <Route path="ai-chat" element={<AIChat />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <Route path="/faculty" element={<Protected role="faculty"><Layout /></Protected>}>
+            <Route index element={<FacultyDashboard />} />
+            <Route path="students" element={<FacultyStudents />} />
+            <Route path="results" element={<FacultyResults />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+          <Route path="/admin" element={<Protected role="admin"><Layout /></Protected>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="students" element={<AdminStudents />} />
+            <Route path="faculties" element={<AdminFaculties />} />
+            <Route path="reports" element={<AdminReports />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 

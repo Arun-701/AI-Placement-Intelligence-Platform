@@ -110,6 +110,17 @@ const createAssessment = async (req, res) => {
             }
         }
 
+        if (Array.isArray(assessmentData.questions) && assessmentData.questions.length > 0) {
+            const questionMarks = await QuestionBank.find(
+                { _id: { $in: assessmentData.questions } },
+                { marks: 1 }
+            );
+            assessmentData.totalMarks = questionMarks.reduce(
+                (total, question) => total + (Number(question.marks) || 0),
+                0
+            );
+        }
+
         const assessment = await Assessment.create(assessmentData);
 
         try {
@@ -256,6 +267,20 @@ const updateAssessment = async (req, res) => {
         const originalStatus = assessment.status;
 
         Object.assign(assessment, normalizedAssessmentData);
+
+        if (Array.isArray(assessment.questions) && assessment.questions.length > 0) {
+            const questionMarks = await QuestionBank.find(
+                { _id: { $in: assessment.questions } },
+                { marks: 1 }
+            );
+            assessment.totalMarks = questionMarks.reduce(
+                (total, question) => total + (Number(question.marks) || 0),
+                0
+            );
+        } else {
+            assessment.totalMarks = 0;
+        }
+
         await assessment.save();
 
         try {

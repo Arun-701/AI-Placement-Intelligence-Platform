@@ -15,27 +15,27 @@ const verifyToken = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
 
 // All routes are protected and require student role
-router.use(verifyToken, authorizeRoles("student"));
+const studentOnly = [verifyToken, authorizeRoles("student")];
 
 // Get all assigned assessments
-router.get("/my", getMyAssessments);
+router.get("/my", studentOnly, getMyAssessments);
 
 // Start an assessment
-router.post("/:id/start", startAssessmentAttempt);
+router.post("/:id/start", studentOnly, startAssessmentAttempt);
 
 // Auto-save assessment attempt
-router.post("/:id/auto-save", autoSaveAssessmentAttempt);
+router.post("/:id/auto-save", studentOnly, autoSaveAssessmentAttempt);
 
 // Submit assessment for evaluation
-router.post("/:id/submit", submitAssessmentAttempt);
+router.post("/:id/submit", studentOnly, submitAssessmentAttempt);
 
 // Get assessment attempt history
-router.get("/history", getMyAssessmentHistory);
+router.get("/history", studentOnly, getMyAssessmentHistory);
 
 // Get detailed assessment result
-router.get("/result/:resultId", getMyAssessmentResult);
+router.get("/result/:resultId", studentOnly, getMyAssessmentResult);
 
 // Get student's placement readiness score
-router.get("/readiness-score", getReadinessScore);
+router.get("/readiness-score", studentOnly, getReadinessScore);
 
 module.exports = router;

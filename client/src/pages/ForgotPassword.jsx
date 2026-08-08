@@ -1,0 +1,60 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { api } from '../api'
+
+export default function ForgotPassword() {
+  const [email, setEmail] = useState('')
+  const [info, setInfo] = useState('')
+  const [resetToken, setResetToken] = useState('')
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  const submit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setInfo('')
+    setBusy(true)
+    try {
+      const r = await api.post('/auth/forgot-password', { email })
+      if (!r.ok) throw new Error(r.data?.message || 'Request failed')
+      setInfo(r.data?.message || 'Instructions sent')
+      if (r.data?.data?.resetToken) {
+        setResetToken(r.data.data.resetToken)
+      } else {
+        setInfo('If an account exists, password reset instructions have been sent.')
+      }
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1>Forgot Password</h1>
+        <p className="auth-sub">Enter your email to reset your password</p>
+        {error && <div className="alert error">{error}</div>}
+        {info && <div className="alert success">{info}</div>}
+        {resetToken && (
+          <div className="alert info">
+            Development reset token: <strong>{resetToken}</strong>
+            <br />
+            Use it on the reset password page.
+          </div>
+        )}
+        <form onSubmit={submit}>
+          <div className="form-group">
+            <label>Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <button className="btn" style={{ width: '100%' }} disabled={busy}>{busy ? 'Sending...' : 'Send Reset Link'}</button>
+        </form>
+        <div className="auth-switch">
+          <p><Link to="/reset-password">I have a reset token</Link> · <Link to="/login">Back to login</Link></p>
+        </div>
+      </div>
+    </div>
+  )
+}

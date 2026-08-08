@@ -56,6 +56,15 @@ const evaluateSubjectiveAnswer = (question, selectedAnswer) => {
 };
 
 /**
+ * Compute total marks from the assessment questions
+ */
+const computeTotalMarks = (questions) => {
+    return (questions || []).reduce((total, question) => {
+        return total + (Number(question.marks) || 0);
+    }, 0);
+};
+
+/**
  * Evaluate all answers and calculate results
  */
 const evaluateAnswers = async (assessmentId, answers) => {
@@ -64,6 +73,8 @@ const evaluateAnswers = async (assessmentId, answers) => {
     if (!assessment) {
         throw new Error("Assessment not found");
     }
+
+    const totalMarks = assessment.totalMarks > 0 ? assessment.totalMarks : computeTotalMarks(assessment.questions);
 
     const evaluatedAnswers = [];
     let totalScore = 0;
@@ -158,11 +169,11 @@ const evaluateAnswers = async (assessmentId, answers) => {
         }
     });
 
-    const percentage = assessment.totalMarks > 0 ? Math.round((totalScore / assessment.totalMarks) * 100) : 0;
+    const percentage = totalMarks > 0 ? Math.round((totalScore / totalMarks) * 100) : 0;
 
     return {
         score: totalScore,
-        totalMarks: assessment.totalMarks,
+        totalMarks,
         percentage: Math.min(100, percentage),
         answers: evaluatedAnswers,
         stats: {
@@ -303,5 +314,6 @@ module.exports = {
     identifyStrengthsAndWeaknesses,
     generateRecommendations,
     createAssessmentResult,
-    getResultSummary
+    getResultSummary,
+    computeTotalMarks
 };
