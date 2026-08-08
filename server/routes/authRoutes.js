@@ -1,0 +1,45 @@
+const express = require("express");
+const router = express.Router();
+
+const {
+    registerStudent,
+    loginStudent,
+    getProfile,
+    changePassword,
+    forgotPassword,
+    resetPassword,
+    verifyEmail,
+    updateAccountStatus,
+    uploadResume,
+    registerFaculty,
+    loginFaculty
+} = require("../controllers/authController");
+
+const verifyToken = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
+const { authLimiter } = require("../middleware/rateLimit");
+
+// Student Routes - Public (rate-limited)
+router.post("/register", authLimiter, registerStudent);
+router.post("/login", authLimiter, loginStudent);
+router.post("/forgot-password", authLimiter, forgotPassword);
+router.post("/reset-password", authLimiter, resetPassword);
+router.post("/verify-email", authLimiter, verifyEmail);
+
+// Faculty Routes - Public (rate-limited)
+router.post("/faculty/register", authLimiter, registerFaculty);
+router.post("/faculty/login", authLimiter, loginFaculty);
+
+// Student Protected Routes
+router.get("/profile", verifyToken, getProfile);
+router.post("/change-password", verifyToken, changePassword);
+router.patch("/account-status", verifyToken, updateAccountStatus);
+
+router.post(
+    "/upload-resume",
+    verifyToken,
+    upload.single("resume"),
+    uploadResume
+);
+
+module.exports = router;

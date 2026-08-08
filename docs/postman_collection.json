@@ -1,0 +1,224 @@
+{
+  "info": {
+    "name": "AI Placement Intelligence Platform API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for AI Placement Intelligence Platform backend APIs."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "studentToken", "value": "" },
+    { "key": "facultyToken", "value": "" },
+    { "key": "adminToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test Student\",\n  \"email\": \"student@example.com\",\n  \"password\": \"P@ssw0rd1\",\n  \"department\": \"CSE\",\n  \"year\": 3\n}" }
+          }
+        },
+        {
+          "name": "Login Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"P@ssw0rd1\"\n}" }
+          }
+        },
+        {
+          "name": "Register Faculty",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/faculty/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "faculty", "register"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test Faculty\",\n  \"email\": \"faculty@example.com\",\n  \"password\": \"P@ssw0rd1\",\n  \"department\": \"CSE\",\n  \"designation\": \"Lecturer\"\n}" }
+          }
+        },
+        {
+          "name": "Login Faculty",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/faculty/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "faculty", "login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"faculty@example.com\",\n  \"password\": \"P@ssw0rd1\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Student APIs",
+      "item": [
+        {
+          "name": "Get Student Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/student/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "student", "dashboard"] }
+          }
+        },
+        {
+          "name": "Update Student Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/student/profile", "host": ["{{baseUrl}}"], "path": ["api", "student", "profile"] },
+            "body": { "mode": "raw", "raw": "{\n  \"github\": \"https://github.com/test\",\n  \"skills\": [\"JavaScript\", \"Node.js\"]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Faculty APIs",
+      "item": [
+        {
+          "name": "Get Faculty Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{facultyToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/faculty/profile", "host": ["{{baseUrl}}"], "path": ["api", "faculty", "profile"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Question Bank",
+      "item": [
+        {
+          "name": "Create Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{facultyToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/question-bank", "host": ["{{baseUrl}}"], "path": ["api", "question-bank"] },
+            "body": { "mode": "raw", "raw": "{\n  \"subject\": \"Programming\",\n  \"topic\": \"JavaScript\",\n  \"difficulty\": \"Medium\",\n  \"questionType\": \"MCQ\",\n  \"question\": \"What is closure?\",\n  \"options\": [\"A\", \"B\", \"C\", \"D\"],\n  \"correctAnswer\": \"A\",\n  \"marks\": 5\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assessment",
+      "item": [
+        {
+          "name": "Create Assessment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{facultyToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/assessment", "host": ["{{baseUrl}}"], "path": ["api", "assessment"] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"JavaScript Basics Test\",\n  \"assessmentType\": \"Regular\",\n  \"status\": \"Published\",\n  \"assignedFaculty\": \"{{facultyId}}\",\n  \"questions\": [\"{{questionId}}\"]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assessment Submission",
+      "item": [
+        {
+          "name": "Submit Assessment Result",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/assessment-result", "host": ["{{baseUrl}}"], "path": ["api", "assessment-result"] },
+            "body": { "mode": "raw", "raw": "{\n  \"assessment\": \"{{assessmentId}}\",\n  \"answers\": [ { \"question\": \"{{questionId}}\", \"selectedAnswer\": \"A\" } ]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resume AI",
+      "item": [
+        {
+          "name": "Analyze Resume",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/ai/resume-analysis", "host": ["{{baseUrl}}"], "path": ["api", "ai", "resume-analysis"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Career Recommendation",
+      "item": [
+        {
+          "name": "Get Career Recommendation",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/ai/career-recommendation", "host": ["{{baseUrl}}"], "path": ["api", "ai", "career-recommendation"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roadmap",
+      "item": [
+        {
+          "name": "Get Roadmap",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/roadmap", "host": ["{{baseUrl}}"], "path": ["api", "roadmap"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Student Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/dashboard/student", "host": ["{{baseUrl}}"], "path": ["api", "dashboard", "student"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/login", "host": ["{{baseUrl}}"], "path": ["api", "admin", "login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"P@ssw0rd1\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/notification", "host": ["{{baseUrl}}"], "path": ["api", "notification"] }
+          }
+        }
+      ]
+    }
+  ]
+}
