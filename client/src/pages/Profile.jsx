@@ -12,7 +12,7 @@ export default function Profile() {
     if (user && user.role === 'student') {
       api.get('/student/profile').then((r) => {
         if (r.ok) {
-          const s = r.data.data
+          const s = r.data.data.student || r.data.data
           setForm({
             fullName: s.fullName || '', phone: s.phone || '', college: s.college || '', section: s.section || '',
             github: s.github || '', linkedin: s.linkedin || '', skills: (s.skills || []).join(', '), cgpa: s.cgpa || '',
@@ -27,11 +27,16 @@ export default function Profile() {
     setError('')
     setInfo('')
     const payload = { ...form }
-    if (payload.skills !== undefined) payload.skills = payload.skills.split(',').map((x) => x.trim()).filter(Boolean)
+    payload.skills = payload.skills ? String(payload.skills).split(',').map((x) => x.trim()).filter(Boolean) : []
+    if (payload.cgpa !== undefined && payload.cgpa !== '') payload.cgpa = Number(payload.cgpa)
     const r = await api.put('/student/profile', payload)
     if (r.ok) {
       setInfo('Profile updated successfully')
-      refreshUser()
+      await refreshUser()
+      const completion = r.data?.data?.profileCompletion
+      if (completion === 100) {
+        window.location.href = '/student/assessments'
+      }
     } else {
       setError(r.data?.message || 'Update failed')
     }
@@ -73,7 +78,7 @@ export default function Profile() {
           <div className="form-group"><label>Skills (comma separated)</label><input value={form.skills || ''} onChange={(e) => setForm({ ...form, skills: e.target.value })} /></div>
           <div className="form-group"><label>CGPA</label><input type="number" step="0.01" min="0" max="10" value={form.cgpa || ''} onChange={(e) => setForm({ ...form, cgpa: e.target.value })} /></div>
         </div>
-        <button className="btn mt">Save Profile</button>
+        <button type="submit" className="btn mt">Save Profile</button>
       </form>
     </>
   )

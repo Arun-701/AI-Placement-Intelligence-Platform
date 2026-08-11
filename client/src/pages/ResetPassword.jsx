@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { api } from '../api'
 
 export default function ResetPassword() {
+  const { search } = useLocation()
+  const role = new URLSearchParams(search).get('role') || 'student'
   const [token, setToken] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [info, setInfo] = useState('')
@@ -16,10 +18,15 @@ export default function ResetPassword() {
     setInfo('')
     setBusy(true)
     try {
-      const r = await api.post('/auth/reset-password', { token, newPassword })
+      const endpoint = role === 'faculty'
+        ? '/auth/faculty/reset-password'
+        : role === 'admin'
+          ? '/admin/reset-password'
+          : '/auth/reset-password'
+      const r = await api.post(endpoint, { token, newPassword })
       if (!r.ok) throw new Error(r.data?.message || 'Reset failed')
       setInfo('Password reset successfully! Redirecting to login...')
-      setTimeout(() => navigate('/login'), 1500)
+      setTimeout(() => navigate(`/login?role=${role}`), 1500)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -46,7 +53,7 @@ export default function ResetPassword() {
           <button className="btn" style={{ width: '100%' }} disabled={busy}>{busy ? 'Resetting...' : 'Reset Password'}</button>
         </form>
         <div className="auth-switch">
-          <p><Link to="/login">Back to login</Link></p>
+          <p><Link to={`/login?role=${role}`}>Back to login</Link></p>
         </div>
       </div>
     </div>

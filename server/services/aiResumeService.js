@@ -245,6 +245,10 @@ const refreshResumeAnalysis = async (studentId) => {
     placementReadinessScore: readiness.score,
     readinessProfile
   });
+  // Persist the resume analysis onto the student document so it can be retrieved without re-running AI
+  await Student.findByIdAndUpdate(studentId, {
+    resumeAnalysis: analysis
+  });
 
   return {
     ...analysis,

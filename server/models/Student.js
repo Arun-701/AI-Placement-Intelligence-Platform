@@ -251,6 +251,27 @@ const studentSchema = new mongoose.Schema(
       default: false,
     },
 
+    currentAttempt: {
+      assessmentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Assessment",
+        default: null,
+      },
+      startedAt: {
+        type: Date,
+        default: null,
+      },
+      dueAt: {
+        type: Date,
+        default: null,
+      },
+      status: {
+        type: String,
+        enum: ["pending", "in-progress", "completed", "expired"],
+        default: "pending",
+      }
+    },
+
     isActive: {
       type: Boolean,
       default: true,
@@ -274,6 +295,11 @@ const studentSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: "",
+    },
+
+    resumeAnalysis: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {}
     },
 
     profileCompleted: {

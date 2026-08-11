@@ -97,6 +97,44 @@ const startAssessment = async (studentId, assessmentId) => {
         throw new Error(duplicateValidation.message);
     }
 
+    // Check if student already has an in-progress attempt for this assessment
+    const existingStudent = await Student.findById(studentId).select('currentAttempt');
+    if (existingStudent && existingStudent.currentAttempt && existingStudent.currentAttempt.assessmentId && existingStudent.currentAttempt.assessmentId.toString() === assessmentId.toString() && existingStudent.currentAttempt.status === 'in-progress') {
+        const startedAtExisting = existingStudent.currentAttempt.startedAt;
+        const dueAtExisting = existingStudent.currentAttempt.dueAt;
+        // Populate questions with full details
+        const fullAssessment = await Assessment.findById(assessmentId).populate({
+            path: "questions",
+            select: "_id title question questionType marks options difficulty topic"
+        });
+
+        // Remove correct answers from questions for student view
+        const questionsForStudentExisting = fullAssessment.questions.map((q) => {
+            const qObj = q.toObject();
+            delete qObj.correctAnswer;
+            delete qObj.explanation;
+            return qObj;
+        });
+
+        const durationMinutes = assessment.duration || 30; // default to 30 minutes if not set
+        const dueAt = new Date(startedAtExisting.getTime() + durationMinutes * 60 * 1000);
+        return {
+            assessment: {
+                _id: assessment._id,
+                title: assessment.title,
+                description: assessment.description,
+                totalMarks: assessment.totalMarks,
+                duration: assessment.duration || 30,
+                startDate: assessment.startDate,
+                endDate: assessment.endDate
+            },
+            questions: questionsForStudentExisting,
+            startedAt: startedAtExisting,
+            dueAt: dueAt,
+            timeLimit: durationMinutes
+        };
+    }
+
     // Populate questions with full details
     const fullAssessment = await Assessment.findById(assessmentId).populate({
         path: "questions",
@@ -111,19 +149,34 @@ const startAssessment = async (studentId, assessmentId) => {
         return qObj;
     });
 
+    // Persist student's current attempt so timer can be enforced server-side
+    const startedAt = new Date();
+        const durationMinutes = assessment.duration || 30; // default to 30 minutes if not set
+        const dueAt = new Date(startedAt.getTime() + durationMinutes * 60 * 1000);
+
+    await Student.findByIdAndUpdate(studentId, {
+        currentAttempt: {
+            assessmentId: assessment._id,
+            startedAt,
+            dueAt,
+            status: 'in-progress'
+        }
+    });
+
     return {
         assessment: {
             _id: assessment._id,
             title: assessment.title,
             description: assessment.description,
             totalMarks: assessment.totalMarks,
-            duration: assessment.duration,
+                duration: assessment.duration || 30,
             startDate: assessment.startDate,
             endDate: assessment.endDate
         },
         questions: questionsForStudent,
-        startedAt: new Date(),
-        timeLimit: assessment.duration
+        startedAt,
+        dueAt,
+            timeLimit: durationMinutes
     };
 };
 
@@ -201,6 +254,19 @@ const submitAssessment = async (studentId, assessmentId, answers, timeTaken = 0)
         throw new Error(answersValidation.message);
     }
 
+    // Verify server-side that student's attempt has not expired (based on student's currentAttempt)
+    const student = await Student.findById(studentId);
+    if (!student) throw new Error("Student not found");
+
+    if (student.currentAttempt && student.currentAttempt.assessmentId && student.currentAttempt.assessmentId.toString() === assessmentId.toString()) {
+        if (student.currentAttempt.dueAt && new Date() > new Date(student.currentAttempt.dueAt)) {
+            // mark expired
+            student.currentAttempt.status = 'expired';
+            await student.save();
+            throw new Error('Assessment time has expired');
+        }
+    }
+
     // Create and evaluate result
     const result = await createAssessmentResult(studentId, assessmentId, answers, timeTaken);
 
@@ -211,10 +277,32 @@ const submitAssessment = async (studentId, assessmentId, answers, timeTaken = 0)
         { new: true }
     );
 
-    // Update readiness score
-    const student = await Student.findById(studentId);
-    await updateStudentReadinessProfile(studentId);
+    // If this was an initial assessment, mark it completed on student record
+    try {
+        if (assessment.isInitialAssessment) {
+            await Student.findByIdAndUpdate(studentId, {
+                initialAssessmentCompleted: true,
+                initialAssessmentResult: result._id
+            });
+        }
+    } catch (e) {
+        console.error('Failed to mark initialAssessmentCompleted:', e.message);
+    }
 
+    // Update readiness score
+    await updateStudentReadinessProfile(studentId);
+    // mark student's current attempt as completed if it matches
+    try {
+        const s = await Student.findById(studentId);
+        if (s && s.currentAttempt && s.currentAttempt.assessmentId && s.currentAttempt.assessmentId.toString() === assessmentId.toString()) {
+            s.currentAttempt.status = 'completed';
+            s.currentAttempt.startedAt = s.currentAttempt.startedAt || new Date();
+            s.currentAttempt.dueAt = s.currentAttempt.dueAt || null;
+            await s.save();
+        }
+    } catch (e) {
+        console.error('Failed to update student currentAttempt status:', e.message);
+    }
     return {
         _id: result._id,
         score: result.score,

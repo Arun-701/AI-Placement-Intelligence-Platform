@@ -3,6 +3,17 @@ import { getToken, setToken, getUser, setUser, api } from './api';
 
 const AuthContext = createContext(null);
 
+const normalizeUserPayload = (payload, role) => {
+  let user = payload;
+  if (user?.student) user = user.student;
+  if (user?.faculty) user = user.faculty;
+  if (user?.admin) user = user.admin;
+  if (user && typeof user === 'object') {
+    user.role = user.role || role;
+  }
+  return user;
+};
+
 export function AuthProvider({ children }) {
   const [user, setUserState] = useState(getUser());
   const [token, setTokenState] = useState(getToken());
@@ -15,12 +26,12 @@ export function AuthProvider({ children }) {
       return;
     }
     try {
-      const role = getUser()?.role || 'student';
+      const currentUser = getUser();
+      const role = currentUser?.role || 'student';
       const path = role === 'faculty' ? '/faculty/profile' : role === 'admin' ? '/admin/profile' : '/student/profile';
       const r = await api.get(path);
       if (r.ok && r.data?.data) {
-        const u = r.data.data;
-        u.role = u.role || role;
+        const u = normalizeUserPayload(r.data.data, role);
         setUserState(u);
         setUser(u);
       }
@@ -57,6 +68,18 @@ export function AuthProvider({ children }) {
     setUser(u);
     setUserState(u);
     setTokenState(newToken);
+
+    if (kind === 'student') {
+      const profileRes = await api.get('/student/profile');
+      if (profileRes.ok && profileRes.data?.data) {
+        const profileUser = normalizeUserPayload(profileRes.data.data, 'student');
+        const updatedUser = { ...u, ...profileUser };
+        setUser(updatedUser);
+        setUserState(updatedUser);
+        return updatedUser;
+      }
+    }
+
     return u;
   };
 

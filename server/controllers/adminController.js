@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { successResponse, errorResponse } = require("../utils/response");
@@ -7,7 +8,9 @@ const {
   validateAdminLogin,
   validateStudentPayload,
   validateFacultyPayload,
-  validateAssignmentPayload
+  validateAssignmentPayload,
+  validateEmail,
+  isStrongPassword
 } = require("../validators/adminValidator");
 const {
   getAdminProfile,
@@ -94,6 +97,68 @@ const loginAdmin = async (req, res) => {
     const sanitizedAdmin = { _id: admin._id, name: admin.name, email: admin.email, role: admin.role };
 
     return successResponse(res, { message: "Admin login successful", data: { token, admin: sanitizedAdmin } });
+  } catch (error) {
+    return errorResponse(res, { message: error.message, status: 500 });
+  }
+};
+
+const forgotPasswordAdmin = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!validateEmail(email)) {
+      return errorResponse(res, { message: "Valid email is required", status: 400 });
+    }
+
+    const admin = await Admin.findOne({ email: email.trim().toLowerCase() });
+
+    if (!admin) {
+      return successResponse(res, { message: "If an account exists, password reset instructions have been sent" });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    admin.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    admin.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+    admin.passwordChangedAt = admin.passwordChangedAt || new Date();
+    await admin.save();
+
+    return successResponse(res, {
+      message: "If an account exists, password reset instructions have been sent",
+      data: { resetToken: process.env.NODE_ENV !== "production" ? resetToken : undefined }
+    });
+  } catch (error) {
+    return errorResponse(res, { message: error.message, status: 500 });
+  }
+};
+
+const resetPasswordAdmin = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (typeof token !== "string" || token.trim() === "") {
+      return errorResponse(res, { message: "Reset token is required", status: 400 });
+    }
+
+    if (!isStrongPassword(newPassword)) {
+      return errorResponse(res, { message: "New password must be at least 8 characters and include uppercase, lowercase, number, and special character", status: 400 });
+    }
+
+    const admin = await Admin.findOne({
+      resetPasswordToken: crypto.createHash("sha256").update(token).digest("hex"),
+      resetPasswordExpires: { $gt: new Date() }
+    });
+
+    if (!admin) {
+      return errorResponse(res, { message: "Invalid or expired reset token", status: 400 });
+    }
+
+    admin.password = await bcrypt.hash(newPassword, 10);
+    admin.resetPasswordToken = "";
+    admin.resetPasswordExpires = null;
+    admin.passwordChangedAt = new Date();
+    await admin.save();
+
+    return successResponse(res, { message: "Password reset successfully" });
   } catch (error) {
     return errorResponse(res, { message: error.message, status: 500 });
   }
@@ -311,5 +376,7 @@ module.exports = {
   getStatistics,
   getStudentReport,
   getFacultyReport,
-  getAssessmentReport
+  getAssessmentReport,
+  forgotPasswordAdmin,
+  resetPasswordAdmin
 };

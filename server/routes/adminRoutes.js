@@ -6,6 +6,8 @@ const { authLimiter } = require("../middleware/rateLimit");
 const {
   registerAdmin,
   loginAdmin,
+  forgotPasswordAdmin,
+  resetPasswordAdmin,
   getProfile,
   getStudents,
   getStudent,
@@ -29,6 +31,8 @@ const {
 // Authentication
 router.post("/register", authLimiter, registerAdmin);
 router.post("/login", authLimiter, loginAdmin);
+router.post("/forgot-password", authLimiter, forgotPasswordAdmin);
+router.post("/reset-password", authLimiter, resetPasswordAdmin);
 
 // Admin profile
 router.get("/profile", verifyToken, authorizeRoles("admin"), getProfile);

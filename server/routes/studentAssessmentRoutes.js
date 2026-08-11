@@ -13,9 +13,10 @@ const {
 
 const verifyToken = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
+const { requireProfileComplete } = require("../middleware/onboardingMiddleware");
 
-// All routes are protected and require student role
-const studentOnly = [verifyToken, authorizeRoles("student")];
+// All routes are protected and require student role and completed profile
+const studentOnly = [verifyToken, authorizeRoles("student"), requireProfileComplete];
 
 // Get all assigned assessments
 router.get("/my", studentOnly, getMyAssessments);

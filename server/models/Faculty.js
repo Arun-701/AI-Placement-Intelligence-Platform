@@ -62,6 +62,17 @@ const facultySchema = new mongoose.Schema(
       default: [],
     },
 
+    resetPasswordToken: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
+    },
+
     isActive: {
       type: Boolean,
       default: true,

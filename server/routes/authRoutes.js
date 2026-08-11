@@ -12,7 +12,9 @@ const {
     updateAccountStatus,
     uploadResume,
     registerFaculty,
-    loginFaculty
+    loginFaculty,
+    forgotPasswordFaculty,
+    resetPasswordFaculty
 } = require("../controllers/authController");
 
 const verifyToken = require("../middleware/authMiddleware");
@@ -29,6 +31,8 @@ router.post("/verify-email", authLimiter, verifyEmail);
 // Faculty Routes - Public (rate-limited)
 router.post("/faculty/register", authLimiter, registerFaculty);
 router.post("/faculty/login", authLimiter, loginFaculty);
+router.post("/faculty/forgot-password", authLimiter, forgotPasswordFaculty);
+router.post("/faculty/reset-password", authLimiter, resetPasswordFaculty);
 
 // Student Protected Routes
 router.get("/profile", verifyToken, getProfile);

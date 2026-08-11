@@ -39,7 +39,8 @@ const analyzeStudentResume = async (req, res) => {
 
         await Student.findByIdAndUpdate(req.user.id, {
             placementReadinessScore: readiness.score,
-            readinessProfile
+            readinessProfile,
+            resumeAnalysis: analysis
         });
 
         try {
@@ -67,6 +68,14 @@ const analyzeStudentResume = async (req, res) => {
     } catch (error) {
         if (error.message === "Unable to extract resume text") {
             return errorResponse(res, { message: "Unable to extract resume text", status: 400 });
+        }
+
+        if (error.message === "No selectable text found in PDF") {
+            return errorResponse(res, { message: "This PDF contains no selectable text. Please upload a text-based PDF.", status: 400 });
+        }
+
+        if (error.message === "Uploaded file is not a valid PDF") {
+            return errorResponse(res, { message: "Uploaded file is not a valid PDF.", status: 400 });
         }
 
         return errorResponse(res, { message: error.message || "Failed to analyze resume", status: 500 });

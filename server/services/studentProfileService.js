@@ -2,26 +2,25 @@ const Student = require("../models/Student");
 const Roadmap = require("../models/Roadmap");
 const { getMissingProfileFields } = require("../validators/studentProfileValidator");
 
+// Only the visible/profile onboarding fields are required for completion
 const PROFILE_FIELDS = [
   "fullName",
   "phone",
-  "gender",
-  "dateOfBirth",
-  "department",
-  "year",
-  "cgpa",
   "college",
-  "skills",
-  "interests",
-  "linkedin",
+  "section",
   "github",
-  "leetcode",
-  "hackerrank",
-  "codechef"
+  "linkedin",
+  "skills",
+  "cgpa"
 ];
 
 const calculateProfileCompletion = (student) => {
-  const missingFields = getMissingProfileFields(student);
+  const missingFields = PROFILE_FIELDS.filter((field) => {
+    const value = student[field];
+    if (Array.isArray(value)) return value.length === 0;
+    if (typeof value === 'string') return value.trim() === '';
+    return value === null || value === undefined;
+  });
   const completedFields = PROFILE_FIELDS.length - missingFields.length;
   const percentage = PROFILE_FIELDS.length === 0 ? 100 : Math.round((completedFields / PROFILE_FIELDS.length) * 100);
 
@@ -34,7 +33,7 @@ const calculateProfileCompletion = (student) => {
 
 const getStudentProfile = async (studentId) => {
   const student = await Student.findById(studentId)
-    .select("fullName email phone gender dateOfBirth department year cgpa college skills interests linkedin github leetcode hackerrank codechef resume isVerified isActive assessmentsCompleted profileCompleted")
+    .select("fullName email phone gender dateOfBirth department year section cgpa college skills interests linkedin github leetcode hackerrank codechef resume isVerified isActive assessmentsCompleted profileCompleted initialAssessmentCompleted")
     .lean();
   if (!student) {
     throw new Error("Student not found");
@@ -63,6 +62,7 @@ const getStudentProfile = async (studentId) => {
       emailVerified: student.isVerified,
       accountActive: student.isActive,
       assessmentsCompleted: student.assessmentsCompleted || 0,
+      initialAssessmentCompleted: student.initialAssessmentCompleted || false,
       profileCompleted: completion.profileCompleted,
       profileCompletion: completion.percentage
     }

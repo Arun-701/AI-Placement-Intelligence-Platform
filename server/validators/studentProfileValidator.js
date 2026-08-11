@@ -2,21 +2,15 @@ const urlRegex = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[^\s]*)?$/;
 const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
 
 const profileFields = [
+  // Fields shown on the onboarding profile page
   "fullName",
   "phone",
-  "gender",
-  "dateOfBirth",
-  "department",
-  "year",
-  "cgpa",
   "college",
-  "skills",
-  "interests",
-  "linkedin",
+  "section",
   "github",
-  "leetcode",
-  "hackerrank",
-  "codechef"
+  "linkedin",
+  "skills",
+  "cgpa"
 ];
 
 const validateProfileInput = (payload) => {
@@ -90,6 +84,14 @@ const validateProfileInput = (payload) => {
     }
   }
 
+  if (payload.section !== undefined) {
+    if (typeof payload.section !== "string") {
+      errors.push("section must be a string");
+    } else {
+      data.section = payload.section.trim().toUpperCase();
+    }
+  }
+
   const stringArrayFields = ["skills", "interests"];
   stringArrayFields.forEach((field) => {
     if (payload[field] !== undefined) {
@@ -121,19 +123,12 @@ const getMissingProfileFields = (student) => {
   const requiredFields = [
     "fullName",
     "phone",
-    "gender",
-    "dateOfBirth",
-    "department",
-    "year",
-    "cgpa",
     "college",
-    "skills",
-    "interests",
-    "linkedin",
+    "section",
     "github",
-    "leetcode",
-    "hackerrank",
-    "codechef"
+    "linkedin",
+    "skills",
+    "cgpa"
   ];
 
   return requiredFields.filter((field) => {

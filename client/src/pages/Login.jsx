@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 
 export default function Login() {
-  const [role, setRole] = useState('student')
+  const { search } = useLocation()
+  const defaultRole = new URLSearchParams(search).get('role') || 'student'
+  const [role, setRole] = useState(defaultRole)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -16,8 +18,17 @@ export default function Login() {
     setError('')
     setBusy(true)
     try {
-      await login(role, email, password)
-      navigate(role === 'faculty' ? '/faculty' : role === 'admin' ? '/admin' : '/student')
+      const loggedInUser = await login(role, email, password)
+      if (role === 'faculty') {
+        navigate('/faculty')
+      } else if (role === 'admin') {
+        navigate('/admin')
+      } else {
+        // student
+        if (!loggedInUser?.profileCompleted) navigate('/student/profile')
+        else if (!loggedInUser?.initialAssessmentCompleted) navigate('/student/assessments')
+        else navigate('/student')
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -48,8 +59,8 @@ export default function Login() {
           <button className="btn" style={{ width: '100%' }} disabled={busy}>{busy ? 'Signing in...' : 'Sign In'}</button>
         </form>
         <div className="auth-switch">
-          {role === 'student' && <p><Link to="/forgot-password">Forgot password?</Link></p>}
-          {role === 'student' && <p>Don't have an account? <Link to="/register">Register</Link></p>}
+          <p><Link to={`/forgot-password?role=${role}`}>Forgot password?</Link></p>
+          <p>Don't have an account? <Link to={`/register?role=${role}`}>Register</Link></p>
         </div>
       </div>
     </div>

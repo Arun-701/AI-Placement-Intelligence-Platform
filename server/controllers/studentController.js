@@ -311,7 +311,7 @@ const uploadResume = async (req, res) => {
 
 const getResume = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id).select("resume");
+        const student = await Student.findById(req.user.id).select("resume resumeAnalysis");
         if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
 
         const resumeFilePath = getResumeFilePath(student.resume);
@@ -319,7 +319,7 @@ const getResume = async (req, res) => {
             return errorResponse(res, { message: "Resume not found", status: 404 });
         }
 
-        return successResponse(res, { message: "Resume fetched successfully", data: { resume: student.resume } });
+        return successResponse(res, { message: "Resume fetched successfully", data: { resume: student.resume, resumeAnalysis: student.resumeAnalysis || {} } });
     } catch (error) {
         return errorResponse(res, { message: error.message, status: 500 });
     }

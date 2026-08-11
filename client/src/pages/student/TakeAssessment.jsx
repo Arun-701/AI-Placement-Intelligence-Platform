@@ -18,7 +18,14 @@ export default function TakeAssessment() {
       if (r.ok) {
         setAssessment(r.data.data.assessment)
         setQuestions(r.data.data.questions || [])
-        setTimeLeft((r.data.data.timeLimit || 60) * 60)
+        // prefer server-provided dueAt for persistence
+        const dueAt = r.data.data.dueAt || null
+        if (dueAt) {
+          const remaining = Math.max(0, Math.floor((new Date(dueAt).getTime() - Date.now()) / 1000))
+          setTimeLeft(remaining)
+        } else {
+          setTimeLeft((r.data.data.timeLimit || 60) * 60)
+        }
       } else {
         setError(r.data?.message || 'Cannot start assessment')
       }

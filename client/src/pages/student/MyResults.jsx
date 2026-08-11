@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../api'
+import { useAuth } from '../../AuthContext'
 
 export default function MyResults() {
   const [results, setResults] = useState([])
   const [error, setError] = useState('')
+  const [loadingContinue, setLoadingContinue] = useState(false)
+  const navigate = useNavigate()
+  const { refreshUser } = useAuth()
 
   useEffect(() => {
     api.get('/assessment-result/my').then((r) => {
@@ -17,6 +21,18 @@ if (r.ok) {
 
   if (error) return <div className="alert error">{error}</div>
 
+  const hasInitialAssessmentCompleted = results.some((r) => r.assessment?.isInitialAssessment)
+
+  const handleContinueToDashboard = async () => {
+    setLoadingContinue(true)
+    try {
+      await refreshUser()
+      navigate('/student')
+    } finally {
+      setLoadingContinue(false)
+    }
+  }
+
   return (
     <>
       <div className="page-title">
@@ -25,6 +41,13 @@ if (r.ok) {
           <div className="subtitle">History of all completed assessments</div>
         </div>
       </div>
+      {hasInitialAssessmentCompleted && (
+        <div className="mb">
+          <button className="btn primary" onClick={handleContinueToDashboard} disabled={loadingContinue}>
+            {loadingContinue ? 'Loading...' : 'Continue to Dashboard'}
+          </button>
+        </div>
+      )}
       {results.length === 0 ? (
         <div className="card"><p style={{ color: 'var(--muted)' }}>No completed assessments yet. Take a test to see results here.</p></div>
       ) : (

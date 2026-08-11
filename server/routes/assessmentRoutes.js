@@ -12,10 +12,11 @@ const {
 
 const verifyToken = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
+const { requireProfileComplete } = require("../middleware/onboardingMiddleware");
 
 router.post("/", verifyToken, authorizeRoles("faculty"), createAssessment);
 router.get("/", verifyToken, authorizeRoles("faculty"), getAssessments);
-router.get("/initial", verifyToken, authorizeRoles("student"), getInitialAssessment);
+router.get("/initial", verifyToken, authorizeRoles("student"), requireProfileComplete, getInitialAssessment);
 router.get("/:id", verifyToken, authorizeRoles("faculty"), getAssessmentById);
 router.put("/:id", verifyToken, authorizeRoles("faculty"), updateAssessment);
 router.delete("/:id", verifyToken, authorizeRoles("faculty"), deleteAssessment);

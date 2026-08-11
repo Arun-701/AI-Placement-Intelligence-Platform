@@ -43,6 +43,23 @@ export default function Layout() {
 
   const title =
     user?.role === 'faculty' ? 'Faculty Panel' : user?.role === 'admin' ? 'Admin Panel' : 'Student Portal'
+  const isStudentOnboarding = user?.role === 'student' && (!user?.profileCompleted || !user?.initialAssessmentCompleted)
+
+  if (isStudentOnboarding) {
+    return (
+      <div className="app-root">
+        <main className="main onboarding">
+          <div style={{ maxWidth: 900, margin: '0 auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h2>{title}</h2>
+              <button className="logout" onClick={handleLogout}>Sign Out</button>
+            </div>
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="app-root">

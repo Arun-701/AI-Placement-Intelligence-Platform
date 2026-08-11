@@ -18,18 +18,21 @@ const {
 
 const verifyToken = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
+const { requireProfileComplete, requireAssignmentComplete } = require("../middleware/onboardingMiddleware");
 const upload = require("../middleware/uploadMiddleware");
 
-router.get("/coding-profile", verifyToken, authorizeRoles("student"), getCodingProfile);
-router.put("/coding-profile", verifyToken, authorizeRoles("student"), updateCodingProfile);
-router.post("/resume", verifyToken, authorizeRoles("student"), upload.single("resume"), uploadResume);
-router.get("/resume", verifyToken, authorizeRoles("student"), getResume);
-router.put("/resume", verifyToken, authorizeRoles("student"), upload.single("resume"), replaceResume);
-router.delete("/resume", verifyToken, authorizeRoles("student"), deleteResume);
+// These routes require the student to have completed onboarding (profile + assignment)
+router.get("/coding-profile", verifyToken, authorizeRoles("student"), requireAssignmentComplete, getCodingProfile);
+router.put("/coding-profile", verifyToken, authorizeRoles("student"), requireAssignmentComplete, updateCodingProfile);
+router.post("/resume", verifyToken, authorizeRoles("student"), requireAssignmentComplete, upload.single("resume"), uploadResume);
+router.get("/resume", verifyToken, authorizeRoles("student"), requireAssignmentComplete, getResume);
+router.put("/resume", verifyToken, authorizeRoles("student"), requireAssignmentComplete, upload.single("resume"), replaceResume);
+router.delete("/resume", verifyToken, authorizeRoles("student"), requireAssignmentComplete, deleteResume);
 router.get(
     "/dashboard",
     verifyToken,
     authorizeRoles("student"),
+    requireAssignmentComplete,
     getDashboard
 );
 router.get(

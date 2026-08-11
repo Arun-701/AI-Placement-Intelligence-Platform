@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { api } from '../api'
 
 export default function ForgotPassword() {
+  const { search } = useLocation()
+  const role = new URLSearchParams(search).get('role') || 'student'
   const [email, setEmail] = useState('')
   const [info, setInfo] = useState('')
   const [resetToken, setResetToken] = useState('')
@@ -15,7 +17,12 @@ export default function ForgotPassword() {
     setInfo('')
     setBusy(true)
     try {
-      const r = await api.post('/auth/forgot-password', { email })
+      const endpoint = role === 'faculty'
+        ? '/auth/faculty/forgot-password'
+        : role === 'admin'
+          ? '/admin/forgot-password'
+          : '/auth/forgot-password'
+      const r = await api.post(endpoint, { email })
       if (!r.ok) throw new Error(r.data?.message || 'Request failed')
       setInfo(r.data?.message || 'Instructions sent')
       if (r.data?.data?.resetToken) {
@@ -52,7 +59,7 @@ export default function ForgotPassword() {
           <button className="btn" style={{ width: '100%' }} disabled={busy}>{busy ? 'Sending...' : 'Send Reset Link'}</button>
         </form>
         <div className="auth-switch">
-          <p><Link to="/reset-password">I have a reset token</Link> · <Link to="/login">Back to login</Link></p>
+          <p><Link to={`/reset-password?role=${role}`}>I have a reset token</Link> · <Link to={`/login?role=${role}`}>Back to login</Link></p>
         </div>
       </div>
     </div>
