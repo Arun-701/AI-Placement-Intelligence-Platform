@@ -26,15 +26,22 @@ const getAssignedAssessments = async (studentId) => {
         throw new Error("Student not found");
     }
 
-    // Find all published assessments where student is assigned or assessment is open to all
+    // During onboarding, expose only the one explicitly configured onboarding assessment.
+    // Once it is complete, show assigned or open assessments but not the completed onboarding test.
+    const availabilityFilter = student.initialAssessmentCompleted
+        ? {
+            isInitialAssessment: { $ne: true },
+            $or: [
+                { assignedStudents: { $in: [studentId] } },
+                { assignedStudents: { $size: 0 } }
+            ]
+        }
+        : { isInitialAssessment: true };
+
     const assessments = await Assessment.find({
         status: "Published",
         isActive: true,
-        $or: [
-            { assignedStudents: { $in: [studentId] } },
-            { assignedStudents: { $size: 0 } },
-            { isInitialAssessment: true }
-        ]
+        ...availabilityFilter
     })
         .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
         .lean();
@@ -318,7 +325,7 @@ const submitAssessment = async (studentId, assessmentId, answers, timeTaken = 0)
  */
 const getAssessmentHistory = async (studentId) => {
     const results = await AssessmentResult.find({ student: studentId })
-        .populate("assessment", "_id title assessmentType totalMarks duration")
+        .populate("assessment", "_id title assessmentType totalMarks passingMarks duration")
         .select("_id score percentage submittedAt")
         .sort({ submittedAt: -1 })
         .lean();
@@ -337,7 +344,7 @@ const getAssessmentHistory = async (studentId) => {
  */
 const getAssessmentResult = async (studentId, resultId) => {
     const result = await AssessmentResult.findById(resultId)
-        .populate("assessment", "_id title description assessmentType totalMarks duration")
+        .populate("assessment", "_id title description assessmentType totalMarks passingMarks duration")
         .populate({
             path: "answers.question",
             select: "_id title question questionType marks correctAnswer explanation topic options"

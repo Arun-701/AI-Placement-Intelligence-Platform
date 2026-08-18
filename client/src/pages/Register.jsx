@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 
 export default function Register() {
   const { search } = useLocation()
+  const navigate = useNavigate()
   const defaultRole = new URLSearchParams(search).get('role') || 'student'
   const [role, setRole] = useState(defaultRole)
   const [name, setName] = useState('')
@@ -17,7 +18,6 @@ export default function Register() {
   const [info, setInfo] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const navigate = useNavigate()
 
   const submit = async (e) => {
     e.preventDefault()
@@ -44,15 +44,8 @@ export default function Register() {
 
       const r = await api.post(endpoint, payload)
       if (!r.ok) throw new Error(r.data?.message || 'Registration failed')
-      const vToken = r.data?.data?.verificationToken
-      if (vToken) {
-        const v = await api.post('/auth/verify-email', { token: vToken })
-        if (!v.ok) throw new Error(v.data?.message || 'Email verification failed')
-        setInfo('Registered and email verified! You can now sign in.')
-      } else {
-        setInfo('Registered successfully! You can now sign in.')
-      }
-      setTimeout(() => navigate('/login'), 1500)
+      setInfo("Account created successfully! We've sent a 6-digit verification code to your email. Enter the code below to verify your account.")
+      navigate(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}`)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -119,7 +112,7 @@ export default function Register() {
               </div>
             </>
           )}
-          <button className="btn" style={{ width: '100%' }} disabled={busy}>{busy ? 'Creating...' : 'Register'}</button>
+          <button className="btn" style={{ width: '100%' }} disabled={busy || Boolean(info)}>{busy ? 'Creating...' : 'Register'}</button>
         </form>
         <div className="auth-switch">
           <p>Already have an account? <Link to="/login">Sign in</Link></p>

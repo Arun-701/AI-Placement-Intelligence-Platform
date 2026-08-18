@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
 const compression = require("compression");
@@ -23,6 +24,8 @@ const { requestLogger, logger } = require("./middleware/logger");
 const connectDB = require("./config/database");
 const validateEnv = require("./config/validateEnv");
 
+// Load backend configuration independently of the directory used to launch Node.
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 dotenv.config();
 
 validateEnv();

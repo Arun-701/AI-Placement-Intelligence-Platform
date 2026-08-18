@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
 import Layout from './pages/Layout'
 import StudentDashboard from './pages/student/Dashboard'
 import AssessmentList from './pages/student/AssessmentList'
@@ -84,6 +85,7 @@ function App() {
           <Route path="/register" element={<PublicOnly><Register /></PublicOnly>} />
           <Route path="/forgot-password" element={<PublicOnly><ForgotPassword /></PublicOnly>} />
           <Route path="/reset-password" element={<PublicOnly><ResetPassword /></PublicOnly>} />
+          <Route path="/verify-email" element={<PublicOnly><VerifyEmail /></PublicOnly>} />
 
           <Route path="/student" element={<Protected role="student"><Layout /></Protected>}>
             <Route index element={<StudentDashboard />} />

@@ -312,10 +312,30 @@ const studentSchema = new mongoose.Schema(
       default: false,
     },
 
-    verificationToken: {
+    emailVerificationRequired: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationOtpHash: {
       type: String,
-      trim: true,
       default: "",
+    },
+
+    emailVerificationOtpExpiresAt: {
+      type: Date,
+      default: null,
+    },
+
+    emailVerificationOtpAttempts: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    emailVerificationLastSentAt: {
+      type: Date,
+      default: null,
     },
 
     resetPasswordToken: {

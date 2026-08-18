@@ -151,6 +151,7 @@ const createFaculty = async (payload) => {
     designation: payload.designation || "",
     facultyId: payload.facultyId || undefined,
     isActive: payload.isActive !== undefined ? payload.isActive : true,
+    isVerified: payload.isVerified !== undefined ? payload.isVerified : true,
     role: "faculty",
     passwordChangedAt: new Date()
   });

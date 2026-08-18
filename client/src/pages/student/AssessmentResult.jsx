@@ -8,60 +8,80 @@ export default function AssessmentResult() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.get(`/assessment/result/${resultId}`).then((r) => {
-      if (r.ok) setResult(r.data.data)
-      else setError(r.data?.message || 'Failed to load result')
+    let active = true
+    api.get(`/assessment/result/${resultId}`).then((response) => {
+      if (!active) return
+      if (response.ok) setResult(response.data.data)
+      else setError(response.data?.message || 'Failed to load result')
+    }).catch(() => {
+      if (active) setError('Failed to load result')
     })
+    return () => { active = false }
   }, [resultId])
 
   if (error) return <div className="alert error">{error}</div>
   if (!result) return <div className="loading">Loading result...</div>
 
-  const ans = result.answers || {}
+  const answers = result.answers || {}
+  const totalQuestions = answers.totalQuestions ?? answers.details?.length ?? 0
+  const correct = answers.correct ?? 0
+  const incorrect = answers.wrong ?? 0
+  const skipped = answers.skipped ?? 0
+  const passingMarks = result.assessment?.passingMarks
+  const passed = typeof passingMarks === 'number' ? result.score >= passingMarks : result.percentage >= 60
 
   return (
     <>
       <div className="page-title">
         <div>
-          <h1>Assessment Result</h1>
+          <h1>Assessment Completed</h1>
           <div className="subtitle">{result.assessment?.title || 'Assessment'}</div>
         </div>
+        <span className={`badge ${passed ? 'green' : 'red'}`}>{passed ? 'Passed' : 'Failed'}</span>
       </div>
 
       <div className="grid cols-4 mb">
         <div className="card kpi-card"><div className="kpi-value">{result.score} / {result.totalMarks}</div><div className="kpi-label">Score</div></div>
         <div className="card kpi-card"><div className="kpi-value">{result.percentage}%</div><div className="kpi-label">Percentage</div></div>
-        <div className="card kpi-card"><div className="kpi-value">{ans.correct ?? 0}</div><div className="kpi-label">Correct</div></div>
-        <div className="card kpi-card"><div className="kpi-value">{ans.wrong ?? 0}</div><div className="kpi-label">Wrong</div></div>
+        <div className="card kpi-card"><div className="kpi-value">{correct} / {totalQuestions}</div><div className="kpi-label">Correct Answers</div></div>
+        <div className="card kpi-card"><div className="kpi-value">{incorrect}</div><div className="kpi-label">Incorrect Answers</div></div>
+      </div>
+
+      <div className="card mb">
+        <h3>Result Summary</h3>
+        <div className="row" style={{ gap: 24, flexWrap: 'wrap', fontSize: 14, color: 'var(--muted)' }}>
+          <span>Total Questions: <strong>{totalQuestions}</strong></span>
+          <span>Correct Answers: <strong>{correct}</strong></span>
+          <span>Incorrect Answers: <strong>{incorrect}</strong></span>
+          <span>Skipped: <strong>{skipped}</strong></span>
+          {typeof passingMarks === 'number' && <span>Passing Score: <strong>{passingMarks} / {result.totalMarks}</strong></span>}
+        </div>
       </div>
 
       <div className="grid cols-2">
         <div className="card">
           <h3>Strengths</h3>
-          {result.strengths?.length ? (
-            <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.strengths.map((s, i) => <li key={i} className="list-item">{s}</li>)}</ul>
-          ) : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No strengths identified yet.</p>}
+          {result.strengths?.length ? <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.strengths.map((item, index) => <li key={index} className="list-item">{item}</li>)}</ul> : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No strengths identified yet.</p>}
           <h3 className="mt">Weaknesses</h3>
-          {result.weaknesses?.length ? (
-            <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.weaknesses.map((s, i) => <li key={i} className="list-item">{s}</li>)}</ul>
-          ) : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No weaknesses identified.</p>}
+          {result.weaknesses?.length ? <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.weaknesses.map((item, index) => <li key={index} className="list-item">{item}</li>)}</ul> : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No weaknesses identified.</p>}
           <h3 className="mt">Recommendations</h3>
-          {result.recommendations?.length ? (
-            <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.recommendations.map((s, i) => <li key={i} className="list-item">{s}</li>)}</ul>
-          ) : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No recommendations yet.</p>}
+          {result.recommendations?.length ? <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.recommendations.map((item, index) => <li key={index} className="list-item">{item}</li>)}</ul> : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No recommendations yet.</p>}
         </div>
 
         <div className="card">
           <h3>Answer Review</h3>
-          <div className="ai-box">
-            {JSON.stringify(result.answers, null, 2)}
-          </div>
+          {answers.details?.length ? answers.details.map((answer, index) => (
+            <div className="card mb" style={{ padding: 14 }} key={answer.questionId || index}>
+              <div className="row between" style={{ gap: 12 }}><strong>{index + 1}. {answer.question}</strong><span className={`badge ${answer.isCorrect ? 'green' : 'red'}`}>{answer.isCorrect ? 'Correct' : 'Incorrect'}</span></div>
+              <p style={{ fontSize: 14, margin: '10px 0 0' }}>Your answer: <strong>{answer.studentAnswer || 'Not answered'}</strong></p>
+              {!answer.isCorrect && <p style={{ fontSize: 14, margin: '6px 0 0' }}>Correct answer: <strong>{answer.correctAnswer}</strong></p>}
+              {answer.explanation && <p style={{ fontSize: 13, color: 'var(--muted)', margin: '6px 0 0' }}>{answer.explanation}</p>}
+            </div>
+          )) : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No answer details are available for this result.</p>}
         </div>
       </div>
 
-      <div className="mt">
-        <Link className="btn secondary" to="/student/results">Back to Results</Link>
-      </div>
+      <div className="mt"><Link className="btn secondary" to="/student/results">Back to Results</Link></div>
     </>
   )
 }

@@ -64,7 +64,7 @@ export default function ResumeAnalysis() {
           setHasResume(false)
           setResumePath('')
         }
-      } catch (e) {
+      } catch {
         setHasResume(false)
       }
     }

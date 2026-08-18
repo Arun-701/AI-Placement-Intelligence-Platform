@@ -38,11 +38,11 @@ const verifyToken = async (req, res, next) => {
         // Determine model based on role
         let user;
         if (decoded.role === "faculty") {
-            user = await Faculty.findById(decoded.id).select("isActive passwordChangedAt role");
+            user = await Faculty.findById(decoded.id).select("isActive passwordChangedAt role emailVerificationRequired isVerified");
         } else if (decoded.role === "admin") {
-            user = await Admin.findById(decoded.id).select("isActive passwordChangedAt role");
+            user = await Admin.findById(decoded.id).select("isActive passwordChangedAt role emailVerificationRequired isVerified");
         } else {
-            user = await Student.findById(decoded.id).select("isActive passwordChangedAt role");
+            user = await Student.findById(decoded.id).select("isActive passwordChangedAt role emailVerificationRequired isVerified");
         }
 
         if (!user) {
@@ -56,6 +56,14 @@ const verifyToken = async (req, res, next) => {
             return res.status(403).json({
                 success: false,
                 message: "Account is deactivated"
+            });
+        }
+
+        // This also blocks tokens issued before verification enforcement was deployed.
+        if (user.emailVerificationRequired === true && user.isVerified !== true) {
+            return res.status(403).json({
+                success: false,
+                message: "Please verify your email before logging in."
             });
         }
 

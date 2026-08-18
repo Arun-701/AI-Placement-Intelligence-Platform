@@ -73,6 +73,38 @@ const facultySchema = new mongoose.Schema(
       default: null,
     },
 
+    // Undefined means a pre-verification-feature account and remains allowed to sign in.
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationRequired: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationOtpHash: {
+      type: String,
+      default: "",
+    },
+
+    emailVerificationOtpExpiresAt: {
+      type: Date,
+      default: null,
+    },
+
+    emailVerificationOtpAttempts: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    emailVerificationLastSentAt: {
+      type: Date,
+      default: null,
+    },
+
     isActive: {
       type: Boolean,
       default: true,
