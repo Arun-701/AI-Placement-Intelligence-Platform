@@ -31,7 +31,6 @@ export default function Layout() {
         : [
             { to: '/student', label: 'Dashboard', end: true },
             { to: '/student/assessments', label: 'Assessments' },
-            { to: '/student/results', label: 'My Results' },
             { to: '/student/resume', label: 'Resume AI' },
             { to: '/student/coding', label: 'Coding Profile' },
             { to: '/student/roadmap', label: 'Learning Roadmap' },

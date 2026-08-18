@@ -80,7 +80,7 @@ const run = async () => {
   target.questions = questionIds;
   target.totalMarks = questions.reduce((total, question) => total + (Number(question.marks) || 0), 0);
   target.duration = target.duration || 30;
-  target.passingMarks = Math.min(target.passingMarks || 0, target.totalMarks);
+  target.passingMarks = 9;
   await target.save();
 
   console.log(`Configured ${PROGRAMMING_FUNDAMENTALS_TITLE} as the onboarding assessment with ${questionIds.length} questions.`);

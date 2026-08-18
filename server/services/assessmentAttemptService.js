@@ -26,25 +26,58 @@ const getAssignedAssessments = async (studentId) => {
         throw new Error("Student not found");
     }
 
-    // During onboarding, expose only the one explicitly configured onboarding assessment.
-    // Once it is complete, show assigned or open assessments but not the completed onboarding test.
-    const availabilityFilter = student.initialAssessmentCompleted
-        ? {
+    // Get completed assessments for this student to include in results
+    const completedResults = await AssessmentResult.find({ student: studentId }).select("assessment").lean();
+    const completedAssessmentIds = completedResults.map(r => r.assessment);
+
+    let assessments = [];
+    const initialAssessment = await Assessment.findOne({
+        status: "Published",
+        isActive: true,
+        isInitialAssessment: true,
+        title: { $ne: "Initial Onboarding Assessment" }
+    })
+        .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
+        .lean();
+
+    if (student.initialAssessmentCompleted) {
+        // After initial assessment is complete, show:
+        // 1. All assigned or open assessments (excluding initial assessments)
+        const availableAssessments = await Assessment.find({
+            status: "Published",
+            isActive: true,
             isInitialAssessment: { $ne: true },
+            title: { $ne: "Initial Onboarding Assessment" },
             $or: [
                 { assignedStudents: { $in: [studentId] } },
                 { assignedStudents: { $size: 0 } }
             ]
-        }
-        : { isInitialAssessment: true };
+        })
+            .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
+            .lean();
 
-    const assessments = await Assessment.find({
-        status: "Published",
-        isActive: true,
-        ...availabilityFilter
-    })
-        .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
-        .lean();
+        // 2. All completed assessments (for history)
+        const completedAssessments = await Assessment.find({
+            _id: { $in: completedAssessmentIds },
+            status: "Published",
+            isActive: true
+        })
+            .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
+            .lean();
+
+        // 3. Keep the completed Initial Assessment visible in the list even after onboarding completion.
+        // The existing duplicate-attempt protection in submit/start validation remains unchanged.
+        const assessmentMap = new Map();
+        availableAssessments.forEach(a => assessmentMap.set(a._id.toString(), a));
+        completedAssessments.forEach(a => assessmentMap.set(a._id.toString(), a));
+        if (initialAssessment) {
+            assessmentMap.set(initialAssessment._id.toString(), initialAssessment);
+        }
+        assessments = Array.from(assessmentMap.values());
+    } else {
+        // During onboarding, show only the initial assessment
+        assessments = initialAssessment ? [initialAssessment] : [];
+    }
 
     // Get attempt status for each assessment
     const assessmentsWithStatus = await Promise.all(
@@ -58,8 +91,9 @@ const getAssignedAssessments = async (studentId) => {
                 ...assessment,
                 attemptStatus: result ? "Completed" : "Pending",
                 attempted: !!result,
-                score: result?.score || null,
-                percentage: result?.percentage || null,
+                resultId: result?._id || null,
+                score: result ? result.score : null,
+                percentage: result ? result.percentage : null,
                 submittedAt: result?.submittedAt || null
             };
         })
@@ -84,6 +118,10 @@ const startAssessment = async (studentId, assessmentId) => {
     const studentValidation = await validateStudentActive(studentId);
     if (!studentValidation.valid) {
         throw new Error(studentValidation.message);
+    }
+
+    if (assessment.isInitialAssessment && studentValidation.student.initialAssessmentCompleted) {
+        throw new Error("Initial onboarding assessment has already been completed");
     }
 
     // Validate student is assigned

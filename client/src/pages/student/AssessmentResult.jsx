@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../../api'
+import { useAuth } from '../../AuthContext'
 
 export default function AssessmentResult() {
   const { resultId } = useParams()
+  const navigate = useNavigate()
+  const { refreshUser } = useAuth()
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
 
@@ -27,8 +30,8 @@ export default function AssessmentResult() {
   const correct = answers.correct ?? 0
   const incorrect = answers.wrong ?? 0
   const skipped = answers.skipped ?? 0
-  const passingMarks = result.assessment?.passingMarks
-  const passed = typeof passingMarks === 'number' ? result.score >= passingMarks : result.percentage >= 60
+  const passingMarks = typeof result.assessment?.passingMarks === 'number' ? result.assessment.passingMarks : 0
+  const passed = result.score >= passingMarks
 
   return (
     <>
@@ -54,7 +57,6 @@ export default function AssessmentResult() {
           <span>Correct Answers: <strong>{correct}</strong></span>
           <span>Incorrect Answers: <strong>{incorrect}</strong></span>
           <span>Skipped: <strong>{skipped}</strong></span>
-          {typeof passingMarks === 'number' && <span>Passing Score: <strong>{passingMarks} / {result.totalMarks}</strong></span>}
         </div>
       </div>
 
@@ -81,7 +83,7 @@ export default function AssessmentResult() {
         </div>
       </div>
 
-      <div className="mt"><Link className="btn secondary" to="/student/results">Back to Results</Link></div>
+      <div className="mt"><button className="btn" onClick={async () => { await refreshUser(); navigate('/student', { replace: true }) }}>Go to Dashboard</button></div>
     </>
   )
 }

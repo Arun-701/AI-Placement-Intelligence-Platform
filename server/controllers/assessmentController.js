@@ -187,7 +187,8 @@ const getInitialAssessment = async (req, res) => {
         const assessment = await Assessment.findOne({
             isInitialAssessment: true,
             isActive: true,
-            status: "Published"
+            status: "Published",
+            title: { $ne: "Initial Onboarding Assessment" }
         })
             .populate("questions")
             .populate("assignedFaculty");

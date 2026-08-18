@@ -10,7 +10,6 @@ import StudentDashboard from './pages/student/Dashboard'
 import AssessmentList from './pages/student/AssessmentList'
 import TakeAssessment from './pages/student/TakeAssessment'
 import AssessmentResult from './pages/student/AssessmentResult'
-import MyResults from './pages/student/MyResults'
 import ResumeAnalysis from './pages/student/ResumeAnalysis'
 import CodingProfile from './pages/student/CodingProfile'
 import Roadmap from './pages/student/Roadmap'
@@ -92,7 +91,6 @@ function App() {
             <Route path="assessments" element={<AssessmentList />} />
             <Route path="assessments/:id/take" element={<TakeAssessment />} />
             <Route path="assessments/result/:resultId" element={<AssessmentResult />} />
-            <Route path="results" element={<MyResults />} />
             <Route path="resume" element={<ResumeAnalysis />} />
             <Route path="coding" element={<CodingProfile />} />
             <Route path="roadmap" element={<Roadmap />} />

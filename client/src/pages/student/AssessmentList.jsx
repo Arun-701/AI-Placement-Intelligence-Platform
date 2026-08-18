@@ -7,10 +7,21 @@ export default function AssessmentList() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.get('/assessment/my').then((r) => {
-      if (r.ok) setItems(r.data.data.assessments || r.data.data || [])
-      else setError(r.data?.message || 'Failed to load assessments')
-    })
+    let active = true
+
+    const loadAssessments = async () => {
+      try {
+        const r = await api.get('/assessment/my')
+        if (!active) return
+        if (r.ok) setItems(r.data?.data?.assessments ?? r.data?.data ?? [])
+        else setError(r.data?.message || 'Failed to load assessments')
+      } catch {
+        if (active) setError('Failed to load assessments')
+      }
+    }
+
+    loadAssessments()
+    return () => { active = false }
   }, [])
 
   if (error) return <div className="alert error">{error}</div>
@@ -38,7 +49,10 @@ export default function AssessmentList() {
               </div>
               <div style={{ textAlign: 'right' }}>
                 {a.attempted ? (
-                  <span className={`badge ${a.percentage >= 60 ? 'green' : 'red'}`}>Completed · {a.percentage}%</span>
+                  <div>
+                    <span className={`badge ${a.percentage >= 60 ? 'green' : 'red'}`}>Completed · {a.percentage}%</span>
+                    {a.resultId && <Link className="btn small mt" to={`/student/assessments/result/${a.resultId}`}>View Result</Link>}
+                  </div>
                 ) : (
                   <Link className="btn small" to={`/student/assessments/${a._id}/take`}>Start Now</Link>
                 )}
