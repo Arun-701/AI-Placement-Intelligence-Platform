@@ -27,6 +27,12 @@ export default function Profile() {
     setError('')
     setInfo('')
     const payload = { ...form }
+    const phone = String(payload.phone || '').trim()
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      setError('Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.')
+      return
+    }
+    payload.phone = phone
     payload.skills = payload.skills ? String(payload.skills).split(',').map((x) => x.trim()).filter(Boolean) : []
     if (payload.cgpa !== undefined && payload.cgpa !== '') payload.cgpa = Number(payload.cgpa)
     const r = await api.put('/student/profile', payload)
@@ -70,7 +76,7 @@ export default function Profile() {
       <form className="card" onSubmit={save}>
         <div className="grid cols-2">
           <div className="form-group"><label>Full Name</label><input value={form.fullName || ''} onChange={(e) => setForm({ ...form, fullName: e.target.value })} /></div>
-          <div className="form-group"><label>Phone</label><input value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+          <div className="form-group"><label>Phone</label><input type="tel" inputMode="numeric" maxLength="10" value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
           <div className="form-group"><label>College</label><input value={form.college || ''} onChange={(e) => setForm({ ...form, college: e.target.value })} /></div>
           <div className="form-group"><label>Section</label><input value={form.section || ''} onChange={(e) => setForm({ ...form, section: e.target.value })} /></div>
           <div className="form-group"><label>GitHub URL</label><input value={form.github || ''} onChange={(e) => setForm({ ...form, github: e.target.value })} /></div>

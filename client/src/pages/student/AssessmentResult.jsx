@@ -30,6 +30,7 @@ export default function AssessmentResult() {
   const correct = answers.correct ?? 0
   const incorrect = answers.wrong ?? 0
   const skipped = answers.skipped ?? 0
+  const attempted = correct + incorrect
   const passingMarks = typeof result.assessment?.passingMarks === 'number' ? result.assessment.passingMarks : 0
   const passed = result.score >= passingMarks
 
@@ -46,7 +47,7 @@ export default function AssessmentResult() {
       <div className="grid cols-4 mb">
         <div className="card kpi-card"><div className="kpi-value">{result.score} / {result.totalMarks}</div><div className="kpi-label">Score</div></div>
         <div className="card kpi-card"><div className="kpi-value">{result.percentage}%</div><div className="kpi-label">Percentage</div></div>
-        <div className="card kpi-card"><div className="kpi-value">{correct} / {totalQuestions}</div><div className="kpi-label">Correct Answers</div></div>
+        <div className="card kpi-card"><div className="kpi-value">{correct}</div><div className="kpi-label">Correct Answers</div></div>
         <div className="card kpi-card"><div className="kpi-value">{incorrect}</div><div className="kpi-label">Incorrect Answers</div></div>
       </div>
 
@@ -54,6 +55,7 @@ export default function AssessmentResult() {
         <h3>Result Summary</h3>
         <div className="row" style={{ gap: 24, flexWrap: 'wrap', fontSize: 14, color: 'var(--muted)' }}>
           <span>Total Questions: <strong>{totalQuestions}</strong></span>
+          <span>Attempted: <strong>{attempted}</strong></span>
           <span>Correct Answers: <strong>{correct}</strong></span>
           <span>Incorrect Answers: <strong>{incorrect}</strong></span>
           <span>Skipped: <strong>{skipped}</strong></span>
