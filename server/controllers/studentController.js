@@ -1,7 +1,7 @@
 const Student = require("../models/Student");
 const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
-const { calculateCodingSkillScore, buildPlatformAdapter, getPlatformConnectionSummary, validatePlatformUrl } = require("../services/codingProfileService");
+const { calculateCodingSkillScore, getPlatformConnectionSummary, validatePlatformUrl, fetchPlatformStatistics } = require("../services/codingProfileService");
 const fs = require("fs");
 const path = require("path");
 const { successResponse, errorResponse } = require("../utils/response");
@@ -42,19 +42,25 @@ const profileFields = [
     "section"
 ];
 
-const codingProfileFields = [
-    "score",
-    "level",
-    "explanation",
-    "updatedAt",
-    "totalProblemsSolved",
-    "easySolved",
-    "mediumSolved",
-    "hardSolved",
-    "contestsParticipated",
-    "topicAnalysis",
-    "platforms"
-];
+const codingPlatformFields = ["github", "leetcode", "hackerrank", "codechef", "codeforces"];
+
+const buildCodingProfileResponse = (student) => {
+    const profile = student.codingProfile?.toObject
+        ? student.codingProfile.toObject()
+        : (student.codingProfile || {});
+
+    return {
+        ...profile,
+        ...getPlatformConnectionSummary(student),
+        profileUrls: {
+            leetcode: student.leetcode || "",
+            hackerrank: student.hackerrank || "",
+            codechef: student.codechef || "",
+            github: student.github || "",
+            codeforces: student.codeforces || ""
+        }
+    };
+};
 
 const getProfile = async (req, res) => {
     try {
@@ -117,7 +123,7 @@ const updateProfile = async (req, res) => {
 
 const getCodingProfile = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id).select("codingProfile github leetcode hackerrank codechef linkedin");
+        const student = await Student.findById(req.user.id).select("codingProfile github leetcode hackerrank codechef codeforces");
         if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
 
         const defaultProfile = {
@@ -134,14 +140,13 @@ const getCodingProfile = async (req, res) => {
             platforms: []
         };
 
-        const profile = student.codingProfile || defaultProfile;
-        const platformSummary = getPlatformConnectionSummary(student);
+        const profile = student.codingProfile ? buildCodingProfileResponse(student) : defaultProfile;
 
         return successResponse(res, {
             message: "Coding profile fetched successfully",
             data: {
                 ...profile,
-                ...platformSummary
+                profileUrls: profile.profileUrls || buildCodingProfileResponse(student).profileUrls
             }
         });
     } catch (error) {
@@ -154,56 +159,69 @@ const updateCodingProfile = async (req, res) => {
         const student = await Student.findById(req.user.id).select("-password");
         if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
 
+        const platformFields = codingPlatformFields;
         const requestFields = Object.keys(req.body || {});
-        const invalidFields = requestFields.filter((f) => !codingProfileFields.includes(f) && !["github", "leetcode", "hackerrank", "codechef", "linkedin"].includes(f));
+        const requestedPlatformFields = platformFields.filter((field) => Object.prototype.hasOwnProperty.call(req.body, field));
+        const invalidFields = requestFields.filter((field) => !platformFields.includes(field));
         if (invalidFields.length > 0) return errorResponse(res, { message: "Invalid coding profile field(s) provided", status: 400 });
 
-        const updates = {};
-        codingProfileFields.forEach((field) => {
-            if (Object.prototype.hasOwnProperty.call(req.body, field)) updates[field] = req.body[field];
-        });
-
-        const platformFields = ["github", "leetcode", "hackerrank", "codechef", "linkedin"];
-        platformFields.forEach((field) => {
-            if (Object.prototype.hasOwnProperty.call(req.body, field)) {
-                const value = req.body[field];
-                if (value === "" || value === null || value === undefined) {
-                    student[field] = "";
-                } else if (typeof value !== "string") {
-                    return errorResponse(res, { message: `${field} must be a string`, status: 400 });
-                } else if (!validatePlatformUrl(field, value.trim())) {
-                    return errorResponse(res, { message: `${field} must be a valid URL`, status: 400 });
-                } else {
-                    student[field] = value.trim();
-                }
-            }
-        });
-
-        if (Object.keys(updates).length === 0 && platformFields.every((field) => !Object.prototype.hasOwnProperty.call(req.body, field))) {
+        if (platformFields.every((field) => !Object.prototype.hasOwnProperty.call(req.body, field))) {
             return errorResponse(res, { message: "No coding profile fields provided", status: 400 });
         }
 
-        if (updates.score !== undefined && (!Number.isFinite(updates.score) || updates.score < 0 || updates.score > 100)) {
-            return errorResponse(res, { message: "Coding score must be between 0 and 100", status: 400 });
+        const submittedUrls = {};
+        const fieldErrors = {};
+        for (const field of platformFields) {
+            const value = Object.prototype.hasOwnProperty.call(req.body, field)
+                ? req.body[field]
+                : (student[field] || "");
+            if (value === "" || value === null || value === undefined) {
+                submittedUrls[field] = "";
+            } else if (typeof value !== "string" || !validatePlatformUrl(field, value.trim())) {
+                fieldErrors[field] = `Enter a valid ${field} profile URL.`;
+            } else {
+                submittedUrls[field] = value.trim();
+            }
+        }
+        if (Object.keys(fieldErrors).length > 0) {
+            return errorResponse(res, { message: "Please correct the invalid profile URLs", data: { fieldErrors }, status: 400 });
         }
 
-        if (updates.totalProblemsSolved !== undefined && (!Number.isInteger(updates.totalProblemsSolved) || updates.totalProblemsSolved < 0)) {
-            return errorResponse(res, { message: "Total problems solved must be a non-negative integer", status: 400 });
-        }
-
-        if (updates.platforms !== undefined && (!Array.isArray(updates.platforms))) {
-            return errorResponse(res, { message: "Platforms must be an array", status: 400 });
+        const platforms = [];
+        try {
+            const existingPlatforms = student.codingProfile?.platforms || [];
+            const existingPlatformsByName = new Map(existingPlatforms.map((platform) => [platform.platform.toLowerCase(), platform]));
+            for (const field of platformFields) {
+                if (!requestedPlatformFields.includes(field)) {
+                    const existingPlatform = existingPlatformsByName.get(field);
+                    if (existingPlatform) platforms.push(existingPlatform.toObject ? existingPlatform.toObject() : existingPlatform);
+                    continue;
+                }
+                if (!submittedUrls[field]) continue;
+                platforms.push(await fetchPlatformStatistics(field, submittedUrls[field]));
+            }
+        } catch (error) {
+            return errorResponse(res, {
+                message: "Unable to verify this profile. Please check the URL and make sure the profile is publicly accessible.",
+                data: { detail: error.message },
+                status: 422
+            });
         }
 
         const existingProfile = student.codingProfile || {};
-        const normalizedPlatforms = Array.isArray(updates.platforms)
-            ? updates.platforms.map((p) => buildPlatformAdapter(p.platform || "Unknown", p))
-            : (existingProfile.platforms || []);
+        platformFields.forEach((field) => { student[field] = submittedUrls[field]; });
+        const totals = platforms.reduce((summary, platform) => ({
+            totalProblemsSolved: summary.totalProblemsSolved + (Number.isFinite(platform.totalSolved) ? platform.totalSolved : 0),
+            easySolved: summary.easySolved + (Number.isFinite(platform.easySolved) ? platform.easySolved : 0),
+            mediumSolved: summary.mediumSolved + (Number.isFinite(platform.mediumSolved) ? platform.mediumSolved : 0),
+            hardSolved: summary.hardSolved + (Number.isFinite(platform.hardSolved) ? platform.hardSolved : 0),
+            contestsParticipated: summary.contestsParticipated + (Number.isFinite(platform.contestsParticipated) ? platform.contestsParticipated : 0)
+        }), { totalProblemsSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0, contestsParticipated: 0 });
 
         const mergedProfile = {
             ...(existingProfile || {}),
-            ...updates,
-            platforms: normalizedPlatforms,
+            ...totals,
+            platforms,
             updatedAt: new Date()
         };
 
@@ -220,14 +238,67 @@ const updateCodingProfile = async (req, res) => {
         student.codingProfile = mergedProfile;
         await student.save();
 
-        const platformSummary = getPlatformConnectionSummary(student);
-
         return successResponse(res, {
             message: "Coding profile updated successfully",
-            data: {
-                ...student.codingProfile.toObject ? student.codingProfile.toObject() : student.codingProfile,
-                ...platformSummary
+            data: buildCodingProfileResponse(student)
+        });
+    } catch (error) {
+        return errorResponse(res, { message: error.message, status: 500 });
+    }
+};
+
+const refreshCodingProfile = async (req, res) => {
+    try {
+        const student = await Student.findById(req.user.id).select("-password");
+        if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
+
+        const existingPlatforms = student.codingProfile?.platforms || [];
+        const existingPlatformsByName = new Map(existingPlatforms.map((platform) => [platform.platform.toLowerCase(), platform]));
+        const refreshResults = await Promise.all(codingPlatformFields.map(async (field) => {
+            const profileUrl = student[field] || "";
+            if (!profileUrl) return { field, platform: null };
+            try {
+                return { field, platform: await fetchPlatformStatistics(field, profileUrl) };
+            } catch (error) {
+                return { field, error: `Could not be refreshed: ${error.message}` };
             }
+        }));
+
+        const refreshErrors = [];
+        const platforms = refreshResults.reduce((items, result) => {
+            if (result.platform) {
+                items.push(result.platform);
+            } else if (result.error) {
+                const existing = existingPlatformsByName.get(result.field);
+                if (existing) items.push(existing.toObject ? existing.toObject() : existing);
+                refreshErrors.push({ platform: result.field, message: result.error });
+            }
+            return items;
+        }, []);
+
+        const totals = platforms.reduce((summary, platform) => ({
+            totalProblemsSolved: summary.totalProblemsSolved + (Number.isFinite(platform.totalSolved) ? platform.totalSolved : 0),
+            easySolved: summary.easySolved + (Number.isFinite(platform.easySolved) ? platform.easySolved : 0),
+            mediumSolved: summary.mediumSolved + (Number.isFinite(platform.mediumSolved) ? platform.mediumSolved : 0),
+            hardSolved: summary.hardSolved + (Number.isFinite(platform.hardSolved) ? platform.hardSolved : 0),
+            contestsParticipated: summary.contestsParticipated + (Number.isFinite(platform.contestsParticipated) ? platform.contestsParticipated : 0)
+        }), { totalProblemsSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0, contestsParticipated: 0 });
+
+        const scoredProfile = calculateCodingSkillScore(totals);
+        student.codingProfile = {
+            ...(student.codingProfile?.toObject ? student.codingProfile.toObject() : (student.codingProfile || {})),
+            ...totals,
+            platforms,
+            score: scoredProfile.score,
+            level: scoredProfile.level,
+            explanation: scoredProfile.explanation,
+            updatedAt: new Date()
+        };
+        await student.save();
+
+        return successResponse(res, {
+            message: refreshErrors.length > 0 ? "Coding profile refreshed with some errors" : "Coding profile refreshed successfully",
+            data: { ...buildCodingProfileResponse(student), refreshErrors }
         });
     } catch (error) {
         return errorResponse(res, { message: error.message, status: 500 });
@@ -375,6 +446,7 @@ module.exports = {
     updateProfile,
     getCodingProfile,
     updateCodingProfile,
+    refreshCodingProfile,
     getDashboard,
     uploadResume,
     getResume,

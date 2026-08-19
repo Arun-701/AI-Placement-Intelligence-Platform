@@ -1,5 +1,6 @@
 const urlRegex = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[^\s]*)?$/;
-const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+// Student profiles use Indian mobile numbers: exactly 10 digits starting with 6-9.
+const phoneRegex = /^[6-9]\d{9}$/;
 
 const profileFields = [
   // Fields shown on the onboarding profile page
@@ -27,7 +28,7 @@ const validateProfileInput = (payload) => {
 
   if (payload.phone !== undefined) {
     if (typeof payload.phone !== "string" || !phoneRegex.test(payload.phone.trim())) {
-      errors.push("phone must be a valid phone number");
+      errors.push("phone must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9");
     } else {
       data.phone = payload.phone.trim();
     }

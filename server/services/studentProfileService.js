@@ -1,5 +1,6 @@
 const Student = require("../models/Student");
 const Roadmap = require("../models/Roadmap");
+const AssessmentResult = require("../models/AssessmentResult");
 const { getMissingProfileFields } = require("../validators/studentProfileValidator");
 
 // Only the visible/profile onboarding fields are required for completion
@@ -33,7 +34,7 @@ const calculateProfileCompletion = (student) => {
 
 const getStudentProfile = async (studentId) => {
   const student = await Student.findById(studentId)
-    .select("fullName email phone gender dateOfBirth department year section cgpa college skills interests linkedin github leetcode hackerrank codechef resume isVerified isActive assessmentsCompleted profileCompleted initialAssessmentCompleted")
+    .select("fullName email phone gender dateOfBirth department year section cgpa college skills interests linkedin github leetcode hackerrank codechef codeforces resume codingProfile isVerified isActive assessmentsCompleted profileCompleted initialAssessmentCompleted")
     .lean();
   if (!student) {
     throw new Error("Student not found");
@@ -58,6 +59,8 @@ const getStudentProfile = async (studentId) => {
       leetcode: student.leetcode || "",
       hackerrank: student.hackerrank || "",
       codechef: student.codechef || "",
+      codeforces: student.codeforces || "",
+      codingProfile: student.codingProfile || { score: 0 },
       resume: student.resume || "",
       emailVerified: student.isVerified,
       accountActive: student.isActive,
@@ -71,14 +74,23 @@ const getStudentProfile = async (studentId) => {
 
 const getStudentDashboard = async (studentId) => {
   const profile = await getStudentProfile(studentId);
-  const roadmap = await Roadmap.findOne({ student: studentId }).lean();
+  const [roadmap, assessmentsCompleted] = await Promise.all([
+    Roadmap.findOne({ student: studentId }).lean(),
+    AssessmentResult.countDocuments({ student: studentId, completed: true })
+  ]);
+  const totalProblemsSolved = profile.student.codingProfile?.totalProblemsSolved || 0;
 
   return {
    profileCompletion: profile.student.profileCompletion,
     resumeUploaded: Boolean(profile.student.resume),
     emailVerified: profile.student.emailVerified,
-    codingProfilesConnected: Boolean(profile.student.github || profile.student.leetcode || profile.student.codechef || profile.student.hackerrank),
-    assessmentsCompleted: profile.student.assessmentsCompleted || 0,
+    codingProfilesConnected: Boolean(profile.student.github || profile.student.leetcode || profile.student.codechef || profile.student.hackerrank || profile.student.codeforces),
+    assessmentsCompleted,
+    codingScore: totalProblemsSolved,
+    kpiCards: {
+      codingScore: totalProblemsSolved,
+      assessmentsCompleted
+    },
     roadmapAvailable: Boolean(roadmap)
   };
 };
