@@ -38,7 +38,7 @@ const verifyToken = async (req, res, next) => {
         // Determine model based on role
         let user;
         if (decoded.role === "faculty") {
-            user = await Faculty.findById(decoded.id).select("isActive passwordChangedAt role emailVerificationRequired isVerified");
+            user = await Faculty.findById(decoded.id).select("isActive passwordChangedAt role emailVerificationRequired isVerified approvalStatus");
         } else if (decoded.role === "admin") {
             user = await Admin.findById(decoded.id).select("isActive passwordChangedAt role emailVerificationRequired isVerified");
         } else {
@@ -64,6 +64,13 @@ const verifyToken = async (req, res, next) => {
             return res.status(403).json({
                 success: false,
                 message: "Please verify your email before logging in."
+            });
+        }
+
+        if (decoded.role === "faculty" && user.approvalStatus !== "APPROVED") {
+            return res.status(403).json({
+                success: false,
+                message: "Your account is awaiting Admin approval."
             });
         }
 

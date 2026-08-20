@@ -19,6 +19,7 @@ const {
   createNewFaculty,
   updateExistingFaculty,
   removeFaculty,
+  approveFaculty,
   assignStudents,
   unassignStudents,
   getDashboard,
@@ -50,6 +51,7 @@ router.get("/faculties/:id", verifyToken, authorizeRoles("admin"), getFaculty);
 router.post("/faculties", verifyToken, authorizeRoles("admin"), createNewFaculty);
 router.put("/faculties/:id", verifyToken, authorizeRoles("admin"), updateExistingFaculty);
 router.delete("/faculties/:id", verifyToken, authorizeRoles("admin"), removeFaculty);
+router.patch("/faculties/:id/approve", verifyToken, authorizeRoles("admin"), approveFaculty);
 
 // Assignment management
 router.post("/faculties/:facultyId/assign-students", verifyToken, authorizeRoles("admin"), assignStudents);

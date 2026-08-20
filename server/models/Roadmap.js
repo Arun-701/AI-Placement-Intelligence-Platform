@@ -57,6 +57,13 @@ const roadmapSchema = new mongoose.Schema(
                     },
                     source: { type: String, trim: true, default: "RuleEngine" },
                     relatedSkills: { type: [{ type: String, trim: true }], default: [] },
+                    learningResources: {
+                        type: [{
+                            title: { type: String, trim: true, required: true },
+                            url: { type: String, trim: true, required: true },
+                        }],
+                        default: [],
+                    },
                     week: { type: Number, default: 1 },
                 },
             ],

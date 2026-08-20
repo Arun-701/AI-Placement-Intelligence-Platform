@@ -115,58 +115,120 @@ const formatRoadmap = (roadmap) => {
     return formatted;
 };
 
+const RESOURCE_LIBRARY = {
+    html: [
+        { title: "GeeksforGeeks - HTML Tutorial", url: "https://www.geeksforgeeks.org/html/" },
+        { title: "W3Schools - HTML Tutorial", url: "https://www.w3schools.com/html/" },
+    ],
+    css: [
+        { title: "GeeksforGeeks - CSS Tutorial", url: "https://www.geeksforgeeks.org/css/" },
+        { title: "W3Schools - CSS Tutorial", url: "https://www.w3schools.com/css/" },
+    ],
+    javascript: [
+        { title: "GeeksforGeeks - JavaScript Tutorial", url: "https://www.geeksforgeeks.org/javascript/" },
+        { title: "W3Schools - JavaScript Tutorial", url: "https://www.w3schools.com/js/" },
+    ],
+    react: [
+        { title: "GeeksforGeeks - ReactJS Tutorial", url: "https://www.geeksforgeeks.org/reactjs-tutorials/" },
+        { title: "W3Schools - React Tutorial", url: "https://www.w3schools.com/react/" },
+    ],
+    python: [
+        { title: "GeeksforGeeks - Python Programming", url: "https://www.geeksforgeeks.org/python-programming-language/" },
+        { title: "W3Schools - Python Tutorial", url: "https://www.w3schools.com/python/" },
+    ],
+    sql: [
+        { title: "GeeksforGeeks - SQL Tutorial", url: "https://www.geeksforgeeks.org/sql/" },
+        { title: "W3Schools - SQL Tutorial", url: "https://www.w3schools.com/sql/" },
+    ],
+    java: [
+        { title: "GeeksforGeeks - Java Programming", url: "https://www.geeksforgeeks.org/java/" },
+        { title: "W3Schools - Java Tutorial", url: "https://www.w3schools.com/java/" },
+    ],
+    oop: [
+        { title: "GeeksforGeeks - OOP in Java", url: "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/" },
+        { title: "W3Schools - Java OOP", url: "https://www.w3schools.com/java/java_oop.asp" },
+    ],
+    statistics: [
+        { title: "GeeksforGeeks - Statistics", url: "https://www.geeksforgeeks.org/statistics/" },
+        { title: "W3Schools - Statistics", url: "https://www.w3schools.com/datascience/ds_statistics.asp" },
+    ],
+    excel: [
+        { title: "GeeksforGeeks - Excel Tutorial", url: "https://www.geeksforgeeks.org/excel-tutorial/" },
+        { title: "Microsoft Support - Excel Help", url: "https://support.microsoft.com/en-us/excel" },
+    ],
+    powerbi: [
+        { title: "Microsoft Learn - Power BI Training", url: "https://learn.microsoft.com/en-us/training/powerplatform/power-bi/" },
+        { title: "GeeksforGeeks - Power BI Tutorial", url: "https://www.geeksforgeeks.org/power-bi/" },
+    ],
+    spring: [
+        { title: "Spring - Getting Started Guides", url: "https://spring.io/guides" },
+        { title: "GeeksforGeeks - Spring Framework", url: "https://www.geeksforgeeks.org/spring/" },
+    ],
+    git: [
+        { title: "GeeksforGeeks - Git Tutorial", url: "https://www.geeksforgeeks.org/git/" },
+        { title: "W3Schools - Git Tutorial", url: "https://www.w3schools.com/git/" },
+    ],
+};
+
+const ROLE_TOPICS = {
+    data: [
+        ["SQL fundamentals", "Learn filtering, joins, aggregation, and data modeling for analytical queries.", "SQL", "sql"],
+        ["Python for data analysis", "Use Python to clean, transform, and explore structured datasets.", "Python", "python"],
+        ["Statistics for analytics", "Build practical fluency with descriptive statistics and interpretation.", "Statistics", "statistics"],
+        ["Excel data analysis", "Practice formulas, pivot tables, and repeatable spreadsheet analysis workflows.", "Excel", "excel"],
+        ["Power BI dashboards", "Create clear dashboards that communicate trends and actionable findings.", "Power BI", "powerbi"],
+        ["Data visualization", "Choose effective charts and explain insights for a business audience.", "Data Visualization", "statistics"],
+    ],
+    java: [
+        ["Java fundamentals", "Build a foundation in Java syntax, types, control flow, and methods.", "Java", "java"],
+        ["Object-oriented programming", "Apply encapsulation, inheritance, polymorphism, and abstraction in Java.", "OOP", "oop"],
+        ["Java collections", "Select and use lists, sets, maps, and queues effectively.", "Collections", "java"],
+        ["Exception handling", "Design predictable error handling and resource-safe Java code.", "Exceptions", "java"],
+        ["JDBC and persistence", "Connect Java applications to relational databases with reliable data access.", "JDBC", "java"],
+        ["Spring Boot fundamentals", "Build maintainable Java web services with Spring Boot.", "Spring Boot", "spring"],
+    ],
+    python: [
+        ["Python fundamentals", "Learn Python syntax, functions, modules, and idiomatic control flow.", "Python", "python"],
+        ["Object-oriented Python", "Structure reusable Python applications with classes and composition.", "OOP", "oop"],
+        ["Python testing and debugging", "Write tests and diagnose failures in maintainable Python projects.", "Testing", "python"],
+        ["APIs with Python", "Build and consume HTTP APIs using practical backend patterns.", "APIs", "python"],
+        ["Data handling with Python", "Read, transform, and validate structured data in Python workflows.", "Data Handling", "python"],
+    ],
+    frontend: [
+        ["HTML foundations", "Structure accessible, semantic web pages with modern HTML.", "HTML", "html"],
+        ["CSS layout and responsive design", "Create maintainable layouts that work across screen sizes.", "CSS", "css"],
+        ["JavaScript fundamentals", "Build interactive browser behavior with modern JavaScript.", "JavaScript", "javascript"],
+        ["React component development", "Compose reusable React components and manage UI state.", "React", "react"],
+        ["Frontend accessibility", "Improve keyboard navigation, semantics, and inclusive interaction patterns.", "Accessibility", "html"],
+    ],
+    general: [
+        ["Programming fundamentals", "Strengthen control flow, functions, data structures, and problem solving.", "Programming", "python"],
+        ["Object-oriented programming", "Design reusable software with clear responsibilities and abstractions.", "OOP", "oop"],
+        ["SQL and data persistence", "Work with relational data, queries, and application persistence patterns.", "SQL", "sql"],
+        ["Git collaboration", "Use version control branches, reviews, and meaningful project history.", "Git", "git"],
+        ["API development", "Design and integrate reliable services with clear request and response contracts.", "APIs", "javascript"],
+    ],
+};
+
 const buildRoadmapItems = (skillGaps, goal) => {
-    const items = [];
     const goalLower = goal.toLowerCase();
+    const roleKey = goalLower.includes("data") ? "data"
+        : goalLower.includes("java") ? "java"
+            : goalLower.includes("python") ? "python"
+                : goalLower.includes("frontend") || goalLower.includes("front-end") || goalLower.includes("web") ? "frontend"
+                    : "general";
 
-    skillGaps.forEach((gap) => {
-        const basePriority = gap.priority === "High" ? "High" : gap.priority === "Medium" ? "Medium" : "Low";
-        items.push({
-            title: `${gap.title}`,
-            description: `Focus on ${gap.domain.toLowerCase()} improvement with targeted practice and evidence-based revision.`,
-            category: gap.domain,
-            priority: basePriority,
-            estimatedTime: basePriority === "High" ? "5-7 days" : basePriority === "Medium" ? "3-5 days" : "2-3 days",
-            status: "Pending",
-            source: "RuleEngine",
-            relatedSkills: gap.evidence.slice(0, 3),
-        });
-    });
-
-    if (goalLower.includes("data")) {
-        items.push({
-            title: "Strengthen SQL and analytics fundamentals",
-            description: "Practice SQL joins, aggregations, and dashboard-style problem solving.",
-            category: "Domain",
-            priority: "High",
-            estimatedTime: "4-6 days",
-            status: "Pending",
-            source: "RuleEngine",
-            relatedSkills: ["SQL", "Analytics"],
-        });
-    } else if (goalLower.includes("devops") || goalLower.includes("cloud")) {
-        items.push({
-            title: "Practice deployment and infrastructure basics",
-            description: "Learn deployment workflows, Linux basics, and containerization fundamentals.",
-            category: "Domain",
-            priority: "High",
-            estimatedTime: "4-6 days",
-            status: "Pending",
-            source: "RuleEngine",
-            relatedSkills: ["Deployment", "DevOps"],
-        });
-    } else {
-        items.push({
-            title: "Build a full-stack project",
-            description: "Create a coherent project that demonstrates frontend, backend, and API integration skills.",
-            category: "Project",
-            priority: "Medium",
-            estimatedTime: "1 week",
-            status: "Pending",
-            source: "RuleEngine",
-            relatedSkills: ["Full Stack", "Projects"],
-        });
-    }
+    const items = ROLE_TOPICS[roleKey].map(([title, description, skill, resourceKey], index) => ({
+        title,
+        description,
+        category: "Learning",
+        priority: index < 2 ? "High" : "Medium",
+        estimatedTime: index < 2 ? "4-6 days" : "3-5 days",
+        status: "Pending",
+        source: "RoleEngine",
+        relatedSkills: [skill],
+        learningResources: RESOURCE_LIBRARY[resourceKey] || [],
+    }));
 
     return assignWeeklyMilestones(items).slice(0, 8);
 };
@@ -222,11 +284,11 @@ const buildRecommendations = (skillGaps, goal, resumeAnalysis, codingProfile) =>
 };
 
 const buildProgress = (roadmapItems, recommendations) => {
-    const allItems = [...roadmapItems, ...recommendations.courses, ...recommendations.practiceTopics, ...recommendations.learningResources, ...recommendations.miniProjects];
-    const completedItems = allItems.filter((item) => item.status === "Completed").length;
-    const inProgressItems = allItems.filter((item) => item.status === "In Progress").length;
-    const pendingItems = allItems.filter((item) => item.status === "Pending").length;
-    const completionPercentage = allItems.length === 0 ? 0 : Math.round((completedItems / allItems.length) * 100);
+    const items = Array.isArray(roadmapItems) ? roadmapItems : [];
+    const completedItems = items.filter((item) => item.status === "Completed").length;
+    const inProgressItems = items.filter((item) => item.status === "In Progress").length;
+    const pendingItems = items.filter((item) => item.status === "Pending").length;
+    const completionPercentage = items.length === 0 ? 0 : Math.min(100, Math.round((completedItems / items.length) * 100));
 
     return {
         completedItems,

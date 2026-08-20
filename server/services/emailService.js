@@ -46,4 +46,20 @@ const sendVerificationOtpEmail = async ({ email, name, otp }) => {
   });
 };
 
-module.exports = { sendVerificationOtpEmail, verifyEmailTransport };
+const sendFacultyApprovalEmail = async ({ email, name }) => {
+  const from = process.env.EMAIL_FROM || process.env.EMAIL_USER;
+  if (!from) throw new Error("Email service is not configured");
+  const loginUrl = process.env.CLIENT_URL
+    ? `${process.env.CLIENT_URL.replace(/\/$/, "")}/login?role=faculty`
+    : null;
+
+  await getTransporter().sendMail({
+    from,
+    to: email,
+    subject: "Your faculty registration has been approved",
+    text: `Hello ${name || ""},\n\nYour faculty registration has been approved. You can now log in to the AI Placement Intelligence Platform.${loginUrl ? `\n\nLogin: ${loginUrl}` : ""}\n`,
+    html: `<p>Hello${name ? ` ${name}` : ""},</p><p>Your faculty registration has been approved.</p><p>You can now log in to the AI Placement Intelligence Platform.</p>${loginUrl ? `<p><a href="${loginUrl}">Log in as faculty</a></p>` : ""}`,
+  });
+};
+
+module.exports = { sendVerificationOtpEmail, sendFacultyApprovalEmail, verifyEmailTransport };

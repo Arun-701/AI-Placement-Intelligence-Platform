@@ -5,7 +5,7 @@ const { successResponse, errorResponse } = require("../utils/response");
 const Admin = require("../models/Admin");
 const Student = require("../models/Student");
 const Faculty = require("../models/Faculty");
-const { sendVerificationOtpEmail } = require("../services/emailService");
+const { sendVerificationOtpEmail, sendFacultyApprovalEmail } = require("../services/emailService");
 const {
   validateAdminRegistration,
   validateAdminLogin,
@@ -324,6 +324,31 @@ const removeFaculty = async (req, res) => {
   }
 };
 
+const approveFaculty = async (req, res) => {
+  try {
+    const faculty = await Faculty.findById(req.params.id);
+    if (!faculty) return errorResponse(res, { message: "Faculty not found", status: 404 });
+    if (faculty.emailVerificationRequired === true && faculty.isVerified !== true) {
+      return errorResponse(res, { message: "Faculty must verify their email before approval", status: 400 });
+    }
+    if (faculty.approvalStatus === "APPROVED") {
+      return successResponse(res, { message: "Faculty is already approved" });
+    }
+
+    try {
+      await sendFacultyApprovalEmail({ email: faculty.email, name: faculty.name });
+    } catch (emailError) {
+      console.error("Faculty approval email delivery failed", emailError);
+      return errorResponse(res, { message: "Approval email could not be sent. The faculty remains pending approval.", status: 503 });
+    }
+    faculty.approvalStatus = "APPROVED";
+    await faculty.save();
+    return successResponse(res, { message: "Faculty approved and approval email sent", data: { faculty: { _id: faculty._id, approvalStatus: faculty.approvalStatus } } });
+  } catch (error) {
+    return errorResponse(res, { message: error.message, status: 500 });
+  }
+};
+
 const assignStudents = async (req, res) => {
   try {
     const { errors, data } = validateAssignmentPayload(req.body);
@@ -411,6 +436,7 @@ module.exports = {
   createNewFaculty,
   updateExistingFaculty,
   removeFaculty,
+  approveFaculty,
   assignStudents,
   unassignStudents,
   getDashboard,

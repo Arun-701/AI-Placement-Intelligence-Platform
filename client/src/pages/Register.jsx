@@ -45,7 +45,7 @@ export default function Register() {
       const r = await api.post(endpoint, payload)
       if (!r.ok) throw new Error(r.data?.message || 'Registration failed')
       setInfo("Account created successfully! We've sent a 6-digit verification code to your email. Enter the code below to verify your account.")
-      navigate(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}`)
+      navigate(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}&role=${role}`)
     } catch (err) {
       setError(err.message)
     } finally {

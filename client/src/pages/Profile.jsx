@@ -48,20 +48,18 @@ export default function Profile() {
     }
   }
 
-  if (user?.role !== 'student') {
+  if (user?.role === 'faculty') {
+    const initial = (user?.name || 'Faculty Member').trim().charAt(0).toUpperCase()
+    const isActive = user?.isActive !== false
     return (
-      <>
-        <h1>My Profile</h1>
-        <div className="card">
-          <p><strong>Name:</strong> {user?.name}</p>
-          <p><strong>Email:</strong> {user?.email}</p>
-          <p><strong>Role:</strong> {user?.role}</p>
-          {user?.department && <p><strong>Department:</strong> {user.department}</p>}
-          {user?.designation && <p><strong>Designation:</strong> {user.designation}</p>}
-        </div>
-      </>
+      <div className="faculty-profile">
+        <div className="faculty-profile-hero"><div className="faculty-avatar">{initial}</div><div><div className="eyebrow">Faculty profile</div><h1>{user?.name || 'Faculty Member'}</h1><p>{user?.designation || 'Faculty'} {user?.department ? `· ${user.department}` : ''}</p></div><span className="badge green">Active account</span></div>
+        <div className="faculty-profile-grid"><section className="card"><h3>Account information</h3><div className="faculty-profile-row"><span>Email</span><strong>{user?.email || '—'}</strong></div><div className="faculty-profile-row"><span>Role</span><strong>Faculty</strong></div></section><section className="card"><h3>Professional details</h3><div className="faculty-profile-row"><span>Department</span><strong>{user?.department || 'Not provided'}</strong></div><div className="faculty-profile-row"><span>Designation</span><strong>{user?.designation || 'Not provided'}</strong></div></section></div>
+      </div>
     )
   }
+
+  if (user?.role !== 'student') return <><h1>My Profile</h1><div className="card"><p><strong>Name:</strong> {user?.name}</p><p><strong>Email:</strong> {user?.email}</p><p><strong>Role:</strong> {user?.role}</p></div></>
 
   return (
     <>

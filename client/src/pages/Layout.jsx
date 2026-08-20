@@ -15,6 +15,7 @@ export default function Layout() {
       ? [
           { to: '/faculty', label: 'Dashboard', end: true },
           { to: '/faculty/students', label: 'Students' },
+          { to: '/faculty/assessments', label: 'Assessments' },
           { to: '/faculty/results', label: 'Results' },
           { to: '/faculty/notifications', label: 'Notifications' },
           { to: '/faculty/profile', label: 'Profile' },

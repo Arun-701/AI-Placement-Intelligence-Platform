@@ -520,6 +520,7 @@ const registerFaculty = async (req, res) => {
             isActive: true,
             isVerified: false,
             emailVerificationRequired: true,
+            approvalStatus: "PENDING",
             passwordChangedAt: new Date()
         });
 
@@ -582,6 +583,10 @@ const loginFaculty = async (req, res) => {
 
         if (faculty.emailVerificationRequired === true && faculty.isVerified !== true) {
             return errorResponse(res, { message: "Please verify your email before logging in", status: 403 });
+        }
+
+        if (faculty.approvalStatus !== "APPROVED") {
+            return errorResponse(res, { message: "Your account is awaiting Admin approval. You can login after an administrator approves your registration.", status: 403 });
         }
 
         // Generate JWT token

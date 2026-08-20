@@ -1,0 +1,12 @@
+const router = require("express").Router();
+const verifyToken = require("../middleware/authMiddleware");
+const { authorizeRoles } = require("../middleware/roleMiddleware");
+const upload = require("../middleware/assessmentMaterialUpload");
+const controller = require("../controllers/facultyAssessmentController");
+const facultyOnly = [verifyToken, authorizeRoles("faculty")];
+router.get("/", facultyOnly, controller.getAssessments);
+router.get("/students", facultyOnly, controller.getStudents);
+router.post("/extract", facultyOnly, upload, controller.extractMaterial);
+router.post("/generate", facultyOnly, controller.generateQuestions);
+router.post("/", facultyOnly, controller.createAssessment);
+module.exports = router;

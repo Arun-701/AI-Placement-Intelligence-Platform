@@ -7,6 +7,7 @@ const COOLDOWN_SECONDS = 60
 export default function VerifyEmail() {
   const { search } = useLocation()
   const initialEmail = new URLSearchParams(search).get('email') || ''
+  const role = new URLSearchParams(search).get('role') || 'student'
   const [email, setEmail] = useState(initialEmail)
   const [otp, setOtp] = useState('')
   const [message, setMessage] = useState('')
@@ -31,7 +32,9 @@ export default function VerifyEmail() {
       const result = await api.post('/auth/verify-email-otp', { email, otp })
       if (!result.ok) throw new Error(result.data?.message || 'Unable to verify your email.')
       setVerified(true)
-      setMessage('Email verified successfully. You can now login.')
+      setMessage(role === 'faculty'
+        ? 'Email verified successfully. Your faculty registration is pending admin approval. We’ll email you once it is approved.'
+        : 'Email verified successfully. You can now login.')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -60,7 +63,7 @@ export default function VerifyEmail() {
     return <div className="auth-page"><div className="auth-card">
       <h1>Email Verified Successfully!</h1>
       <div className="alert success">{message}</div>
-      <Link className="btn" style={{ display: 'block', textAlign: 'center' }} to="/login">Go to Login</Link>
+      <Link className="btn" style={{ display: 'block', textAlign: 'center' }} to={`/login?role=${role}`}>{role === 'faculty' ? 'Go to Faculty Login' : 'Go to Login'}</Link>
     </div></div>
   }
 

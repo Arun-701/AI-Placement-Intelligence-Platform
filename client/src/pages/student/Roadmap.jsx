@@ -9,6 +9,18 @@ function Milestone({ m, onToggle }) {
         <div>
           <h3>{m.title}</h3>
           {m.description && <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>{m.description}</p>}
+          {Array.isArray(m.learningResources) && m.learningResources.length > 0 && (
+            <div style={{ marginTop: 10 }}>
+              <strong style={{ fontSize: 13 }}>Learning Resources</strong>
+              <ul style={{ fontSize: 13, paddingLeft: 18, marginTop: 4 }}>
+                {m.learningResources.map((resource) => (
+                  <li key={resource.url}>
+                    <a href={resource.url} target="_blank" rel="noopener noreferrer">{resource.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <span className={`badge ${badge}`} style={{ marginTop: 8 }}>{m.status}</span>
         </div>
         <div className="row">
@@ -26,10 +38,14 @@ export default function Roadmap() {
   const [progress, setProgress] = useState(null)
   const [targetRole, setTargetRole] = useState('')
   const [error, setError] = useState('')
+  const [generating, setGenerating] = useState(false)
 
   const load = () => {
     api.get('/roadmap/me').then((r) => {
-      if (r.ok) setRoadmap(r.data.data)
+      if (r.ok) {
+        setRoadmap(r.data.data)
+        setTargetRole(r.data.data?.careerGoal || '')
+      }
       else setError(r.data?.message || 'No roadmap yet')
     })
     api.get('/roadmap/progress').then((r) => {
@@ -41,12 +57,24 @@ export default function Roadmap() {
 
   const generate = async () => {
     setError('')
-    const r = await api.post('/roadmap/generate', { targetRole })
+    if (!targetRole.trim()) {
+      setError('Enter a career role to generate a roadmap')
+      return
+    }
+    setGenerating(true)
+    const r = await api.post('/roadmap/generate', { targetRole: targetRole.trim() })
+    setGenerating(false)
     if (r.ok) {
       setRoadmap(r.data.data)
-    } else {
-      setError(r.data?.message || 'Failed to generate roadmap')
-    }
+      setProgress(r.data.data?.progress || null)
+    } else setError(r.data?.message || 'Failed to generate roadmap')
+  }
+
+  const changeSearch = () => {
+    setRoadmap(null)
+    setProgress(null)
+    setTargetRole('')
+    setError('')
   }
 
   const toggleStatus = async (milestoneId, status) => {
@@ -55,17 +83,17 @@ export default function Roadmap() {
     else { setError(r.data?.message || 'Update failed (this milestone may have a different ID format)'); load() }
   }
 
-  if (error && !roadmap) {
+  if (!roadmap) {
     return (
       <>
         <h1>Learning Roadmap</h1>
-        <div className="alert info">{error}</div>
+        {error && <div className="alert info">{error}</div>}
         <div className="card">
           <h3>Generate Your Personalized Roadmap</h3>
           <p style={{ fontSize: 14, color: 'var(--muted)', margin: '8px 0' }}>Tell us your target career role and we will build a step-by-step learning plan.</p>
           <div className="row">
             <input style={{ flex: 1, padding: 10 }} value={targetRole} onChange={(e) => setTargetRole(e.target.value)} placeholder="e.g. Full Stack Developer, Data Scientist, Backend Engineer" />
-            <button className="btn" onClick={generate}>Generate Roadmap</button>
+            <button className="btn" onClick={generate} disabled={generating}>{generating ? 'Generating...' : 'Generate Roadmap'}</button>
           </div>
         </div>
       </>
@@ -81,7 +109,7 @@ export default function Roadmap() {
           <h1>Learning Roadmap</h1>
           <div className="subtitle">{roadmap?.careerGoal || roadmap?.targetRole || 'Personalized roadmap'}</div>
         </div>
-        {roadmap && <button className="btn secondary" onClick={() => { setRoadmap(null); setError('') }}>Generate New</button>}
+        {roadmap && <button className="btn secondary" onClick={changeSearch}>Change Search</button>}
       </div>
 
       {progress && (

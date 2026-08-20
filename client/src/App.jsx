@@ -18,6 +18,7 @@ import AIChat from './pages/student/AIChat'
 import FacultyDashboard from './pages/faculty/Dashboard'
 import FacultyStudents from './pages/faculty/Students'
 import FacultyResults from './pages/faculty/Results'
+import FacultyAssessments from './pages/faculty/Assessments'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminStudents from './pages/admin/Students'
 import AdminFaculties from './pages/admin/Faculties'
@@ -102,6 +103,7 @@ function App() {
 
           <Route path="/faculty" element={<Protected role="faculty"><Layout /></Protected>}>
             <Route index element={<FacultyDashboard />} />
+            <Route path="assessments" element={<FacultyAssessments />} />
             <Route path="students" element={<FacultyStudents />} />
             <Route path="results" element={<FacultyResults />} />
             <Route path="notifications" element={<Notifications />} />

@@ -59,6 +59,19 @@ export default function AdminFaculties() {
     else setError(r.data?.message || 'Delete failed')
   }
 
+  const approve = async (id) => {
+    setError('')
+    setInfo('')
+    const r = await api.patch(`/admin/faculties/${id}/approve`)
+    if (r.ok) {
+      setInfo('Faculty approved and approval email sent')
+      load()
+    } else {
+      setError(r.data?.message || 'Approval failed')
+      load()
+    }
+  }
+
   return (
     <>
       <div className="page-title">
@@ -108,7 +121,7 @@ export default function AdminFaculties() {
 
       <div className="card table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Designation</th><th>Students</th><th></th></tr></thead>
+          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Designation</th><th>Students</th><th>Status</th><th></th></tr></thead>
           <tbody>
             {faculties.map((f) => (
               <tr key={f._id}>
@@ -117,7 +130,8 @@ export default function AdminFaculties() {
                 <td>{f.department || '—'}</td>
                 <td>{f.designation || '—'}</td>
                 <td>{f.assignedStudents?.length ?? 0}</td>
-                <td><button className="btn small danger" onClick={() => remove(f._id)}>Delete</button></td>
+                <td>{f.approvalStatus === 'PENDING' ? 'Pending approval' : 'Approved'}</td>
+                <td>{f.approvalStatus === 'PENDING' && f.isVerified ? <button className="btn small" onClick={() => approve(f._id)}>Approve</button> : null} <button className="btn small danger" onClick={() => remove(f._id)}>Delete</button></td>
               </tr>
             ))}
           </tbody>

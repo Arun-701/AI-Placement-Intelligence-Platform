@@ -26,6 +26,7 @@ export default function FacultyDashboard() {
   const d = data || {}
   const dkpi = d.kpiCards || {}
   const stats = results || {}
+  const dashboardStats = d.statistics || {}
 
   return (
     <>
@@ -37,8 +38,8 @@ export default function FacultyDashboard() {
       </div>
 
       <div className="grid cols-4 mb">
-        <Kpi value={dkpi.assignedStudents ?? data.totalStudents ?? data.assignedStudentsCount ?? '–'} label="Assigned Students" />
-        <Kpi value={dkpi.assignedAssessments ?? data.totalAssessments ?? data.assignedAssessmentsCount ?? '–'} label="Assessments" />
+        <Kpi value={dkpi.assignedStudents ?? dashboardStats.totalAssignedStudents ?? d.totalStudents ?? d.assignedStudentsCount ?? '–'} label="Assigned Students" />
+        <Kpi value={dkpi.assignedAssessments ?? dashboardStats.totalAssessmentsCreated ?? d.totalAssessments ?? d.assignedAssessmentsCount ?? '–'} label="Assessments" />
         <Kpi value={stats.totalResults ?? stats.resultsCount ?? '–'} label="Results Submitted" />
         <Kpi value={stats.averagePercentage ? `${stats.averagePercentage}%` : '–'} label="Average Score" />
       </div>
