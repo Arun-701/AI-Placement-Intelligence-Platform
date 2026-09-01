@@ -13,7 +13,6 @@ import AssessmentResult from './pages/student/AssessmentResult'
 import ResumeAnalysis from './pages/student/ResumeAnalysis'
 import CodingProfile from './pages/student/CodingProfile'
 import Roadmap from './pages/student/Roadmap'
-import CareerRecommendation from './pages/student/CareerRecommendation'
 import AIChat from './pages/student/AIChat'
 import FacultyDashboard from './pages/faculty/Dashboard'
 import FacultyStudents from './pages/faculty/Students'
@@ -23,6 +22,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 import AdminStudents from './pages/admin/Students'
 import AdminFaculties from './pages/admin/Faculties'
 import AdminReports from './pages/admin/Reports'
+import AdminQuestionUpload from './pages/admin/QuestionUpload'
 import Notifications from './pages/Notifications'
 import Profile from './pages/Profile'
 
@@ -95,7 +95,6 @@ function App() {
             <Route path="resume" element={<ResumeAnalysis />} />
             <Route path="coding" element={<CodingProfile />} />
             <Route path="roadmap" element={<Roadmap />} />
-            <Route path="career" element={<CareerRecommendation />} />
             <Route path="ai-chat" element={<AIChat />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
@@ -115,6 +114,7 @@ function App() {
             <Route path="students" element={<AdminStudents />} />
             <Route path="faculties" element={<AdminFaculties />} />
             <Route path="reports" element={<AdminReports />} />
+            <Route path="questions/upload" element={<AdminQuestionUpload />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
           </Route>

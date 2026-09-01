@@ -26,6 +26,7 @@ export default function Layout() {
             { to: '/admin/students', label: 'Students' },
             { to: '/admin/faculties', label: 'Faculties' },
             { to: '/admin/reports', label: 'Reports' },
+            { to: '/admin/questions/upload', label: 'Question Upload' },
             { to: '/admin/notifications', label: 'Notifications' },
             { to: '/admin/profile', label: 'Profile' },
           ]
@@ -35,7 +36,6 @@ export default function Layout() {
             { to: '/student/resume', label: 'Resume AI' },
             { to: '/student/coding', label: 'Coding Profile' },
             { to: '/student/roadmap', label: 'Learning Roadmap' },
-            { to: '/student/career', label: 'Career Guidance' },
             { to: '/student/ai-chat', label: 'AI Mentor' },
             { to: '/student/notifications', label: 'Notifications' },
             { to: '/student/profile', label: 'Profile' },

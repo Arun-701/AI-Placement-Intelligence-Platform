@@ -3,6 +3,8 @@ const router = express.Router();
 const verifyToken = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
 const { authLimiter } = require("../middleware/rateLimit");
+const questionUploadMiddleware = require("../middleware/questionUploadMiddleware");
+const { uploadQuestions, importQuestions } = require("../controllers/adminQuestionController");
 const {
   registerAdmin,
   loginAdmin,
@@ -37,6 +39,8 @@ router.post("/reset-password", authLimiter, resetPasswordAdmin);
 
 // Admin profile
 router.get("/profile", verifyToken, authorizeRoles("admin"), getProfile);
+router.post("/questions/upload", verifyToken, authorizeRoles("admin"), questionUploadMiddleware, uploadQuestions);
+router.post("/questions/import", verifyToken, authorizeRoles("admin"), importQuestions);
 
 // Student management
 router.get("/students", verifyToken, authorizeRoles("admin"), getStudents);
