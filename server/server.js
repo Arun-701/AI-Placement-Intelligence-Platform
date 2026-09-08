@@ -25,6 +25,7 @@ const careerRecommendationRoutes = require("./routes/careerRecommendationRoutes"
 const roadmapRoutes = require("./routes/roadmapRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const adminAssessmentRoutes = require("./routes/adminAssessmentRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const { authLimiter, aiLimiter, adminLimiter, generalLimiter } = require("./middleware/rateLimit");
 const { requestLogger, logger } = require("./middleware/logger");
@@ -59,6 +60,7 @@ console.log("[INIT] Registered resumeJDRoutes (includes POST /analyze-resume-jd)
 app.use("/api/ai", aiLimiter, careerRecommendationRoutes);
 console.log("[INIT] Registered careerRecommendationRoutes");
 app.use("/api/admin", adminLimiter, adminRoutes);
+app.use("/api/admin/assessments", adminAssessmentRoutes);
 app.use(generalLimiter);
 app.use("/api/student", studentRoutes);
 app.use("/api/assessment", studentAssessmentRoutes);

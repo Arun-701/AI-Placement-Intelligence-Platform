@@ -16,7 +16,7 @@ export default function Layout() {
           { to: '/faculty', label: 'Dashboard', end: true },
           { to: '/faculty/students', label: 'Students' },
           { to: '/faculty/assessments', label: 'Assessments' },
-          { to: '/faculty/results', label: 'Results' },
+          { to: '/faculty/results', label: 'Leaderboard' },
           { to: '/faculty/notifications', label: 'Notifications' },
           { to: '/faculty/profile', label: 'Profile' },
         ]
@@ -26,7 +26,7 @@ export default function Layout() {
             { to: '/admin/students', label: 'Students' },
             { to: '/admin/faculties', label: 'Faculties' },
             { to: '/admin/reports', label: 'Reports' },
-            { to: '/admin/questions/upload', label: 'Question Upload' },
+            { to: '/admin/assessments', label: 'Assessments' },
             { to: '/admin/notifications', label: 'Notifications' },
             { to: '/admin/profile', label: 'Profile' },
           ]

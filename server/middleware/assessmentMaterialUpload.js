@@ -12,12 +12,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: (req, file, cb) => {
   const ext = path.extname(file.originalname).toLowerCase();
-  const allowed = [".pdf", ".doc", ".docx"];
-  cb(allowed.includes(ext) ? null : new Error("Only PDF, DOC and DOCX files are allowed."), allowed.includes(ext));
+  const allowed = [".pdf", ".docx"];
+  cb(allowed.includes(ext) ? null : new Error("Only PDF and DOCX files are allowed."), allowed.includes(ext));
 }});
 
 module.exports = (req, res, next) => upload.single("material")(req, res, (error) => {
   if (error) return res.status(400).json({ success: false, message: error.code === "LIMIT_FILE_SIZE" ? "Maximum file size is 5MB." : error.message });
-  if (!req.file) return res.status(400).json({ success: false, message: "Learning material is required." });
+  if (!req.file) return res.status(400).json({ success: false, message: "A PDF or DOCX question paper is required." });
   next();
 });

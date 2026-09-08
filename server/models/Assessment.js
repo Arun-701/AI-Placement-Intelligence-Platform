@@ -45,6 +45,17 @@ const assessmentSchema = new mongoose.Schema(
       ref: "Faculty",
     },
 
+    createdByAdmin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+    },
+
+    department: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     totalMarks: {
       type: Number,
       min: 0,

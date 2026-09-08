@@ -7,7 +7,7 @@ export default function AdminFaculties() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', password: '', department: '', designation: '' })
   const [assignTo, setAssignTo] = useState('')
-  const [assignIds, setAssignIds] = useState([])
+  const [assignDepartment, setAssignDepartment] = useState('')
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
 
@@ -37,15 +37,18 @@ export default function AdminFaculties() {
     }
   }
 
+  const departments = [...new Set(students.map((student) => student.department).filter(Boolean))].sort()
+  const departmentStudents = students.filter((student) => student.department === assignDepartment)
   const assign = async () => {
-    if (!assignTo) return
+    if (!assignTo || !assignDepartment) return setError('Select a faculty and department.')
+    if (!window.confirm(`Assign all ${departmentStudents.length} ${assignDepartment} students to this faculty?`)) return
     setError('')
     setInfo('')
-    const r = await api.post(`/admin/faculties/${assignTo}/assign-students`, { studentIds: assignIds })
+    const r = await api.post(`/admin/faculties/${assignTo}/assign-students`, { studentIds: departmentStudents.map((student) => student._id) })
     if (r.ok) {
       setInfo('Students assigned successfully')
       setAssignTo('')
-      setAssignIds([])
+      setAssignDepartment('')
       load()
     } else {
       setError(r.data?.message || 'Assignment failed')
@@ -100,23 +103,16 @@ export default function AdminFaculties() {
       )}
 
       <div className="card mb">
-        <h3>Assign Students to Faculty</h3>
+        <h3>Assign Department to Faculty</h3>
         <div className="row">
           <select style={{ flex: 1 }} value={assignTo} onChange={(e) => setAssignTo(e.target.value)}>
             <option value="">Select faculty...</option>
             {faculties.map((f) => <option key={f._id} value={f._id}>{f.name} ({f.email})</option>)}
           </select>
-          <select
-            style={{ flex: 2 }}
-            multiple
-            value={assignIds}
-            onChange={(e) => setAssignIds(Array.from(e.target.selectedOptions, (o) => o.value))}
-          >
-            {students.map((s) => <option key={s._id} value={s._id}>{s.fullName || s.name} ({s.email})</option>)}
-          </select>
+          <select style={{ flex: 2 }} value={assignDepartment} onChange={(e) => setAssignDepartment(e.target.value)}><option value="">Select department...</option>{departments.map((department) => <option key={department} value={department}>{department}</option>)}</select>
         </div>
-        <p style={{ fontSize: 12, color: 'var(--muted)', margin: '6px 0' }}>Hold Ctrl (Cmd on Mac) to select multiple students.</p>
-        <button className="btn mt" onClick={assign}>Assign Selected Students</button>
+        <p style={{ fontSize: 12, color: 'var(--muted)', margin: '6px 0' }}>Students in department: {departmentStudents.length}</p>
+        <button className="btn mt" onClick={assign}>Assign Department</button>
       </div>
 
       <div className="card table-wrap">

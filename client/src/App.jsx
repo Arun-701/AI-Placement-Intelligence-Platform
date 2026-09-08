@@ -18,11 +18,19 @@ import FacultyDashboard from './pages/faculty/Dashboard'
 import FacultyStudents from './pages/faculty/Students'
 import FacultyResults from './pages/faculty/Results'
 import FacultyAssessments from './pages/faculty/Assessments'
+import FacultyAssessmentResults from './pages/faculty/AssessmentResults'
+import FacultyAssessmentEdit from './pages/faculty/AssessmentEdit'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminStudents from './pages/admin/Students'
 import AdminFaculties from './pages/admin/Faculties'
 import AdminReports from './pages/admin/Reports'
+import AdminAssessments from './pages/admin/Assessments'
+import AdminAssessmentDetails from './pages/admin/AssessmentDetails'
+import AdminAssessmentAssign from './pages/admin/AssessmentAssign'
+import AdminAssessmentResults from './pages/admin/AssessmentResults'
+import AdminAssessmentEdit from './pages/admin/AssessmentEdit'
 import AdminQuestionUpload from './pages/admin/QuestionUpload'
+import AdminQuestionBank from './pages/admin/QuestionBank'
 import Notifications from './pages/Notifications'
 import Profile from './pages/Profile'
 
@@ -103,6 +111,9 @@ function App() {
           <Route path="/faculty" element={<Protected role="faculty"><Layout /></Protected>}>
             <Route index element={<FacultyDashboard />} />
             <Route path="assessments" element={<FacultyAssessments />} />
+            <Route path="assessments/upload" element={<FacultyAssessments uploadOnly />} />
+            <Route path="assessments/results/:assessmentId" element={<FacultyAssessmentResults />} />
+            <Route path="assessments/edit/:assessmentId" element={<FacultyAssessmentEdit />} />
             <Route path="students" element={<FacultyStudents />} />
             <Route path="results" element={<FacultyResults />} />
             <Route path="notifications" element={<Notifications />} />
@@ -114,7 +125,15 @@ function App() {
             <Route path="students" element={<AdminStudents />} />
             <Route path="faculties" element={<AdminFaculties />} />
             <Route path="reports" element={<AdminReports />} />
-            <Route path="questions/upload" element={<AdminQuestionUpload />} />
+            <Route path="assessments" element={<AdminAssessments />} />
+            <Route path="assessments/upload" element={<AdminQuestionUpload />} />
+            <Route path="question-bank" element={<AdminQuestionBank />} />
+            <Route path="assessments/:assessmentId/assign" element={<AdminAssessmentAssign />} />
+            <Route path="assessments/assign/:assessmentId" element={<AdminAssessmentAssign />} />
+            <Route path="assessments/results/:assessmentId" element={<AdminAssessmentResults />} />
+            <Route path="assessments/edit/:assessmentId" element={<AdminAssessmentEdit />} />
+            <Route path="assessments/:assessmentId" element={<AdminAssessmentDetails />} />
+            <Route path="questions/upload" element={<Navigate to="/admin/assessments/upload" replace />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
           </Route>

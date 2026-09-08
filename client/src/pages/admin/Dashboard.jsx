@@ -16,6 +16,9 @@ export default function AdminDashboard() {
 
   const d = dashboard || {}
   const s = stats || {}
+  const studentOverview = s.studentOverview || d.studentOverview || {}
+  const facultyOverview = s.facultyOverview || d.facultyOverview || {}
+  const assessmentOverview = s.assessmentOverview || d.assessmentOverview || {}
 
   return (
     <>
@@ -26,10 +29,10 @@ export default function AdminDashboard() {
         </div>
       </div>
       <div className="grid cols-4 mb">
-        <Kpi value={s.totalStudents ?? d.totalStudents ?? '–'} label="Total Students" />
-        <Kpi value={s.totalFaculties ?? d.totalFaculties ?? '–'} label="Faculties" />
-        <Kpi value={s.totalAssessments ?? d.totalAssessments ?? '–'} label="Assessments" />
-        <Kpi value={s.totalResults ?? d.totalResults ?? '–'} label="Results" />
+        <Kpi value={studentOverview.totalStudents ?? '–'} label="Total Students" />
+        <Kpi value={facultyOverview.totalFaculties ?? '–'} label="Faculties" />
+        <Kpi value={assessmentOverview.totalAssessments ?? '–'} label="Assessments" />
+        <Kpi value={assessmentOverview.completedAssessments ?? '–'} label="Results" />
       </div>
       {d.recentStudents?.length > 0 && (
         <div className="card">

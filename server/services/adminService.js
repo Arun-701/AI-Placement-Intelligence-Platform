@@ -380,15 +380,26 @@ const buildAdminStatistics = async () => {
 
 const buildAdminStudentReport = async () => {
   const students = await Student.find()
-    .select("name email department year placementReadinessScore profileCompleted isActive createdAt")
+    .select("name email department year placementReadinessScore codingProfile assessmentsCompleted profileCompleted isActive createdAt")
     .lean();
+  const resultStats = await AssessmentResult.aggregate([
+    { $match: { completed: true } },
+    { $group: { _id: "$student", assessmentCount: { $sum: 1 }, averageAssessmentScore: { $avg: "$percentage" } } }
+  ]);
+  const statsByStudent = new Map(resultStats.map((item) => [item._id.toString(), item]));
 
   const sortedStudents = students
-    .map((student) => ({
-      ...student,
-      placementReadinessScore: student.placementReadinessScore || 0
-    }))
-    .sort((a, b) => b.placementReadinessScore - a.placementReadinessScore);
+    .map((student) => {
+      const stats = statsByStudent.get(student._id.toString());
+      return {
+        ...student,
+        problemsSolved: student.codingProfile?.totalProblemsSolved || 0,
+        assessmentCount: stats?.assessmentCount || student.assessmentsCompleted || 0,
+        averageAssessmentScore: round(stats?.averageAssessmentScore || 0),
+        placementReadinessScore: student.placementReadinessScore || 0
+      };
+    })
+    .sort((a, b) => (b.placementReadinessScore - a.placementReadinessScore) || (b.averageAssessmentScore - a.averageAssessmentScore) || (b.problemsSolved - a.problemsSolved));
 
   return {
     totalStudents: students.length,

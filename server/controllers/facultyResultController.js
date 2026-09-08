@@ -43,7 +43,7 @@ const getAllResults = async (req, res) => {
 
         // Get paginated results
         const results = await AssessmentResult.find(query)
-            .populate("student", "name email studentId department year")
+            .populate("student", "name email studentId department year placementReadinessScore")
             .populate("assessment", "_id title assessmentType totalMarks duration")
             .select("_id score percentage submittedAt completed")
             .sort({ [sortBy]: parseInt(order) })

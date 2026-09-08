@@ -53,6 +53,8 @@ export default function AssessmentList() {
                     <span className={`badge ${a.percentage >= 60 ? 'green' : 'red'}`}>Completed · {a.percentage}%</span>
                     {a.resultId && <Link className="btn small mt" to={`/student/assessments/result/${a.resultId}`}>View Result</Link>}
                   </div>
+                ) : a.endDate && new Date(a.endDate) < new Date() ? (
+                  <span className="badge red">Assessment deadline has expired.</span>
                 ) : (
                   <Link className="btn small" to={`/student/assessments/${a._id}/take`}>Start Now</Link>
                 )}

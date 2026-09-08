@@ -60,7 +60,7 @@ const validateAssessmentDeadline = (assessment) => {
     }
 
     if (assessment.endDate && new Date(assessment.endDate) < now) {
-        return { valid: false, message: "Assessment has expired" };
+        return { valid: false, message: "Assessment deadline has expired." };
     }
 
     return { valid: true };

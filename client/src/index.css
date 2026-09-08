@@ -215,6 +215,33 @@ tbody tr:hover { background: #f8fafc; }
 .alert.success { background: #dcfce7; color: #166534; }
 .alert.info { background: #dbeafe; color: #1e40af; }
 
+.assessment-step { margin-bottom: 18px; }
+.assessment-step h3 { margin-bottom: 6px; }
+.step-label { color: var(--primary); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+.muted { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+.upload-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.upload-row input { flex: 1; min-width: 220px; }
+.question-review { margin-top: 14px; padding: 16px; }
+.question-review.confirmed { border-color: #86efac; background: #f0fdf4; }
+.question-review h4 { font-size: 15px; margin-bottom: 14px; }
+.option-heading { display: block; color: #334155; font-size: 13px; font-weight: 600; margin-bottom: 7px; }
+.option-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.option-row > span { width: 20px; font-weight: 700; }
+.option-row input { flex: 1; min-width: 0; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; font: inherit; }
+.answer-select { max-width: 420px; margin-top: 14px; }
+.validation-message { color: #991b1b; font-size: 12px; margin: 4px 0; }
+.remove-question { margin-left: 8px; }
+.student-heading { margin-top: 20px; }
+.student-list { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; max-height: 220px; overflow-y: auto; }
+.student-choice { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.student-choice span { color: var(--muted); font-size: 12px; }
+@media (max-width: 600px) {
+  .page-title, .row.between { align-items: flex-start; gap: 12px; flex-direction: column; }
+  .option-row { align-items: stretch; flex-wrap: wrap; }
+  .option-row input { flex-basis: calc(100% - 30px); }
+  .option-row .btn { margin-left: 28px; }
+}
+
 /* ---------- Auth pages ---------- */
 .auth-page {
   min-height: 100vh;
@@ -248,6 +275,24 @@ tbody tr:hover { background: #f8fafc; }
   color: var(--muted);
 }
 .role-tabs button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.assessment-section-nav { margin-bottom: 20px; }
+.assessment-section-nav a {
+  flex: 1;
+  padding: 9px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+.assessment-section-nav a.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.results-filters { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.results-filters label { display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 12px; font-weight: 600; }
+.results-filters select { padding: 7px 9px; border: 1px solid var(--border); border-radius: 7px; background: #fff; font: inherit; color: var(--text); }
+@media (max-width: 700px) { .results-filters { width: 100%; align-items: stretch; flex-direction: column; } .results-filters label, .results-filters select, .results-filters button { width: 100%; } .results-filters label { justify-content: space-between; } }
 
 /* ---------- Misc ---------- */
 .row { display: flex; gap: 12px; align-items: center; }
