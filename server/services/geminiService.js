@@ -99,28 +99,22 @@ const generateAIResponse = async (prompt, systemPrompt = DEFAULT_SYSTEM_PROMPT) 
     const errors = [];
 
     const providerAttempts = [
-        { name: aiProviders.primary.name, run: () => callOpenAICompatible(aiProviders.primary, normalizedPrompt, systemPrompt) },
-        { name: aiProviders.fallback.name, run: () => callOpenAICompatible(aiProviders.fallback, normalizedPrompt, systemPrompt) }
-    ];
-
-    if (aiProviders.gemini.apiKey) {
-        providerAttempts.push({
-            name: aiProviders.gemini.name,
-            run: () => callGemini(aiProviders.gemini, normalizedPrompt, systemPrompt)
-        });
-    }
+        aiProviders.primary,
+        aiProviders.fallback,
+        aiProviders.nvidia
+    ].filter((provider) => provider?.apiKey).map((provider) => ({
+        name: provider.name,
+        run: () => provider.name === "Gemini"
+            ? callGemini(provider, normalizedPrompt, systemPrompt)
+            : callOpenAICompatible(provider, normalizedPrompt, systemPrompt),
+        model: provider.model
+    }));
 
     for (const attempt of providerAttempts) {
         try {
             const text = await attempt.run();
             if (text) {
-                console.log(`[AI] Response generated via ${attempt.name} (model: ${
-                    attempt.name === aiProviders.primary.name
-                        ? aiProviders.primary.model
-                        : attempt.name === aiProviders.fallback.name
-                            ? aiProviders.fallback.model
-                            : aiProviders.gemini.model
-                })`);
+                console.log(`[AI] Response generated via ${attempt.name} (model: ${attempt.model})`);
                 return text;
             }
         } catch (error) {

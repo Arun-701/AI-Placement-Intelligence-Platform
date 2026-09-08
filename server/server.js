@@ -1,6 +1,11 @@
-const express = require("express");
-const dotenv = require("dotenv");
 const path = require("path");
+const dotenv = require("dotenv");
+
+// Load environment variables before importing modules that read them at initialization.
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+dotenv.config();
+
+const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const compression = require("compression");
@@ -15,6 +20,7 @@ const assessmentRoutes = require("./routes/assessmentRoutes");
 const assessmentResultRoutes = require("./routes/assessmentResultRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const resumeAIRoutes = require("./routes/resumeAIRoutes");
+const resumeJDRoutes = require("./routes/resumeJDRoutes");
 const careerRecommendationRoutes = require("./routes/careerRecommendationRoutes");
 const roadmapRoutes = require("./routes/roadmapRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
@@ -24,10 +30,6 @@ const { authLimiter, aiLimiter, adminLimiter, generalLimiter } = require("./midd
 const { requestLogger, logger } = require("./middleware/logger");
 const connectDB = require("./config/database");
 const validateEnv = require("./config/validateEnv");
-
-// Load backend configuration independently of the directory used to launch Node.
-dotenv.config({ path: path.resolve(__dirname, ".env") });
-dotenv.config();
 
 validateEnv();
 connectDB();
@@ -41,10 +43,21 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 app.use(requestLogger);
 
+// Debug logging for all requests
+app.use((req, res, next) => {
+    console.log(`[DEBUG] ${new Date().toISOString()} ${req.method} ${req.path}`);
+    next();
+});
+
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/ai", aiLimiter, aiRoutes);
+console.log("[INIT] Registered aiRoutes");
 app.use("/api/ai", aiLimiter, resumeAIRoutes);
+console.log("[INIT] Registered resumeAIRoutes");
+app.use("/api/ai", aiLimiter, resumeJDRoutes);
+console.log("[INIT] Registered resumeJDRoutes (includes POST /analyze-resume-jd)");
 app.use("/api/ai", aiLimiter, careerRecommendationRoutes);
+console.log("[INIT] Registered careerRecommendationRoutes");
 app.use("/api/admin", adminLimiter, adminRoutes);
 app.use(generalLimiter);
 app.use("/api/student", studentRoutes);
