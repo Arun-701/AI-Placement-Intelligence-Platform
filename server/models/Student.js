@@ -324,6 +324,16 @@ const studentSchema = new mongoose.Schema(
       default: {}
     },
 
+    resumeJDAnalysis: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
+    },
+
+    lastResumeAnalysisDate: {
+      type: Date,
+      default: null
+    },
+
     profileCompleted: {
       type: Boolean,
       default: false,
