@@ -6,6 +6,7 @@ const Admin = require("../models/Admin");
 const Student = require("../models/Student");
 const Faculty = require("../models/Faculty");
 const { sendVerificationOtpEmail, sendFacultyApprovalEmail } = require("../services/emailService");
+const { createNotification } = require("../services/notificationService");
 const {
   validateAdminRegistration,
   validateAdminLogin,
@@ -335,15 +336,37 @@ const approveFaculty = async (req, res) => {
       return successResponse(res, { message: "Faculty is already approved" });
     }
 
+    faculty.approvalStatus = "APPROVED";
+    await faculty.save();
     try {
       await sendFacultyApprovalEmail({ email: faculty.email, name: faculty.name });
     } catch (emailError) {
       console.error("Faculty approval email delivery failed", emailError);
-      return errorResponse(res, { message: "Approval email could not be sent. The faculty remains pending approval.", status: 503 });
     }
-    faculty.approvalStatus = "APPROVED";
+    try {
+      await createNotification({ recipient: faculty._id, recipientType: "faculty", title: "Faculty Registration Approved", message: "Your faculty registration has been approved.", type: "System Notification", priority: "High", referenceId: faculty._id, referenceModel: "Faculty" });
+    } catch (notificationError) {
+      console.error("Faculty approval notification creation failed", notificationError);
+    }
+    return successResponse(res, { message: "Faculty approved", data: { faculty: { _id: faculty._id, approvalStatus: faculty.approvalStatus } } });
+  } catch (error) {
+    return errorResponse(res, { message: error.message, status: 500 });
+  }
+};
+
+const rejectFaculty = async (req, res) => {
+  try {
+    const faculty = await Faculty.findById(req.params.id);
+    if (!faculty) return errorResponse(res, { message: "Faculty not found", status: 404 });
+    if (faculty.approvalStatus === "APPROVED") return errorResponse(res, { message: "Approved faculty cannot be rejected", status: 400 });
+    faculty.approvalStatus = "REJECTED";
     await faculty.save();
-    return successResponse(res, { message: "Faculty approved and approval email sent", data: { faculty: { _id: faculty._id, approvalStatus: faculty.approvalStatus } } });
+    try {
+      await createNotification({ recipient: faculty._id, recipientType: "faculty", title: "Faculty Registration Rejected", message: "Your faculty registration request has been rejected.", type: "System Notification", priority: "High", referenceId: faculty._id, referenceModel: "Faculty" });
+    } catch (notificationError) {
+      console.error("Faculty rejection notification creation failed", notificationError);
+    }
+    return successResponse(res, { message: "Faculty rejected", data: { faculty: { _id: faculty._id, approvalStatus: faculty.approvalStatus } } });
   } catch (error) {
     return errorResponse(res, { message: error.message, status: 500 });
   }
@@ -437,6 +460,7 @@ module.exports = {
   updateExistingFaculty,
   removeFaculty,
   approveFaculty,
+  rejectFaculty,
   assignStudents,
   unassignStudents,
   getDashboard,

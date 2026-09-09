@@ -27,6 +27,17 @@ const summary = (assessment, results = []) => {
   };
 };
 
+const assertAdminOwnedAssessment = async (id) => {
+  const assessment = await Assessment.findOne({ _id: id, isActive: true }).select("assignedFaculty");
+  if (!assessment) return null;
+  if (assessment.assignedFaculty) {
+    const error = new Error("Admin cannot modify a Faculty-created assessment");
+    error.status = 403;
+    throw error;
+  }
+  return assessment;
+};
+
 const createAssessment = async (req, res) => {
   try {
     const { title, description = "", questionIds, duration = 60 } = req.body || {};
@@ -41,7 +52,7 @@ const createAssessment = async (req, res) => {
       assessmentType: "Practice", createdByAdmin: req.user.id,
     });
     return successResponse(res, { status: 201, message: "Assessment created successfully. Assign a department to publish it.", data: assessment });
-  } catch (error) { return errorResponse(res, { status: error.name === "ValidationError" ? 400 : 500, message: error.message }); }
+  } catch (error) { return errorResponse(res, { status: error.status || (error.name === "ValidationError" ? 400 : 500), message: error.message }); }
 };
 
 const getDepartments = async (req, res) => {
@@ -61,6 +72,7 @@ const getAssessments = async (req, res) => {
 const assignAssessment = async (req, res) => {
   try {
     const { id } = req.params;
+    await assertAdminOwnedAssessment(id);
     const { department, deadline } = req.body || {};
     if (!mongoose.isValidObjectId(id) || !department?.trim() || !deadline) return errorResponse(res, { status: 400, message: "Assessment, department, and deadline are required" });
     const endDate = new Date(deadline);
@@ -70,20 +82,26 @@ const assignAssessment = async (req, res) => {
     const assessment = await Assessment.findOneAndUpdate({ _id: id, isInitialAssessment: { $ne: true } }, { department: department.trim(), assignedStudents: students.map((student) => student._id), endDate, status: "Published", isActive: true }, { new: true, runValidators: true });
     if (!assessment) return errorResponse(res, { status: 404, message: "Assessment not found" });
     return successResponse(res, { message: "Assessment assigned successfully", data: assessment });
-  } catch (error) { return errorResponse(res, { status: error.name === "ValidationError" ? 400 : 500, message: error.message }); }
+  } catch (error) { return errorResponse(res, { status: error.status || (error.name === "ValidationError" ? 400 : 500), message: error.message }); }
 };
 
 const updateDeadline = async (req, res) => {
   try {
+    await assertAdminOwnedAssessment(req.params.id);
     const endDate = new Date(req.body?.deadline);
     if (Number.isNaN(endDate.getTime()) || endDate <= new Date()) return errorResponse(res, { status: 400, message: "Deadline must be a valid future date" });
     const assessment = await Assessment.findOneAndUpdate({ _id: req.params.id, isActive: true }, { endDate, status: "Published" }, { new: true, runValidators: true });
     if (!assessment) return errorResponse(res, { status: 404, message: "Assessment not found" });
     return successResponse(res, { message: "Assessment rescheduled successfully", data: assessment });
-  } catch (error) { return errorResponse(res, { status: 400, message: error.message }); }
+  } catch (error) { return errorResponse(res, { status: error.status || 400, message: error.message }); }
 };
 
 const enableAssessment = async (req, res) => {
+  try {
+    await assertAdminOwnedAssessment(req.params.id);
+  } catch (error) {
+    return errorResponse(res, { status: error.status || 500, message: error.message });
+  }
   const endDate = new Date(req.body?.deadline);
   if (Number.isNaN(endDate.getTime()) || endDate <= new Date()) return errorResponse(res, { status: 400, message: "A future deadline is required to enable this assessment" });
   const assessment = await Assessment.findOneAndUpdate({ _id: req.params.id, department: { $ne: "" }, assignedStudents: { $exists: true, $not: { $size: 0 } }, isActive: true }, { status: "Published", endDate }, { new: true });
@@ -106,6 +124,7 @@ const getAssessmentDetails = async (req, res) => {
 const updateTitle = async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) return errorResponse(res, { status: 400, message: "Invalid assessment ID" });
+    await assertAdminOwnedAssessment(req.params.id);
     const title = String(req.body?.title || "").trim();
     if (!title) return errorResponse(res, { status: 400, message: "Assessment title is required" });
     const assessment = await Assessment.findOne({ _id: req.params.id, isActive: true });
@@ -113,18 +132,19 @@ const updateTitle = async (req, res) => {
     assessment.title = title;
     await assessment.save();
     return successResponse(res, { message: "Assessment title updated successfully", data: assessment });
-  } catch (error) { return errorResponse(res, { status: error.name === "ValidationError" ? 400 : 500, message: error.message }); }
+  } catch (error) { return errorResponse(res, { status: error.status || (error.name === "ValidationError" ? 400 : 500), message: error.message }); }
 };
 
 const deleteAssessment = async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) return errorResponse(res, { status: 400, message: "Invalid assessment ID" });
+    await assertAdminOwnedAssessment(req.params.id);
     const assessment = await Assessment.findOne({ _id: req.params.id, isActive: true });
     if (!assessment) return errorResponse(res, { status: 404, message: "Assessment not found" });
     assessment.isActive = false;
     await assessment.save();
     return successResponse(res, { message: "Assessment deleted successfully", data: assessment });
-  } catch (error) { return errorResponse(res, { status: 500, message: error.message }); }
+  } catch (error) { return errorResponse(res, { status: error.status || 500, message: error.message }); }
 };
 
 module.exports = { createAssessment, getDepartments, getAssessments, assignAssessment, updateDeadline, enableAssessment, getAssessmentDetails, updateTitle, deleteAssessment };

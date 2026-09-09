@@ -40,13 +40,13 @@ export default function Notifications() {
       ) : (
         <div className="card">
           {items.map((n) => (
-            <div key={n._id} className="list-item row between" style={{ opacity: n.read ? 0.6 : 1 }}>
+            <div key={n._id} className="list-item row between" style={{ opacity: n.isRead ? 0.6 : 1 }}>
               <div>
                 <strong>{n.title}</strong>
                 <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>{n.message}</p>
                 <small style={{ color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleString()}</small>
               </div>
-              {!n.read && <button className="btn secondary small" onClick={() => markRead(n._id)}>Mark read</button>}
+              {!n.isRead && <button className="btn secondary small" onClick={() => markRead(n._id)}>Mark read</button>}
             </div>
           ))}
         </div>

@@ -18,6 +18,7 @@ export default function Layout() {
           { to: '/faculty/assessments', label: 'Assessments' },
           { to: '/faculty/results', label: 'Leaderboard' },
           { to: '/faculty/notifications', label: 'Notifications' },
+          { to: '/faculty/announcements', label: 'Announcements' },
           { to: '/faculty/profile', label: 'Profile' },
         ]
       : user?.role === 'admin'
@@ -25,9 +26,10 @@ export default function Layout() {
             { to: '/admin', label: 'Dashboard', end: true },
             { to: '/admin/students', label: 'Students' },
             { to: '/admin/faculties', label: 'Faculties' },
-            { to: '/admin/reports', label: 'Reports' },
+            { to: '/admin/reports', label: 'Leaderboard' },
             { to: '/admin/assessments', label: 'Assessments' },
             { to: '/admin/notifications', label: 'Notifications' },
+            { to: '/admin/announcements', label: 'Announcements' },
             { to: '/admin/profile', label: 'Profile' },
           ]
         : [
@@ -38,6 +40,7 @@ export default function Layout() {
             { to: '/student/roadmap', label: 'Learning Roadmap' },
             { to: '/student/ai-chat', label: 'AI Mentor' },
             { to: '/student/notifications', label: 'Notifications' },
+            { to: '/student/announcements', label: 'Announcements' },
             { to: '/student/profile', label: 'Profile' },
           ]
 

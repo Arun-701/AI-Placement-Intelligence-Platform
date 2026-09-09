@@ -108,7 +108,7 @@ const facultySchema = new mongoose.Schema(
     // Self-registered faculty must be approved explicitly.
     approvalStatus: {
       type: String,
-      enum: ["PENDING", "APPROVED"],
+      enum: ["PENDING", "APPROVED", "REJECTED"],
       default: "PENDING",
     },
 

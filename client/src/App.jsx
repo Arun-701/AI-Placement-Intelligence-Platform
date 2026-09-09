@@ -20,6 +20,7 @@ import FacultyResults from './pages/faculty/Results'
 import FacultyAssessments from './pages/faculty/Assessments'
 import FacultyAssessmentResults from './pages/faculty/AssessmentResults'
 import FacultyAssessmentEdit from './pages/faculty/AssessmentEdit'
+import FacultyAssessmentAssign from './pages/faculty/AssessmentAssign'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminStudents from './pages/admin/Students'
 import AdminFaculties from './pages/admin/Faculties'
@@ -32,6 +33,8 @@ import AdminAssessmentEdit from './pages/admin/AssessmentEdit'
 import AdminQuestionUpload from './pages/admin/QuestionUpload'
 import AdminQuestionBank from './pages/admin/QuestionBank'
 import Notifications from './pages/Notifications'
+import Announcements from './pages/Announcements'
+import AdminAnnouncements from './pages/admin/Announcements'
 import Profile from './pages/Profile'
 
 function Protected({ role, children }) {
@@ -105,6 +108,7 @@ function App() {
             <Route path="roadmap" element={<Roadmap />} />
             <Route path="ai-chat" element={<AIChat />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<Announcements />} />
             <Route path="profile" element={<Profile />} />
           </Route>
 
@@ -113,10 +117,12 @@ function App() {
             <Route path="assessments" element={<FacultyAssessments />} />
             <Route path="assessments/upload" element={<FacultyAssessments uploadOnly />} />
             <Route path="assessments/results/:assessmentId" element={<FacultyAssessmentResults />} />
+            <Route path="assessments/assign/:assessmentId" element={<FacultyAssessmentAssign />} />
             <Route path="assessments/edit/:assessmentId" element={<FacultyAssessmentEdit />} />
             <Route path="students" element={<FacultyStudents />} />
             <Route path="results" element={<FacultyResults />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<Announcements />} />
             <Route path="profile" element={<Profile />} />
           </Route>
 
@@ -135,6 +141,7 @@ function App() {
             <Route path="assessments/:assessmentId" element={<AdminAssessmentDetails />} />
             <Route path="questions/upload" element={<Navigate to="/admin/assessments/upload" replace />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<AdminAnnouncements />} />
             <Route path="profile" element={<Profile />} />
           </Route>
 

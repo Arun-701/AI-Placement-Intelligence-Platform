@@ -5,6 +5,7 @@ const mammoth = require("mammoth");
 const { PDFParse } = require("pdf-parse");
 const Assessment = require("../models/Assessment");
 const QuestionBank = require("../models/QuestionBank");
+const AssessmentResult = require("../models/AssessmentResult");
 const Faculty = require("../models/Faculty");
 const { parseQuestionPaper } = require("../services/questionPaperParser");
 const { extractPdfTextWithOcr } = require("../services/questionPaperOcrService");
@@ -83,7 +84,7 @@ const createAssessment = async (req, res) => {
     const faculty = await Faculty.findById(req.user.id).select("assignedStudents");
     const allowed = new Set((faculty?.assignedStudents || []).map(String));
     if (Array.isArray(studentIds) && studentIds.some((id) => !allowed.has(String(id)))) return errorResponse(res, { message: "Assessments can only be assigned to your assigned students", status: 403 });
-    const createdQuestions = await QuestionBank.insertMany(questions.map((q) => ({ title, subject: "Faculty Material", topic: q.topic || title, difficulty: q.difficulty || "Medium", marks: Math.max(1, Number(q.marks) || 1), question: q.question, options: q.options, correctAnswer: q.correctAnswer, explanation: q.explanation || "", questionType: "MCQ", createdBy: req.user.id })));
+    const createdQuestions = await QuestionBank.insertMany(questions.map((q) => ({ title, subject: q.subject || "Faculty Material", topic: q.topic || title, difficulty: q.difficulty || "Medium", marks: Math.max(1, Number(q.marks) || 1), question: q.question, options: q.options, correctAnswer: q.correctAnswer, explanation: q.explanation || "", questionType: "MCQ", createdBy: req.user.id })));
     const totalMarks = createdQuestions.reduce((sum, q) => sum + q.marks, 0);
     const assessment = await Assessment.create({ title, description, duration: Math.max(1, Number(duration) || 60), passingMarks: Math.min(totalMarks, Math.max(0, Number(passingMarks) || 0)), questions: createdQuestions.map((q) => q._id), assignedStudents: studentIds || [], assignedFaculty: req.user.id, totalMarks, status: studentIds?.length ? "Published" : "Draft", assessmentType: "Practice" });
     await Faculty.findByIdAndUpdate(req.user.id, { $addToSet: { assignedAssessments: assessment._id } });
@@ -93,8 +94,10 @@ const createAssessment = async (req, res) => {
 
 const assignAssessment = async (req, res) => {
   try {
-    const { studentIds } = req.body || {};
-    if (!Array.isArray(studentIds) || !studentIds.length) return errorResponse(res, { message: "Select at least one student", status: 400 });
+    const { studentIds, deadline } = req.body || {};
+    if (!Array.isArray(studentIds) || !studentIds.length || !deadline) return errorResponse(res, { message: "Select at least one student and provide a deadline", status: 400 });
+    const endDate = new Date(deadline);
+    if (Number.isNaN(endDate.getTime()) || endDate <= new Date()) return errorResponse(res, { message: "Deadline must be a valid future date", status: 400 });
     const faculty = await Faculty.findById(req.user.id).select("assignedStudents");
     const allowed = new Set((faculty?.assignedStudents || []).map(String));
     if (!studentIds.every((id) => allowed.has(String(id)))) return errorResponse(res, { message: "Students must belong to your faculty assignment", status: 403 });
@@ -103,6 +106,7 @@ const assignAssessment = async (req, res) => {
     const current = new Set((assessment.assignedStudents || []).map(String));
     studentIds.forEach((id) => current.add(String(id)));
     assessment.assignedStudents = [...current];
+    assessment.endDate = endDate;
     assessment.status = "Published";
     await assessment.save();
     return successResponse(res, { message: "Assessment assigned successfully", data: assessment });
@@ -149,4 +153,14 @@ const deleteAssessment = async (req, res) => {
   return successResponse(res, { message: "Assessment deleted successfully", data: assessment });
 };
 
-module.exports = { extractMaterial, getStudents, createAssessment, assignAssessment, getAssessments, getAssessmentDetails, updateAssessmentTitle, deleteAssessment };
+const updateDeadline = async (req, res) => {
+  try {
+    const endDate = new Date(req.body?.deadline);
+    if (Number.isNaN(endDate.getTime()) || endDate <= new Date()) return errorResponse(res, { status: 400, message: "Deadline must be a valid future date" });
+    const assessment = await Assessment.findOneAndUpdate({ _id: req.params.id, assignedFaculty: req.user.id, isActive: true }, { endDate, status: "Published" }, { new: true, runValidators: true });
+    if (!assessment) return errorResponse(res, { status: 404, message: "Assessment not found" });
+    return successResponse(res, { message: "Assessment rescheduled successfully", data: assessment });
+  } catch (error) { return errorResponse(res, { status: 400, message: error.message }); }
+};
+
+module.exports = { extractMaterial, getStudents, createAssessment, assignAssessment, getAssessments, getAssessmentDetails, updateAssessmentTitle, deleteAssessment, updateDeadline };

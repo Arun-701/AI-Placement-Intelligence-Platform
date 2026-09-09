@@ -11,5 +11,6 @@ router.post("/", facultyOnly, controller.createAssessment);
 router.post("/:id/assign", facultyOnly, controller.assignAssessment);
 router.get("/:id/details", facultyOnly, controller.getAssessmentDetails);
 router.put("/:id/title", facultyOnly, controller.updateAssessmentTitle);
+router.patch("/:id/deadline", facultyOnly, controller.updateDeadline);
 router.delete("/:id", facultyOnly, controller.deleteAssessment);
 module.exports = router;

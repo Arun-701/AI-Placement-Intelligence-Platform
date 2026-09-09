@@ -6,7 +6,6 @@ export default function FacultyResults() {
   const [searchParams] = useSearchParams()
   const [results, setResults] = useState([])
   const [search, setSearch] = useState('')
-  const [department, setDepartment] = useState('ALL')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -14,7 +13,6 @@ export default function FacultyResults() {
     api.get(`/faculty/results${assessmentId ? `?assessmentId=${assessmentId}` : ''}`).then((response) => response.ok ? setResults(response.data.data?.results || []) : setError(response.data?.message || 'Failed to load leaderboard')).catch(() => setError('Failed to load leaderboard'))
   }, [searchParams])
 
-  const departments = [...new Set(results.map((result) => result.student?.department).filter(Boolean))].sort()
   const leaderboard = useMemo(() => {
     const grouped = new Map()
     results.forEach((result) => {
@@ -23,9 +21,16 @@ export default function FacultyResults() {
       const current = grouped.get(key) || { student, assessments: 0, totalPercentage: 0, results: [] }
       current.assessments += 1; current.totalPercentage += Number(result.percentage) || 0; current.results.push(result); grouped.set(key, current)
     })
-    return [...grouped.values()].map((entry) => ({ ...entry, averageScore: entry.assessments ? Math.round(entry.totalPercentage / entry.assessments) : 0, readiness: Number(entry.student.placementReadinessScore) || 0 })).filter((entry) => `${entry.student.name || ''} ${entry.student.email || ''}`.toLowerCase().includes(search.toLowerCase()) && (department === 'ALL' || entry.student.department === department)).sort((a, b) => (b.readiness - a.readiness) || (b.averageScore - a.averageScore))
-  }, [results, search, department])
+    return [...grouped.values()].map((entry) => ({ ...entry, averageScore: entry.assessments ? Math.round(entry.totalPercentage / entry.assessments) : 0, readiness: Number(entry.student.placementReadinessScore) || 0 })).filter((entry) => `${entry.student.name || ''} ${entry.student.email || ''}`.toLowerCase().includes(search.toLowerCase())).sort((a, b) => (b.readiness - a.readiness) || (b.averageScore - a.averageScore))
+  }, [results, search])
+
+  const csvValue = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`
+  const exportCsv = () => {
+    const rows = [['Rank', 'Student', 'Department', 'Assessments', 'Average Score', 'Readiness'], ...leaderboard.map((entry, index) => [index + 1, entry.student.name || entry.student.email || '', entry.student.department || '', entry.assessments, `${entry.averageScore}%`, `${entry.readiness}%`])]
+    const blob = new Blob([`\uFEFF${rows.map((row) => row.map(csvValue).join(',')).join('\r\n')}`], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'faculty-leaderboard.csv'; anchor.click(); URL.revokeObjectURL(url)
+  }
 
   if (error) return <div className="alert error">{error}</div>
-  return <><div className="page-title"><div><h1>Leaderboard</h1><div className="subtitle">Assessment performance for your assigned students</div></div></div><div className="card"><div className="row between"><h3>Student Performance</h3><div className="results-filters"><input placeholder="Search student" value={search} onChange={(event) => setSearch(event.target.value)} /><select value={department} onChange={(event) => setDepartment(event.target.value)}><option value="ALL">All Departments</option>{departments.map((item) => <option key={item}>{item}</option>)}</select></div></div>{leaderboard.length ? <div className="table-wrap"><table><thead><tr><th>Rank</th><th>Student</th><th>Department</th><th>Assessments</th><th>Average Score</th><th>Readiness</th></tr></thead><tbody>{leaderboard.map((entry, index) => <tr key={entry.student._id || index}><td>{index + 1}</td><td>{entry.student.name || entry.student.email || '—'}</td><td>{entry.student.department || '—'}</td><td>{entry.assessments}</td><td>{entry.averageScore}%</td><td>{entry.readiness}%</td></tr>)}</tbody></table></div> : <p className="muted mt">No results yet.</p>}</div></>
+  return <><div className="page-title"><div><h1>Leaderboard</h1><div className="subtitle">Assessment performance for your assigned students</div></div><button className="btn secondary" disabled={!leaderboard.length} onClick={exportCsv}>Export CSV</button></div><div className="card"><div className="row between"><h3>Student Performance</h3><div className="results-filters"><input placeholder="Search student" value={search} onChange={(event) => setSearch(event.target.value)} /></div></div>{leaderboard.length ? <div className="table-wrap"><table><thead><tr><th>Rank</th><th>Student</th><th>Department</th><th>Assessments</th><th>Average Score</th><th>Readiness</th></tr></thead><tbody>{leaderboard.map((entry, index) => <tr key={entry.student._id || index}><td>{index + 1}</td><td>{entry.student.name || entry.student.email || '—'}</td><td>{entry.student.department || '—'}</td><td>{entry.assessments}</td><td>{entry.averageScore}%</td><td>{entry.readiness}%</td></tr>)}</tbody></table></div> : <p className="muted mt">No results yet.</p>}</div></>
 }

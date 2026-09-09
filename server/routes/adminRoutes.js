@@ -5,6 +5,7 @@ const { authorizeRoles } = require("../middleware/roleMiddleware");
 const { authLimiter } = require("../middleware/rateLimit");
 const questionUploadMiddleware = require("../middleware/questionUploadMiddleware");
 const { uploadQuestions, importQuestions } = require("../controllers/adminQuestionController");
+const announcementController = require("../controllers/announcementController");
 const {
   registerAdmin,
   loginAdmin,
@@ -22,6 +23,7 @@ const {
   updateExistingFaculty,
   removeFaculty,
   approveFaculty,
+  rejectFaculty,
   assignStudents,
   unassignStudents,
   getDashboard,
@@ -56,6 +58,12 @@ router.post("/faculties", verifyToken, authorizeRoles("admin"), createNewFaculty
 router.put("/faculties/:id", verifyToken, authorizeRoles("admin"), updateExistingFaculty);
 router.delete("/faculties/:id", verifyToken, authorizeRoles("admin"), removeFaculty);
 router.patch("/faculties/:id/approve", verifyToken, authorizeRoles("admin"), approveFaculty);
+router.patch("/faculties/:id/reject", verifyToken, authorizeRoles("admin"), rejectFaculty);
+
+// Announcements
+router.get("/announcements/departments", verifyToken, authorizeRoles("admin"), announcementController.getDepartments);
+router.get("/announcements", verifyToken, authorizeRoles("admin"), announcementController.listAdminAnnouncements);
+router.post("/announcements", verifyToken, authorizeRoles("admin"), announcementController.createAnnouncement);
 
 // Assignment management
 router.post("/faculties/:facultyId/assign-students", verifyToken, authorizeRoles("admin"), assignStudents);

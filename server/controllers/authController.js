@@ -5,6 +5,7 @@ const Admin = require("../models/Admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { sendVerificationOtpEmail } = require("../services/emailService");
+const { createBulkNotification } = require("../services/notificationService");
 const { successResponse, errorResponse } = require("../utils/response");
 const { validateFacultyRegistration, validateFacultyLogin } = require("../validators/facultyValidator");
 
@@ -523,6 +524,20 @@ const registerFaculty = async (req, res) => {
             approvalStatus: "PENDING",
             passwordChangedAt: new Date()
         });
+
+        try {
+            await createBulkNotification({
+                recipientType: "admin",
+                title: "New Faculty Registration Request",
+                message: `${faculty.name} from ${faculty.department || "an unspecified department"} submitted a faculty registration request. Admin approval is required.`,
+                type: "Admin Notification",
+                priority: "High",
+                referenceId: faculty._id,
+                referenceModel: "Faculty"
+            });
+        } catch (notificationError) {
+            console.error("Faculty registration notification creation failed", notificationError);
+        }
 
         try {
             await issueVerificationOtp(faculty);

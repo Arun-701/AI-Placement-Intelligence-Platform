@@ -35,11 +35,11 @@ export default function AdminStudents() {
     else setError(r.data?.message || 'Creation failed')
   }
 
-  const remove = async (id) => {
-    if (!confirm('Delete this student?')) return
-    const r = await api.del(`/admin/students/${id}`)
-    if (r.ok) load()
-    else setError(r.data?.message || 'Delete failed')
+  const csvValue = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`
+  const exportCsv = () => {
+    const rows = [['Student Name', 'Email', 'Department', 'Year / Batch', 'CGPA', 'Placement Readiness'], ...filteredStudents.map((student) => [student.fullName || student.name, student.email, student.department || '', student.year || '', student.cgpa ?? '', `${student.placementReadinessScore ?? 0}%`])]
+    const blob = new Blob([`\uFEFF${rows.map((row) => row.map(csvValue).join(',')).join('\r\n')}`], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'admin-students.csv'; anchor.click(); URL.revokeObjectURL(url)
   }
 
   return (
@@ -70,10 +70,10 @@ export default function AdminStudents() {
         </form>
       )}
 
-      <div className="card mb"><div className="results-filters"><input placeholder="Search student" value={search} onChange={(event) => setSearch(event.target.value)} /><select value={department} onChange={(event) => setDepartment(event.target.value)}><option value="ALL">All Departments</option>{departments.map((item) => <option key={item}>{item}</option>)}</select><select value={year} onChange={(event) => setYear(event.target.value)}><option value="ALL">All Years</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select><select value={readiness} onChange={(event) => setReadiness(event.target.value)}><option value="ALL">All Readiness</option><option value="READY">Ready (80%+)</option><option value="DEVELOPING">Developing (60-79%)</option><option value="NEEDS_SUPPORT">Needs Support (&lt;60%)</option></select></div></div>
+      <div className="card mb"><div className="results-filters"><input placeholder="Search student" value={search} onChange={(event) => setSearch(event.target.value)} /><select value={department} onChange={(event) => setDepartment(event.target.value)}><option value="ALL">All Departments</option>{departments.map((item) => <option key={item}>{item}</option>)}</select><select value={year} onChange={(event) => setYear(event.target.value)}><option value="ALL">All Years</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select><select value={readiness} onChange={(event) => setReadiness(event.target.value)}><option value="ALL">All Readiness</option><option value="READY">Ready (80%+)</option><option value="DEVELOPING">Developing (60-79%)</option><option value="NEEDS_SUPPORT">Needs Support (&lt;60%)</option></select><button className="btn secondary" disabled={!filteredStudents.length} onClick={exportCsv}>Export CSV</button></div></div>
       <div className="card table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Year</th><th>CGPA</th><th>Readiness</th><th></th></tr></thead>
+          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Year</th><th>CGPA</th><th>Readiness</th></tr></thead>
           <tbody>
             {filteredStudents.map((s) => (
               <tr key={s._id}>
@@ -83,7 +83,6 @@ export default function AdminStudents() {
                 <td>{s.year}</td>
                 <td>{s.cgpa ?? '—'}</td>
                 <td>{s.placementReadinessScore ?? 0}%</td>
-                <td><button className="btn small danger" onClick={() => remove(s._id)}>Delete</button></td>
               </tr>
             ))}
           </tbody>
