@@ -54,9 +54,19 @@ const issueVerificationOtp = async (account) => {
     try {
         await sendVerificationOtpEmail({ email: account.email, name: account.name, otp });
     } catch (error) {
-        clearVerificationOtp(account);
-        account.emailVerificationLastSentAt = null;
-        await account.save();
+        // Log only safe nodemailer fields to help diagnose delivery issues.
+        try {
+            console.error('Email verification send failed:', {
+                message: error && error.message,
+                code: error && error.code,
+                command: error && error.command,
+                responseCode: error && error.responseCode,
+            });
+        } catch (logErr) {
+            console.error('Email verification send failed (unable to serialize error)');
+        }
+        // Do NOT clear the OTP or modify the account on email send failure.
+        // Rethrow so callers can decide how to respond while the account/OTP remain intact.
         throw error;
     }
 };
@@ -118,7 +128,31 @@ const registerStudent = async (req, res) => {
         try {
             await issueVerificationOtp(student);
         } catch (emailError) {
-            return emailDeliveryErrorResponse(res, emailError, true);
+            // Email send failed, but account and OTP remain in DB.
+            // Return a clear success response indicating account created but email delivery failed.
+            try {
+                console.error('Email verification delivery failed during registration:', {
+                    message: emailError && emailError.message,
+                    code: emailError && emailError.code,
+                    command: emailError && emailError.command,
+                    responseCode: emailError && emailError.responseCode,
+                });
+            } catch (logErr) {
+                console.error('Email verification delivery failed during registration (unable to serialize error)');
+            }
+
+            return successResponse(res, {
+                status: 201,
+                message: "Account created, but we could not send a verification email. Please request a new verification email using POST /api/auth/resend-verification.",
+                data: {
+                    student: {
+                        _id: student._id,
+                        name: student.name,
+                        email: student.email,
+                        isVerified: student.isVerified
+                    }
+                }
+            });
         }
 
         return successResponse(res, {

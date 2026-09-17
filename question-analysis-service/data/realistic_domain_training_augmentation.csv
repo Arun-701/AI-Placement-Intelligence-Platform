@@ -1,0 +1,131 @@
+question,domain
+Question: What is the age of Ravi? Statement I: Ravi is 5 years older than his sister. Statement II: Ravi's sister is 20 years old. Are both statements together sufficient to answer the question?,Aptitude
+"Seven friends sit in a row facing north. If G is exactly in the middle and there are three people on each side, describe the possible arrangement given that F is second from the left end.",Aptitude
+How many workers are needed to complete a task in 6 days? Statement I: 10 workers can complete the task in 12 days. Statement II: All workers work at the same rate. Determine sufficiency.,Aptitude
+What is the cost price of an item? Statement I: The item was sold at a profit of 20%. Statement II: The selling price of the item is Rs. 600. Determine if the statements are sufficient.,Aptitude
+"A train 200 m long crosses another train of length 150 m, running in the same direction, in 30 seconds. If the speed of the second train is 36 km/hr, find the speed of the first train.",Aptitude
+Statement: 'The government has announced free medical checkups for senior citizens.' Assumption: Senior citizens will avail this facility. Is the assumption implicit in the statement?,Aptitude
+"Five friends P, Q, R, S and T are sitting around a circular table facing the centre. If Q sits second to the right of P and S sits opposite T, find the position of R relative to P.",Aptitude
+"A wholesaler sells goods to a retailer at a profit of 10%, and the retailer sells them to a customer at a profit of 15%. If the customer pays Rs. 253, find the original cost price.",Aptitude
+"The average age of a family of 5 members is 24 years. If the age of the youngest member is 8 years, find the average age of the family at the time of the youngest member's birth.",Aptitude
+"Five people are seated around a circular table facing the centre. P sits opposite Q, and R sits to the immediate left of P. Determine the position of S if S sits between Q and R.",Aptitude
+What is the difference between a static heuristic and a dynamic heuristic in AI search?,Artificial Intelligence
+"What is the A* search algorithm, and how does it use heuristics to find optimal paths?",Artificial Intelligence
+Explain the concept of a greedy heuristic and how it can lead to suboptimal solutions.,Artificial Intelligence
+What role has the Turing Test played in shaping public perception of AI capabilities?,Artificial Intelligence
+What is the difference between an admissible heuristic and an inadmissible heuristic?,Artificial Intelligence
+Explain how the Manhattan distance heuristic is used in solving the 8-puzzle problem.,Artificial Intelligence
+Explain the difference between declarative and procedural knowledge representation.,Artificial Intelligence
+What is the difference between the standard Turing Test and the total Turing Test?,Artificial Intelligence
+"What is simulated annealing, and how does it use heuristics to avoid local optima?",Artificial Intelligence
+Explain the purpose of the Turing Test and how it evaluates machine intelligence.,Artificial Intelligence
+What is the difference between round-robin and least-connections load balancing algorithms?,Cloud Computing
+"Explain the difference between block storage, file storage and object storage in the cloud.",Cloud Computing
+"What is a Layer 4 load balancer, and how does it differ from a Layer 7 load balancer?",Cloud Computing
+Explain the concept of a container image and how it differs from a running container.,Cloud Computing
+What is the difference between DNS-based load balancing and hardware load balancing?,Cloud Computing
+Explain how a hybrid cloud model combines the benefits of public and private clouds.,Cloud Computing
+What are the advantages and disadvantages of using a public cloud deployment model?,Cloud Computing
+What are the benefits of using cloud storage over traditional on-premises storage?,Cloud Computing
+Explain the role of a load balancer in ensuring high availability of applications.,Cloud Computing
+Explain the difference between cold storage and hot storage in cloud environments.,Cloud Computing
+Write a program to move all zeros in an array to the end while maintaining the order of other elements.,Coding
+Write a program to find the greatest common divisor (GCD) of two numbers using the Euclidean algorithm.,Coding
+Write a program to check whether a string can be rearranged into another string using character counts.,Coding
+Explain the difference between merge sort and selection sort in terms of stability and time complexity.,Coding
+Write a program to find the container with the maximum amount of water using the two-pointer approach.,Coding
+What will be the output of the following C program that uses a for loop to print numbers from 1 to 5?,Coding
+What is the output of a C++ program that uses a virtual function to demonstrate runtime polymorphism?,Coding
+Explain the time complexity advantage of using two pointers over a nested loop for pair-sum problems.,Coding
+Write a program to find the missing number in an array containing n-1 distinct integers from 1 to n.,Coding
+Explain how the two-pointer technique can be used to remove duplicates from a sorted array in place.,Coding
+Explain the difference between syntax errors and semantic errors with examples.,Compiler Design
+Explain the concept of a syntax-directed definition used in semantic analysis.,Compiler Design
+Explain how regular expressions are used to define tokens in lexical analysis.,Compiler Design
+"What is intermediate code, and why is it used before generating target code?",Compiler Design
+Explain the concept of a control flow graph and its use in code generation.,Compiler Design
+"What is a token in lexical analysis, and how does it differ from a lexeme?",Compiler Design
+Explain the concept of ambiguity in context-free grammars with an example.,Compiler Design
+Explain how semantic analysis detects errors such as undeclared variables.,Compiler Design
+"What is scope resolution, and how is it handled during semantic analysis?",Compiler Design
+"What is type checking, and why is it performed during semantic analysis?",Compiler Design
+What is the difference between a zero-address instruction and a one-address instruction?,Computer Architecture
+What is the difference between volatile and non-volatile memory in the hierarchy?,Computer Architecture
+What is the difference between an in-order pipeline and an out-of-order pipeline?,Computer Architecture
+Explain the difference between structural hazards and data hazards in pipelining.,Computer Architecture
+Explain the concept of access time and how it varies across the memory hierarchy.,Computer Architecture
+"What is the purpose of a cache replacement policy, and name two common examples.",Computer Architecture
+Explain the role of solid-state drives (SSDs) in modern memory hierarchy design.,Computer Architecture
+What is the role of an assembler in translating instructions into machine code?,Computer Architecture
+What is the difference between direct-mapped cache and fully associative cache?,Computer Architecture
+What are the advantages of using immediate addressing mode for constant values?,Computer Architecture
+Explain the difference between a network address and a broadcast address within a subnet.,Computer Networks
+Explain the difference between a stateless protocol like HTTP and a stateful connection.,Computer Networks
+What is the purpose of HTTP request headers such as 'Content-Type' and 'Authorization'?,Computer Networks
+Explain how data encapsulation occurs as it passes through the layers of the OSI model.,Computer Networks
+"Given an IP address of 192.168.1.0/24, calculate the number of usable host addresses.",Computer Networks
+Explain the role of a DNS resolver when a user types a website address in a browser.,Computer Networks
+Explain how the Open Shortest Path First (OSPF) protocol determines the best path.,Computer Networks
+What is the difference between a recursive DNS query and an iterative DNS query?,Computer Networks
+Explain how the Distance Vector routing algorithm determines the shortest path.,Computer Networks
+What is the difference between distance vector routing and link state routing?,Computer Networks
+Write an SQL query using GROUP BY to find the total sales for each product category.,DBMS
+What is the difference between Second Normal Form (2NF) and Third Normal Form (3NF)?,DBMS
+What is the difference between First Normal Form (1NF) and Second Normal Form (2NF)?,DBMS
+What is the impact of indexing on INSERT and UPDATE operations in a database table?,DBMS
+What is the difference between the COMMIT and ROLLBACK statements in a transaction?,DBMS
+What is the difference between a weak entity and a strong entity in the ER model?,DBMS
+Explain the difference between the 'WHERE' clause and the 'HAVING' clause in SQL.,DBMS
+Write an SQL query to fetch the top 3 highest-paid employees in each department.,DBMS
+What is the difference between a strong entity and a weak entity in an ER model?,DBMS
+Explain how a bitmap index differs from a B-tree index and when it is preferred.,DBMS
+"Explain the time complexity of search, insert and delete operations in a balanced BST.",Data Structures
+Write a program outline to insert a node into an AVL tree while maintaining balance.,Data Structures
+Explain how deletion of a node with two children is handled in a binary search tree.,Data Structures
+Explain the difference between a left rotation and a right rotation in an AVL tree.,Data Structures
+Explain the structure of a Trie and how it is used for efficient string searching.,Data Structures
+Explain how in-order traversal of a binary search tree produces a sorted sequence.,Data Structures
+"Explain the difference between pre-order, in-order and post-order tree traversal.",Data Structures
+Write a program to find the minimum and maximum values in a binary search tree.,Data Structures
+Explain Dijkstra's algorithm for finding the shortest path in a weighted graph.,Data Structures
+Write a program to insert a node at a given position in a doubly linked list.,Data Structures
+"What is the purpose of an index in MongoDB, and how does it improve query performance?",Full Stack
+Explain the concept of session-based authentication versus token-based authentication.,Full Stack
+Explain how Bootstrap components such as navbars and modals help in responsive design.,Full Stack
+Explain the readyState property of the XMLHttpRequest object and its possible values.,Full Stack
+Explain the difference between block-level and inline elements in HTML with examples.,Full Stack
+What is the difference between 'position: relative' and 'position: absolute' in CSS?,Full Stack
+Explain the difference between synchronous and asynchronous file reading in Node.js.,Full Stack
+What is the output of a JavaScript program that demonstrates hoisting of variables?,Full Stack
+What is the difference between '.on()' and '.click()' for event handling in jQuery?,Full Stack
+Explain the purpose of the jQuery library and its advantages over plain JavaScript.,Full Stack
+What is the difference between batch gradient descent and stochastic gradient descent?,Machine Learning
+Explain how data augmentation helps reduce overfitting in image classification tasks.,Machine Learning
+What is the difference between classification and regression in supervised learning?,Machine Learning
+What is the difference between binary classification and multi-class classification?,Machine Learning
+What is the difference between training data and test data in supervised learning?,Machine Learning
+What is the difference between a shallow neural network and a deep neural network?,Machine Learning
+"What is a confusion matrix, and how is it used to evaluate a classification model?",Machine Learning
+Explain the difference between precision and recall in classification evaluation.,Machine Learning
+What is the difference between L1 and L2 regularization in reducing overfitting?,Machine Learning
+"What is polynomial regression, and when is it used instead of linear regression?",Machine Learning
+What is the difference between sequential access and direct access in file systems?,Operating Systems
+"What is the readers-writers problem, and how can semaphores be used to solve it?",Operating Systems
+What is the difference between the one-to-one and many-to-many threading models?,Operating Systems
+"What is priority scheduling and what problem, known as starvation, can it cause?",Operating Systems
+What is the difference between static and dynamic linking in memory management?,Operating Systems
+Explain the difference between contiguous and non-contiguous memory allocation.,Operating Systems
+Explain the difference between logical address and physical address in paging.,Operating Systems
+Explain the concept of turnaround time and waiting time in process scheduling.,Operating Systems
+Explain the difference between contiguous and linked file allocation methods.,Operating Systems
+Explain the concept of deadlock recovery and the methods used to resolve it.,Operating Systems
+What challenges commonly arise during requirements elicitation from stakeholders?,Software Engineering
+Explain the role of the maintenance phase in the software development life cycle.,Software Engineering
+What is the difference between the Waterfall model and the Spiral model of SDLC?,Software Engineering
+"What is requirements traceability, and why is it important in software projects?",Software Engineering
+Explain the concept of requirements elicitation and the techniques used for it.,Software Engineering
+What is the difference between the Adapter pattern and the Decorator pattern?,Software Engineering
+"What is a use case diagram, and how does it help in requirements engineering?",Software Engineering
+What deliverables are typically produced during the design phase of the SDLC?,Software Engineering
+Explain the difference between functional testing and non-functional testing.,Software Engineering
+What is the purpose of a Software Requirements Specification (SRS) document?,Software Engineering

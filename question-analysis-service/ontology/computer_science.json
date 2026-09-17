@@ -1,0 +1,25 @@
+{
+  "description": "Reusable computing concepts. Entries are optional normalizers, not subject restrictions.",
+  "concepts": [
+    {"parent": "Virtualization", "subtopic": "Hypervisor", "aliases": ["hypervisor", "type 1 hypervisor", "type 2 hypervisor"]},
+    {"parent": "Virtualization", "subtopic": "Virtual Machine Monitor", "aliases": ["vmm", "virtual machine monitor"]},
+    {"parent": "Virtualization", "subtopic": "Virtual Machines", "aliases": ["virtual machine", "virtual machines", "vm"]},
+    {"parent": "Virtualization", "subtopic": "Para Virtualization", "aliases": ["para virtualization", "paravirtualization"]},
+    {"parent": "Virtualization", "subtopic": "Full Virtualization", "aliases": ["full virtualization"]},
+    {"parent": "Virtualization", "subtopic": "VM Migration", "aliases": ["vm migration", "virtual machine migration"]},
+    {"parent": "Virtualization", "subtopic": "Storage Virtualization", "aliases": ["storage virtualization"]},
+    {"parent": "Cloud Platforms", "subtopic": "AWS / Amazon Web Services", "aliases": ["aws", "amazon web services", "amazon cloud services"]},
+    {"parent": "Cloud Platforms", "subtopic": "OpenStack", "aliases": ["openstack"]},
+    {"parent": "Cloud Platforms", "subtopic": "Eucalyptus", "aliases": ["eucalyptus"]},
+    {"parent": "Containers", "subtopic": "Docker", "aliases": ["docker", "docker container"]},
+    {"parent": "Containers", "subtopic": "Containerization", "aliases": ["containerization", "containerisation"]},
+    {"parent": "Containers", "subtopic": "Container Architecture", "aliases": ["container architecture"]},
+    {"parent": "Containers", "subtopic": "Containers vs Virtual Machines", "aliases": ["containers and virtual machines", "containers vs virtual machines"]},
+    {"parent": "Cloud Security", "subtopic": "Hyperjacking", "aliases": ["hyperjacking", "hyperjacking attack"]},
+    {"parent": "Cloud Security", "subtopic": "IAM", "aliases": ["iam", "identity and access management"]},
+    {"parent": "Cloud Security", "subtopic": "Data Security", "aliases": ["data security", "cloud data security"]},
+    {"parent": "Private Cloud", "subtopic": "Private Cloud", "aliases": ["private cloud"]},
+    {"parent": "Cloud Service Models", "subtopic": "Cloud Service Models", "aliases": ["cloud service models", "service models"]},
+    {"parent": "Resource Provisioning", "subtopic": "Resource Provisioning", "aliases": ["resource provisioning"]}
+  ]
+}
