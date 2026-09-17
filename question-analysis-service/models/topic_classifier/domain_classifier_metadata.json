@@ -1,0 +1,97 @@
+{
+    "model_type": "SVM",
+    "embedding_model": "all-MiniLM-L6-v2",
+    "kernel": "linear",
+    "C": 1.0,
+    "class_weight": "balanced",
+    "random_state": 42,
+    "dataset": "placement_question_dataset_3500.csv",
+    "total_questions": 3500,
+    "domains": {
+        "OOP": 500,
+        "Coding": 500,
+        "DBMS": 500,
+        "DSA": 500,
+        "Computer Networks": 500,
+        "Operating Systems": 500,
+        "Aptitude": 500
+    },
+    "train_questions": 2800,
+    "test_questions": 700,
+    "accuracy": 0.9614285714285714,
+    "macro_f1": 0.9616355782492222,
+    "labels": [
+        "Aptitude",
+        "Coding",
+        "Computer Networks",
+        "DBMS",
+        "DSA",
+        "OOP",
+        "Operating Systems"
+    ],
+    "confusion_matrix": [
+        [
+            96,
+            2,
+            0,
+            0,
+            1,
+            0,
+            1
+        ],
+        [
+            0,
+            99,
+            0,
+            0,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            95,
+            1,
+            1,
+            0,
+            3
+        ],
+        [
+            1,
+            0,
+            1,
+            93,
+            1,
+            0,
+            4
+        ],
+        [
+            0,
+            1,
+            0,
+            2,
+            95,
+            0,
+            2
+        ],
+        [
+            0,
+            0,
+            0,
+            2,
+            0,
+            97,
+            1
+        ],
+        [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            98
+        ]
+    ]
+}
