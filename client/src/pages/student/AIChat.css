@@ -1,0 +1,338 @@
+.mentor-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mentor-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 1.35rem;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.04);
+}
+
+.mentor-hero {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(59, 130, 246, 0.08));
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  border-radius: 16px;
+  padding: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mentor-hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.mentor-hero-kicker {
+  color: #7c3aed;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.mentor-hero h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2vw, 2.1rem);
+  color: #0f172a;
+}
+
+.mentor-hero p {
+  margin: 0;
+  color: #475569;
+  font-size: 0.96rem;
+}
+
+.mentor-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.08);
+  color: #6d28d9;
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.mentor-upload-box {
+  border: 1.5px dashed rgba(124, 58, 237, 0.38);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(244, 237, 255, 0.9), rgba(239, 246, 255, 0.86));
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mentor-upload-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mentor-upload-head h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+.mentor-upload-action {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mentor-file-wrap {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #d8dfe9;
+  background: #fff;
+}
+
+.mentor-file-wrap input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: #0f172a;
+}
+
+.mentor-file-wrap input:focus {
+  outline: none;
+}
+
+.mentor-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.mentor-summary-card {
+  background: linear-gradient(180deg, #fff, #faf5ff);
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  border-left: 4px solid #7c3aed;
+  border-radius: 16px;
+  padding: 1.2rem 1rem;
+  text-align: center;
+}
+
+.mentor-summary-label {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.mentor-summary-value {
+  font-size: clamp(1.8rem, 2vw, 2.5rem);
+  font-weight: 800;
+  color: #6d28d9;
+  line-height: 1;
+}
+
+.mentor-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.mentor-chart-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 1.2rem;
+}
+
+.mentor-chart-card h3 {
+  margin: 0 0 1rem;
+  color: #0f172a;
+  font-size: 1.08rem;
+}
+
+.mentor-topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.mentor-topic-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.mentor-topic-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: #475569;
+}
+
+.mentor-topic-bar {
+  width: 100%;
+  height: 12px;
+  background: #edf2f7;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.mentor-topic-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #2563eb);
+  border-radius: 999px;
+}
+
+.mentor-donut-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.mentor-donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.mentor-donut-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #334155;
+  font-size: 0.92rem;
+}
+
+.mentor-donut-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.mentor-table-wrap {
+  overflow-x: auto;
+}
+
+.mentor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.mentor-table thead th {
+  text-align: left;
+  padding: 0.8rem 0.75rem;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.mentor-table tbody td {
+  padding: 0.8rem 0.75rem;
+  border-bottom: 1px solid #edf2f7;
+  color: #0f172a;
+  vertical-align: middle;
+}
+
+.mentor-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mentor-pill.easy {
+  background: rgba(216, 180, 254, 0.18);
+  color: #6b21a8;
+}
+
+.mentor-pill.medium {
+  background: rgba(134, 239, 172, 0.18);
+  color: #065f46;
+}
+
+.mentor-pill.hard {
+  background: rgba(254, 202, 202, 0.25);
+  color: #7f1d1d;
+}
+
+.mentor-priority {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mentor-priority.very-high { background: rgba(254, 202, 202, 0.24); color: #7f1d1d; }
+.mentor-priority.high { background: rgba(254, 215, 170, 0.3); color: #9a4d00; }
+.mentor-priority.medium { background: rgba(191, 219, 254, 0.35); color: #1d4ed8; }
+.mentor-priority.low { background: rgba(226, 232, 240, 0.9); color: #334155; }
+
+.mentor-order-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: #334155;
+  line-height: 1.7;
+}
+
+.mentor-input-toggle {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mentor-input-toggle .btn {
+  min-width: 140px;
+}
+
+.mentor-input-toggle .btn.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #fff;
+}
+
+@media (max-width: 820px) {
+  .mentor-hero,
+  .mentor-upload-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mentor-upload-action,
+  .mentor-file-wrap {
+    width: 100%;
+  }
+}

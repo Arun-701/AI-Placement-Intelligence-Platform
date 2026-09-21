@@ -14,6 +14,8 @@ import ResumeAnalysis from './pages/student/ResumeAnalysis'
 import CodingProfile from './pages/student/CodingProfile'
 import Roadmap from './pages/student/Roadmap'
 import AIChat from './pages/student/AIChat'
+import AdaptiveAssessment from './pages/student/AdaptiveAssessment'
+import AdaptiveAssessmentResult from './pages/student/AdaptiveAssessmentResult'
 import FacultyDashboard from './pages/faculty/Dashboard'
 import FacultyStudents from './pages/faculty/Students'
 import FacultyResults from './pages/faculty/Results'
@@ -107,6 +109,8 @@ function App() {
             <Route path="coding" element={<CodingProfile />} />
             <Route path="roadmap" element={<Roadmap />} />
             <Route path="ai-chat" element={<AIChat />} />
+            <Route path="adaptive-assessment/:id" element={<AdaptiveAssessment />} />
+            <Route path="adaptive-assessment/:id/result" element={<AdaptiveAssessmentResult />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="announcements" element={<Announcements />} />
             <Route path="profile" element={<Profile />} />

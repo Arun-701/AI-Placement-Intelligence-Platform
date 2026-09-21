@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { api } from '../../api'
+import './AssessmentUploadReview.css'
 
 const isValidQuestion = (question) => question.question?.trim() && question.options?.length === 4 && question.options.every((option) => option?.trim()) && question.correctAnswer && question.options.includes(question.correctAnswer)
 
@@ -63,7 +64,74 @@ export default function FacultyAssessmentUploadReview({ onCreated }) {
 
   return <>
     {error && <div className="alert error">{error}</div>}{status && <div className="alert success">{status}</div>}
-    {!questions.length && <form className="card" onSubmit={analyze}><div className="form-group"><label htmlFor="faculty-question-file">Question paper</label><input id="faculty-question-file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => setFile(event.target.files?.[0] || null)} /><small>Supported: PDF and DOCX.</small></div><button className="btn" disabled={busy}>{busy ? busyMessage : 'Upload & Analyze'}</button></form>}
-    {questions.length > 0 && <><div className="grid cols-3 mb"><div className="card"><strong>{questions.length}</strong><div>Total Questions</div></div><div className="card"><strong>{validCount}</strong><div>Valid</div></div><div className="card"><strong>{questions.length - validCount}</strong><div>Needs Review</div></div></div><div className="question-preview"><div className="row between"><h2>Review and Import</h2><button type="button" className="btn secondary" onClick={confirmAll}>Confirm All Questions</button></div>{questions.map((question, index) => <div className="card" key={`${question.sourceNumber || 'question'}-${index}`}><div className="row between"><h3>Question {index + 1}</h3><div><span className={`badge ${question.confirmed && isValidQuestion(question) ? 'green' : 'gray'}`}>{question.confirmed && isValidQuestion(question) ? 'Confirmed' : 'Needs review'}</span><button type="button" className="btn danger small" onClick={() => remove(index)}>Remove</button></div></div><div className="form-group"><label>Question text</label><textarea value={question.question} onChange={(event) => update(index, 'question', event.target.value)} /></div>{question.options.map((option, optionIndex) => <div className="form-group" key={optionIndex}><label>Option {String.fromCharCode(65 + optionIndex)}</label><input value={option} onChange={(event) => updateOption(index, optionIndex, event.target.value)} /></div>)}{question.options.length < 4 && <button type="button" className="btn secondary small" onClick={() => addOption(index)}>Add option</button>}<div className="form-group"><label>Correct answer</label><select value={question.correctAnswer} onChange={(event) => update(index, 'correctAnswer', event.target.value)}><option value="">Select answer</option>{question.options.map((option, optionIndex) => <option key={optionIndex} value={option}>{String.fromCharCode(65 + optionIndex)}. {option}</option>)}</select></div><div className="grid cols-2"><div className="form-group"><label>Subject</label><input value={question.subject} onChange={(event) => update(index, 'subject', event.target.value)} /></div><div className="form-group"><label>Topic</label><input value={question.topic} onChange={(event) => update(index, 'topic', event.target.value)} /></div></div><div className="grid cols-2"><div className="form-group"><label>Difficulty</label><select value={question.difficulty} onChange={(event) => update(index, 'difficulty', event.target.value)}><option>Easy</option><option>Medium</option><option>Hard</option></select></div><div className="form-group"><label>Explanation</label><textarea value={question.explanation} onChange={(event) => update(index, 'explanation', event.target.value)} /></div></div><button type="button" className="btn small" onClick={() => confirm(index)}>Confirm Question</button></div>)}</div><div className="card"><div className="form-group"><label>Assessment title</label><input value={assessmentTitle} onChange={(event) => setAssessmentTitle(event.target.value)} placeholder="e.g. Cloud Computing Assessment" /></div><div className="form-group"><label>Description / instructions</label><textarea value={assessmentDescription} onChange={(event) => setAssessmentDescription(event.target.value)} /></div><div className="form-group"><label>Duration (minutes)</label><input type="number" min="1" value={assessmentDuration} onChange={(event) => setAssessmentDuration(event.target.value)} /></div><button className="btn" disabled={busy || !confirmedCount} onClick={createAssessment}>{busy ? 'Creating...' : `Import and Create Assessment from ${confirmedCount} Questions`}</button></div></>}
+    {!questions.length && <form className="faculty-upload-shell" onSubmit={analyze}>
+      <div className="faculty-upload-card">
+        <div className="faculty-upload-dropzone">
+          <div className="faculty-upload-copy">
+            <h3>Upload assessment material</h3>
+            <p>Extract questions from a PDF or DOCX and review them before creating a new assessment.</p>
+          </div>
+          <div className="faculty-file-actions">
+            <label className="faculty-upload-input">
+              <input id="faculty-question-file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => setFile(event.target.files?.[0] || null)} />
+            </label>
+            <button className="btn" disabled={busy}>{busy ? busyMessage : 'Upload & Analyze'}</button>
+          </div>
+        </div>
+      </div>
+    </form>}
+    {questions.length > 0 && <div className="faculty-upload-shell">
+      <div className="faculty-stat-grid">
+        <div className="faculty-stat-card primary"><div><span>Total</span><strong>{questions.length}</strong></div><span>Questions</span></div>
+        <div className="faculty-stat-card success"><div><span>Valid</span><strong>{validCount}</strong></div><span>Ready</span></div>
+        <div className="faculty-stat-card warning"><div><span>Needs review</span><strong>{questions.length - validCount}</strong></div><span>Review</span></div>
+      </div>
+      <div className="faculty-upload-card">
+        <div className="faculty-review-header">
+          <h2>Review and import</h2>
+          <button type="button" className="btn secondary" onClick={confirmAll}>Confirm all questions</button>
+        </div>
+        <div className="faculty-question-list">
+          {questions.map((question, index) => <div className="faculty-question-card" key={`${question.sourceNumber || 'question'}-${index}`}>
+            <div className="faculty-question-top">
+              <h3>Question {index + 1}</h3>
+              <div className="top-actions">
+                <span className={`faculty-status-badge ${question.confirmed && isValidQuestion(question) ? 'confirmed' : 'needs'}`}>{question.confirmed && isValidQuestion(question) ? 'Confirmed' : 'Needs review'}</span>
+                <button type="button" className="btn danger small" onClick={() => remove(index)}>Remove</button>
+              </div>
+            </div>
+            <div className="faculty-meta-grid">
+              <div className="faculty-input-stack">
+                <div className="form-group"><label>Question text</label><textarea value={question.question} onChange={(event) => update(index, 'question', event.target.value)} /></div>
+              </div>
+              <div className="faculty-input-stack">
+                <div className="form-group"><label>Subject</label><input value={question.subject} onChange={(event) => update(index, 'subject', event.target.value)} /></div>
+                <div className="form-group"><label>Topic</label><input value={question.topic} onChange={(event) => update(index, 'topic', event.target.value)} /></div>
+              </div>
+            </div>
+            <div className="faculty-option-list">
+              {question.options.map((option, optionIndex) => <div className="faculty-option-row" key={optionIndex}><span className="faculty-option-letter">{String.fromCharCode(65 + optionIndex)}</span><input value={option} onChange={(event) => updateOption(index, optionIndex, event.target.value)} /></div>)}
+            </div>
+            {question.options.length < 4 && <button type="button" className="btn secondary small" onClick={() => addOption(index)}>Add option</button>}
+            <div className="faculty-meta-grid">
+              <div className="form-group"><label>Correct answer</label><select value={question.correctAnswer} onChange={(event) => update(index, 'correctAnswer', event.target.value)}><option value="">Select answer</option>{question.options.map((option, optionIndex) => <option key={optionIndex} value={option}>{String.fromCharCode(65 + optionIndex)}. {option}</option>)}</select></div>
+              <div className="form-group"><label>Difficulty</label><select value={question.difficulty} onChange={(event) => update(index, 'difficulty', event.target.value)}><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
+            </div>
+            <div className="form-group"><label>Explanation</label><textarea value={question.explanation} onChange={(event) => update(index, 'explanation', event.target.value)} /></div>
+            <button type="button" className="btn small" onClick={() => confirm(index)}>Confirm question</button>
+          </div>)}
+        </div>
+      </div>
+      <div className="faculty-upload-card faculty-create-card">
+        <div className="faculty-review-header">
+          <h2>Create assessment</h2>
+          <span className="upload-pill">{confirmedCount} confirmed</span>
+        </div>
+        <div className="form-group"><label>Assessment title</label><input value={assessmentTitle} onChange={(event) => setAssessmentTitle(event.target.value)} placeholder="e.g. Cloud Computing Assessment" /></div>
+        <div className="form-group"><label>Description / instructions</label><textarea value={assessmentDescription} onChange={(event) => setAssessmentDescription(event.target.value)} /></div>
+        <div className="form-group"><label>Duration (minutes)</label><input type="number" min="1" value={assessmentDuration} onChange={(event) => setAssessmentDuration(event.target.value)} /></div>
+        <button className="btn" disabled={busy || !confirmedCount} onClick={createAssessment}>{busy ? 'Creating...' : `Import and Create Assessment from ${confirmedCount} Questions`}</button>
+      </div>
+    </div>}
   </>
 }

@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const mammoth = require('mammoth');
 const WordExtractor = require('word-extractor');
 const { PDFParse } = require('pdf-parse');
-const { parseQuestionPaper } = require('./questionPaperParser');
+const { parseQuestionPaper } = require('./adapters/questionParser');
 
 const previews = new Map();
 const previewLifetime = 30 * 60 * 1000;
@@ -23,6 +23,31 @@ const extractText = async (file) => {
   throw new Error('Unsupported question file type.');
 };
 
+const normalizeParsedQuestion = (question, index = 0) => {
+  const rawQuestionText = String(question?.question || '').trim();
+  const options = Array.isArray(question?.options) ? question.options.map((option) => cleanText(option)) : [];
+  const normalizedOptions = Array.from({ length: 4 }, (_, optionIndex) => cleanText(options[optionIndex] || ''));
+  const correctAnswer = cleanText(question?.correctAnswer || question?.correctOptionText || '');
+  const explicitAnswerFromLetter = question?.correctOption ? normalizedOptions[(question.correctOption.toUpperCase().charCodeAt(0) - 65)] || '' : '';
+  const titleBase = cleanText(question?.title || rawQuestionText.slice(0, 120));
+  const fallbackTopic = cleanText(question?.topic || 'General') || 'General';
+
+  return {
+    id: question?.id || crypto.randomUUID(),
+    title: titleBase || `Question ${index + 1}`,
+    subject: cleanText(question?.subject || 'Imported Questions') || 'Imported Questions',
+    topic: fallbackTopic || 'General',
+    difficulty: ['Easy', 'Medium', 'Hard'].includes(question?.difficulty) ? question.difficulty : 'Medium',
+    marks: Number(question?.marks) > 0 ? Number(question.marks) : 1,
+    question: rawQuestionText,
+    options: normalizedOptions,
+    correctAnswer: correctAnswer || explicitAnswerFromLetter,
+    explanation: cleanText(question?.explanation || ''),
+    questionType: 'MCQ',
+    reasons: []
+  };
+};
+
 const validateQuestion = (question) => {
   const reasons = [];
   const options = Array.isArray(question.options) ? question.options.map(cleanText) : [];
@@ -32,21 +57,33 @@ const validateQuestion = (question) => {
   else if (options.length !== 4) reasons.push('Invalid number of options');
   if (!correctAnswer) reasons.push('Missing correct answer');
   else if (!options.includes(correctAnswer)) reasons.push('Correct answer does not match any option');
-  return { ...question, question: cleanText(question.question), options, correctAnswer, reasons, valid: reasons.length === 0 };
+  return {
+    ...question,
+    question: cleanText(question.question),
+    options,
+    correctAnswer,
+    reasons,
+    valid: reasons.length === 0,
+  };
 };
 
-const parseQuestions = (text) => parseQuestionPaper(text).map((question) => validateQuestion({
-  id: crypto.randomUUID(),
-  question: question.question,
-  options: question.options,
-  correctAnswer: question.correctAnswer || '',
-  subject: '',
-  topic: question.topic || '',
-  difficulty: '',
-  explanation: '',
-  questionType: 'MCQ',
-  marks: 1,
-}));
+const parseQuestions = (text) => {
+  const extracted = parseQuestionPaper(text) || {};
+  const sourceQuestions = Array.isArray(extracted.questions) ? extracted.questions : [];
+
+  return sourceQuestions.map((question, index) => validateQuestion({
+    ...normalizeParsedQuestion(question, index),
+    question: cleanText(question?.question || ''),
+    options: Array.isArray(question?.options) ? question.options.map((option) => cleanText(option)) : [],
+    correctAnswer: cleanText(question?.correctAnswer || question?.correctOptionText || ''),
+    subject: cleanText(question?.subject || 'Imported Questions') || 'Imported Questions',
+    topic: cleanText(question?.topic || 'General') || 'General',
+    difficulty: ['Easy', 'Medium', 'Hard'].includes(question?.difficulty) ? question.difficulty : 'Medium',
+    explanation: cleanText(question?.explanation || ''),
+    questionType: 'MCQ',
+    marks: Number(question?.marks) > 0 ? Number(question.marks) : 1,
+  }));
+};
 
 const createPreview = async (file) => {
   try {
@@ -68,6 +105,17 @@ const getPreview = (token) => {
 
 const deletePreview = (token) => previews.delete(token);
 
-const validateForImport = (questions) => (Array.isArray(questions) ? questions : []).map((question) => validateQuestion({ ...question, question: cleanText(question.question), options: Array.isArray(question.options) ? question.options.map(cleanText) : [] }));
+const validateForImport = (questions) => (Array.isArray(questions) ? questions : []).map((question) => validateQuestion({
+  ...normalizeParsedQuestion(question),
+  question: cleanText(question.question),
+  options: Array.isArray(question.options) ? question.options.map((option) => cleanText(option)) : [],
+  correctAnswer: cleanText(question.correctAnswer),
+  subject: cleanText(question.subject || 'Imported Questions') || 'Imported Questions',
+  topic: cleanText(question.topic || 'General') || 'General',
+  difficulty: ['Easy', 'Medium', 'Hard'].includes(question.difficulty) ? question.difficulty : 'Medium',
+  explanation: cleanText(question.explanation || ''),
+  questionType: 'MCQ',
+  marks: Number(question.marks) > 0 ? Number(question.marks) : 1,
+}));
 
 module.exports = { createPreview, getPreview, deletePreview, validateForImport, parseQuestions };

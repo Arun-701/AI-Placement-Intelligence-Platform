@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { api } from '../../api'
+import './AIChat.css'
 
 // Simple DonutChart component for difficulty distribution
 function DonutChart({ data, total }) {
@@ -7,7 +8,7 @@ function DonutChart({ data, total }) {
   const getPercentage = (count) => (count / total) * 100
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+    <div className="mentor-donut-wrap">
       <div style={{ width: '200px', height: '200px', position: 'relative' }}>
         <svg viewBox="0 0 200 200" style={{ transform: 'rotate(-90deg)' }}>
           {(() => {
@@ -38,18 +39,14 @@ function DonutChart({ data, total }) {
           })()}
         </svg>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      <div className="mentor-donut-legend">
         {Object.entries(data).map(([level, count]) => (
-          <div key={level} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div key={level} className="mentor-donut-item">
             <div
-              style={{
-                width: '16px',
-                height: '16px',
-                borderRadius: '3px',
-                backgroundColor: colors[level] || '#999'
-              }}
+              className="mentor-donut-swatch"
+              style={{ backgroundColor: colors[level] || '#999' }}
             />
-            <span style={{ fontSize: '0.9rem' }}>
+            <span>
               {level}: {count} ({getPercentage(count).toFixed(1)}%)
             </span>
           </div>
@@ -64,21 +61,17 @@ function TopicFrequencyChart({ topics }) {
   const maxQuestions = Math.max(...topics.map((t) => t.questionCount), 1)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div className="mentor-topic-list">
       {topics.slice(0, 8).map((topic, idx) => (
-        <div key={idx}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
-            <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>{topic.topic}</span>
-            <span style={{ fontSize: '0.85rem', color: '#666' }}>{topic.questionCount}</span>
+        <div key={idx} className="mentor-topic-row">
+          <div className="mentor-topic-meta">
+            <span>{topic.topic}</span>
+            <span>{topic.questionCount}</span>
           </div>
-          <div style={{ width: '100%', height: '20px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+          <div className="mentor-topic-bar">
             <div
-              style={{
-                height: '100%',
-                width: `${(topic.questionCount / maxQuestions) * 100}%`,
-                backgroundColor: '#7c3aed',
-                transition: 'width 0.3s'
-              }}
+              className="mentor-topic-bar-fill"
+              style={{ width: `${(topic.questionCount / maxQuestions) * 100}%` }}
             />
           </div>
         </div>
@@ -94,22 +87,49 @@ function TopicFrequencyChart({ topics }) {
 
 export default function AIChat() {
   const [file, setFile] = useState(null)
+  const [inputMode, setInputMode] = useState('file')
+  const [pasteText, setPasteText] = useState('')
   const [analyzing, setAnalyzing] = useState(false)
   const [error, setError] = useState('')
   const [analysis, setAnalysis] = useState(null)
 
+  const normalizeAiMentorAnalysis = (payload) => {
+    if (!payload) return null
+
+    const rankedTopics = Array.isArray(payload.rankedTopics) ? payload.rankedTopics : []
+    const topicFrequency = Array.isArray(payload.topicFrequency) ? payload.topicFrequency : []
+    const normalizedTopics = (rankedTopics.length > 0 ? rankedTopics : topicFrequency).map((topic) => ({
+      topic: topic.topic || topic.name || 'General',
+      questionCount: Number(topic.questions ?? topic.count ?? 0),
+      difficulty: topic.difficulty || 'Medium',
+      priority: topic.priority || 'Medium',
+      domain: topic.subject || topic.domain || 'General',
+      subject: topic.subject || topic.domain || 'General'
+    }))
+
+    return {
+      totalQuestions: payload.summary?.questionsAnalyzed ?? payload.questionsExtracted ?? normalizedTopics.reduce((sum, item) => sum + (item.questionCount || 0), 0),
+      topics: normalizedTopics,
+      difficultyDistribution: payload.difficultyDistribution || { Easy: 0, Medium: 0, Hard: 0 },
+      recommendedStudyOrder: Array.isArray(payload.studyOrder) ? payload.studyOrder : [],
+      ...payload
+    }
+  }
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
-      // Validate file type
-      const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg']
+      const validTypes = [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain'
+      ]
       if (!validTypes.includes(selectedFile.type)) {
-        setError('Please upload a PDF or image file (JPG, PNG)')
+        setError('Please upload a PDF, DOCX, or TXT file')
         setFile(null)
         return
       }
 
-      // Validate file size (5MB max)
       if (selectedFile.size > 5 * 1024 * 1024) {
         setError('File size must be less than 5MB')
         setFile(null)
@@ -122,7 +142,12 @@ export default function AIChat() {
   }
 
   const handleAnalyze = async () => {
-    if (!file) {
+    if (inputMode === 'text') {
+      if (!pasteText.trim()) {
+        setError('Please paste question text first')
+        return
+      }
+    } else if (!file) {
       setError('Please select a file first')
       return
     }
@@ -132,19 +157,26 @@ export default function AIChat() {
     setAnalysis(null)
 
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const response = await api.upload('/ai/question-paper/analyze', formData)
-
-      if (response.ok) {
-        setAnalysis(response.data.data)
-        setFile(null)
-        // Reset file input
-        const input = document.querySelector('input[type="file"]')
-        if (input) input.value = ''
+      let response
+      if (inputMode === 'text') {
+        response = await api.post('/ai/mentor/analyze', { questionText: pasteText })
       } else {
-        setError(response.data?.message || 'Failed to analyze question paper. Please try again.')
+        const formData = new FormData()
+        formData.append('file', file)
+        response = await api.upload('/ai/mentor/analyze', formData)
+      }
+
+      if (response.ok && response.data?.data) {
+        setAnalysis(normalizeAiMentorAnalysis(response.data.data))
+        if (inputMode === 'file') {
+          setFile(null)
+          const input = document.querySelector('input[type="file"]')
+          if (input) input.value = ''
+        } else {
+          setPasteText('')
+        }
+      } else {
+        setError(response.data?.message || response.data?.error || 'Failed to analyze question paper. Please try again.')
       }
     } catch (err) {
       setError('Network error: ' + (err.message || 'Failed to connect to server'))
@@ -176,37 +208,80 @@ export default function AIChat() {
         </p>
 
         <div style={{ backgroundColor: '#f5f5f5', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
-          <p style={{ fontSize: '0.85rem', color: '#999', margin: '0 0 0.5rem 0' }}>Or upload PDF / TXT</p>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
-            <div style={{ flex: 1 }}>
-              <input
-                type="file"
-                accept=".pdf,image/jpeg,image/png,image/jpg"
-                onChange={handleFileChange}
-                disabled={analyzing}
-                style={{
-                  padding: '0.5rem',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  width: '100%',
-                  boxSizing: 'border-box'
-                }}
-              />
-              {file && (
-                <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#666' }}>
-                  Selected: {file.name}
-                </p>
-              )}
-            </div>
+          <div className="mentor-input-toggle" style={{ marginBottom: '1rem' }}>
             <button
-              className="btn"
-              onClick={handleAnalyze}
-              disabled={!file || analyzing}
-              style={{ whiteSpace: 'nowrap' }}
+              type="button"
+              className={inputMode === 'file' ? 'btn small active' : 'btn secondary small'}
+              onClick={() => setInputMode('file')}
             >
-              {analyzing ? 'Analyzing Questions...' : 'Analyze Questions'}
+              Upload File
+            </button>
+            <button
+              type="button"
+              className={inputMode === 'text' ? 'btn small active' : 'btn secondary small'}
+              onClick={() => setInputMode('text')}
+            >
+              Enter Text
             </button>
           </div>
+
+          {inputMode === 'file' ? (
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+              <div style={{ flex: 1 }}>
+                <input
+                  type="file"
+                  accept=".pdf,.docx,.txt"
+                  onChange={handleFileChange}
+                  disabled={analyzing}
+                  style={{
+                    padding: '0.5rem',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    width: '100%',
+                    boxSizing: 'border-box'
+                  }}
+                />
+                {file && (
+                  <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#666' }}>
+                    Selected: {file.name}
+                  </p>
+                )}
+              </div>
+              <button
+                className="btn"
+                onClick={handleAnalyze}
+                disabled={!file || analyzing}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                {analyzing ? 'Analyzing Questions...' : 'Analyze Questions'}
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <textarea
+                value={pasteText}
+                onChange={(e) => setPasteText(e.target.value)}
+                placeholder="Paste or type question paper text here..."
+                rows={8}
+                style={{
+                  width: '100%',
+                  resize: 'vertical',
+                  padding: '0.75rem',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  boxSizing: 'border-box',
+                  fontFamily: 'inherit'
+                }}
+              />
+              <button
+                className="btn"
+                onClick={handleAnalyze}
+                disabled={!pasteText.trim() || analyzing}
+              >
+                {analyzing ? 'Analyzing Questions...' : 'Analyze Text'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

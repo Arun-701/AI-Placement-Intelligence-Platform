@@ -65,6 +65,12 @@ const roadmapSchema = new mongoose.Schema(
                         default: [],
                     },
                     week: { type: Number, default: 1 },
+                    adaptiveReadiness: {
+                        accuracy: { type: Number, min: 0, max: 100, default: null },
+                        level: { type: String, enum: ["Very Low", "Low", "Medium", "High"], default: null },
+                        assessedAt: { type: Date, default: null },
+                        topics: { type: [mongoose.Schema.Types.Mixed], default: [] },
+                    },
                 },
             ],
             default: [],
