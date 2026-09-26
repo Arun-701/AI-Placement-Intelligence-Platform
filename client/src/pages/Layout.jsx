@@ -25,7 +25,7 @@ export default function Layout() {
         ? [
             { to: '/admin', label: 'Dashboard', end: true },
             { to: '/admin/students', label: 'Students' },
-            { to: '/admin/faculties', label: 'Faculties' },
+          { to: '/admin/faculties', label: 'Faculty' },
             { to: '/admin/reports', label: 'Leaderboard' },
             { to: '/admin/assessments', label: 'Assessments' },
             { to: '/admin/notifications', label: 'Notifications' },

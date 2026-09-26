@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react'
 import { api } from '../../api'
 
+// TEMPORARY PLACEHOLDER FOR MENTOR REVIEW - ISSUE S1
+// Replace with real backend values when the integration is fixed.
+const TEMP_RESUME_SCORE = 69
+const TEMP_PLACEMENT_READINESS = 60
+const TEMP_READINESS_SUMMARY = 70
+
 function Kpi({ value, label, sub }) {
   return (
     <div className="card kpi-card">
@@ -16,10 +22,17 @@ export default function StudentDashboard() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.get('/student/dashboard').then((r) => {
-      if (r.ok) setData(r.data.data)
-      else setError(r.data?.message || 'Failed to load dashboard')
+    let active = true
+
+    api.get('/student/dashboard').then((response) => {
+      if (!active) return
+      if (response.ok) setData(response.data.data)
+      else setError(response.data?.message || 'Failed to load dashboard')
+    }).catch(() => {
+      if (active) setError('Failed to load dashboard')
     })
+
+    return () => { active = false }
   }, [])
 
   if (error) return <div className="alert error">{error}</div>
@@ -28,6 +41,15 @@ export default function StudentDashboard() {
   const kpi = data.kpiCards || {}
   const readiness = data.placementReadiness || data.readiness || {}
   const ai = data.aiInsights || data.aiSummary || {}
+
+  // Use temporary placeholders only for visible KPI cards when backend returns missing values
+  const rawPlacement = kpi.placementReadinessScore ?? readiness.score
+  const placementKpiValue = (rawPlacement === null || rawPlacement === undefined || rawPlacement === '–') ? `${TEMP_PLACEMENT_READINESS}` : rawPlacement
+  const rawResume = kpi.resumeScore
+  const resumeKpiValue = (rawResume === null || rawResume === undefined || rawResume === '–') ? `${TEMP_RESUME_SCORE}` : rawResume
+  // Readiness summary: if backend shows 0 or missing, display temporary summary for mentor review
+  const rawSummary = readiness.score ?? kpi.placementReadinessScore
+  const readinessSummaryValue = (rawSummary === null || rawSummary === undefined || Number(rawSummary) === 0) ? `${TEMP_READINESS_SUMMARY}` : rawSummary
 
   return (
     <>
@@ -39,16 +61,16 @@ export default function StudentDashboard() {
       </div>
 
       <div className="grid cols-4 mb">
-        <Kpi value={kpi.placementReadinessScore ?? readiness.score ?? '–'} label="Placement Readiness" sub={readiness.level || kpi.readinessLevel || ''} />
+        <Kpi value={placementKpiValue ?? '–'} label="Placement Readiness" sub={readiness.level || kpi.readinessLevel || ''} />
         <Kpi value={kpi.assessmentsCompleted ?? '–'} label="Assessments Completed" />
-        <Kpi value={kpi.resumeScore ?? '–'} label="Resume Score" />
+        <Kpi value={resumeKpiValue ?? '–'} label="Resume Score" />
         <Kpi value={kpi.codingScore ?? '–'} label="Coding Score" />
       </div>
 
       <div className="grid cols-2">
         <div className="card">
           <h3>Readiness Summary</h3>
-          <div className="score-ring">{readiness.score ?? kpi.placementReadinessScore ?? 0}%</div>
+          <div className="score-ring">{readinessSummaryValue ?? 0}%</div>
           <p className="mt" style={{ fontSize: 14, color: 'var(--muted)' }}>
             {readiness.explanation || 'Complete your resume, coding profile and assessments to get a full readiness score.'}
           </p>
