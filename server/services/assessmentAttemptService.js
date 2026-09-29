@@ -16,6 +16,23 @@ const {
 } = require("./assessmentEvaluationService");
 const { updateStudentReadinessProfile } = require("./readinessService");
 
+const getStudentAssessmentQuestionIds = (assessment, studentId) => {
+    if (!assessment.usesMultiSetAssignment) return assessment.questions;
+    const assignment = (assessment.setAssignments || []).find((set) =>
+        (set.assignedStudents || []).some((assigned) => assigned.toString() === studentId.toString())
+    );
+    return assignment && assessment.questionSets?.[assignment.setIndex]
+        ? assessment.questionSets[assignment.setIndex].questions
+        : [];
+};
+
+const getStudentAssessmentAssignment = (assessment, studentId) => {
+    if (!assessment.usesMultiSetAssignment) return null;
+    return (assessment.setAssignments || []).find((set) =>
+        (set.assignedStudents || []).some((assigned) => assigned.toString() === studentId.toString())
+    ) || null;
+};
+
 /**
  * Get all assessments assigned to a student
  */
@@ -50,10 +67,11 @@ const getAssignedAssessments = async (studentId) => {
             title: { $ne: "Initial Onboarding Assessment" },
             $or: [
                 { assignedStudents: { $in: [studentId] } },
-                { assignedStudents: { $size: 0 } }
+                { assignedStudents: { $size: 0 }, usesMultiSetAssignment: { $ne: true } },
+                { usesMultiSetAssignment: true, "setAssignments.assignedStudents": studentId }
             ]
         })
-            .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
+            .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment usesMultiSetAssignment setAssignments")
             .lean();
 
         // 2. All completed assessments (for history)
@@ -87,19 +105,37 @@ const getAssignedAssessments = async (studentId) => {
                 assessment: assessment._id
             }).lean();
 
+            const assignment = getStudentAssessmentAssignment(assessment, studentId);
+            const studentStartDate = assignment?.startDate || assessment.startDate;
+            const studentEndDate = assignment?.endDate || assessment.endDate;
+            const now = new Date();
+            const inStudentWindow = (!studentStartDate || new Date(studentStartDate) <= now) && (!studentEndDate || new Date(studentEndDate) >= now);
+
             return {
                 ...assessment,
+                ...(assessment.usesMultiSetAssignment ? (assignment ? {
+                        startDate: assignment.startDate,
+                        endDate: assignment.endDate,
+                        assignedSetIndex: assignment.setIndex,
+                        totalMarks: (assessment.questionSets?.[assignment.setIndex]?.questions || []).reduce((total, questionId) => {
+                            const question = (assessment.questions || []).find((item) => item._id?.toString() === questionId.toString());
+                            return total + (Number(question?.marks) || 0);
+                        }, 0)
+                    } : {}) : {}),
                 attemptStatus: result ? "Completed" : "Pending",
                 attempted: !!result,
                 resultId: result?._id || null,
                 score: result ? result.score : null,
                 percentage: result ? result.percentage : null,
-                submittedAt: result?.submittedAt || null
+                submittedAt: result?.submittedAt || null,
+                _isAvailableNow: inStudentWindow
             };
         })
     );
 
-    return assessmentsWithStatus;
+    return assessmentsWithStatus.filter((assessment) =>
+        assessment.attemptStatus === "Completed" || !assessment.usesMultiSetAssignment || assessment._isAvailableNow
+    ).map(({ _isAvailableNow, ...assessment }) => assessment);
 };
 
 /**
@@ -113,6 +149,9 @@ const startAssessment = async (studentId, assessmentId) => {
     }
 
     const assessment = assessmentValidation.assessment;
+    const studentAssignment = getStudentAssessmentAssignment(assessment, studentId);
+    const selectedQuestionIds = getStudentAssessmentQuestionIds(assessment, studentId);
+    if (!selectedQuestionIds?.length) throw new Error("No questions are configured for your assigned set");
 
     // Validate student is active
     const studentValidation = await validateStudentActive(studentId);
@@ -131,7 +170,7 @@ const startAssessment = async (studentId, assessmentId) => {
     }
 
     // Validate deadline
-    const deadlineValidation = validateAssessmentDeadline(assessment);
+    const deadlineValidation = validateAssessmentDeadline(assessment, studentId);
     if (!deadlineValidation.valid) {
         throw new Error(deadlineValidation.message);
     }
@@ -154,7 +193,7 @@ const startAssessment = async (studentId, assessmentId) => {
         });
 
         // Remove correct answers from questions for student view
-        const questionsForStudentExisting = fullAssessment.questions.map((q) => {
+        const questionsForStudentExisting = fullAssessment.questions.filter((q) => selectedQuestionIds.some((id) => id.toString() === q._id.toString())).map((q) => {
             const qObj = q.toObject();
             delete qObj.correctAnswer;
             delete qObj.explanation;
@@ -170,8 +209,8 @@ const startAssessment = async (studentId, assessmentId) => {
                 description: assessment.description,
                 totalMarks: assessment.totalMarks,
                 duration: assessment.duration || 30,
-                startDate: assessment.startDate,
-                endDate: assessment.endDate
+                startDate: studentAssignment?.startDate || assessment.startDate,
+                endDate: studentAssignment?.endDate || assessment.endDate
             },
             questions: questionsForStudentExisting,
             startedAt: startedAtExisting,
@@ -187,7 +226,7 @@ const startAssessment = async (studentId, assessmentId) => {
     });
 
     // Remove correct answers from questions for student view
-    const questionsForStudent = fullAssessment.questions.map((q) => {
+    const questionsForStudent = fullAssessment.questions.filter((q) => selectedQuestionIds.some((id) => id.toString() === q._id.toString())).map((q) => {
         const qObj = q.toObject();
         delete qObj.correctAnswer;
         delete qObj.explanation;
@@ -215,8 +254,8 @@ const startAssessment = async (studentId, assessmentId) => {
             description: assessment.description,
             totalMarks: assessment.totalMarks,
                 duration: assessment.duration || 30,
-            startDate: assessment.startDate,
-            endDate: assessment.endDate
+        startDate: studentAssignment?.startDate || assessment.startDate,
+        endDate: studentAssignment?.endDate || assessment.endDate
         },
         questions: questionsForStudent,
         startedAt,
@@ -269,22 +308,20 @@ const submitAssessment = async (studentId, assessmentId, answers, timeTaken = 0)
 
     const assessment = assessmentValidation.assessment;
 
+    const studentAssignmentValidation = validateStudentAssigned(assessment, studentId);
+    if (!studentAssignmentValidation.valid) throw new Error(studentAssignmentValidation.message);
+    if (assessment.usesMultiSetAssignment) {
+        const allowedIds = new Set((assessment.questionSets?.[studentAssignmentValidation.assignment.setIndex]?.questions || []).map((id) => id.toString()));
+        const answerIds = answers.map((answer) => answer.question.toString());
+        if (answerIds.length !== allowedIds.size || answerIds.some((id) => !allowedIds.has(id))) {
+            throw new Error("Answers must contain exactly the questions in your assigned set");
+        }
+    }
+
     // Validate student is active
     const studentValidation = await validateStudentActive(studentId);
     if (!studentValidation.valid) {
         throw new Error(studentValidation.message);
-    }
-
-    // Validate student is assigned
-    const assignmentValidation = validateStudentAssigned(assessment, studentId);
-    if (!assignmentValidation.valid) {
-        throw new Error(assignmentValidation.message);
-    }
-
-    // Validate deadline
-    const deadlineValidation = validateAssessmentDeadline(assessment);
-    if (!deadlineValidation.valid) {
-        throw new Error(deadlineValidation.message);
     }
 
     // Validate no duplicate attempts
@@ -294,7 +331,10 @@ const submitAssessment = async (studentId, assessmentId, answers, timeTaken = 0)
     }
 
     // Validate answers format
-    const answersValidation = validateAnswers(answers, assessment.questions);
+    const questionsForValidation = assessment.usesMultiSetAssignment
+        ? assessment.questionSets[studentAssignmentValidation.assignment.setIndex].questions
+        : assessment.questions;
+    const answersValidation = validateAnswers(answers, questionsForValidation);
     if (!answersValidation.valid) {
         throw new Error(answersValidation.message);
     }

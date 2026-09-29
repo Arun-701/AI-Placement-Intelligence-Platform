@@ -109,6 +109,57 @@ const assessmentSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    // Question sets for multi-set assignment
+    questionSets: {
+      type: [
+        {
+          setNumber: Number,
+          questions: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "QuestionBank",
+            },
+          ],
+        },
+      ],
+      default: [],
+    },
+
+    // Multi-set assignment support
+    assignmentSets: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "AssignmentSet",
+        },
+      ],
+      default: [],
+    },
+
+    usesMultiSetAssignment: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Set-wise assignment data
+    setAssignments: {
+      type: [
+        {
+          setIndex: Number,
+          departments: [String],
+          startDate: Date,
+          endDate: Date,
+          assignedStudents: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Student",
+            },
+          ],
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,

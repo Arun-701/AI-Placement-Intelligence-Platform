@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../../api'
 import { useAuth } from '../../AuthContext'
+import { normalizeTopicAnalysis } from '../../utils/topicPerformance'
 
 export default function AssessmentResult() {
   const { resultId } = useParams()
@@ -33,6 +34,7 @@ export default function AssessmentResult() {
   const attempted = correct + incorrect
   const passingMarks = typeof result.assessment?.passingMarks === 'number' ? result.assessment.passingMarks : 0
   const passed = result.score >= passingMarks
+  const topicPerformance = normalizeTopicAnalysis(result.topicAnalysis)
 
   return (
     <>
@@ -60,6 +62,45 @@ export default function AssessmentResult() {
           <span>Incorrect Answers: <strong>{incorrect}</strong></span>
           <span>Skipped: <strong>{skipped}</strong></span>
         </div>
+      </div>
+
+      <div className="card mb">
+        <h3>Topic-wise Performance</h3>
+        {topicPerformance.length ? (
+          <div className="table-wrap">
+            <table className="topic-performance-table">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Correct</th>
+                  <th>Total</th>
+                  <th>Accuracy</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topicPerformance.map((topic) => (
+                  <tr key={topic.key}>
+                    <td>
+                      <div className="topic-name-cell">
+                        <strong>{topic.topic}</strong>
+                        <div className="topic-progress" aria-label={`${topic.topic} progress`}>
+                          <div className="topic-progress-fill" style={{ width: `${topic.accuracy}%` }} />
+                        </div>
+                      </div>
+                    </td>
+                    <td>{topic.correctAnswers}</td>
+                    <td>{topic.totalQuestions}</td>
+                    <td>{Math.round(topic.accuracy)}%</td>
+                    <td><span className={`badge ${topic.status.tone}`}>{topic.status.label}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p style={{ color: 'var(--muted)', fontSize: 14, margin: 0 }}>Topic-wise analysis is not available for this assessment.</p>
+        )}
       </div>
 
       <div className="grid cols-2">

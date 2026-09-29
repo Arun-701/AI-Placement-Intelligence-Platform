@@ -40,16 +40,43 @@ const assertAdminOwnedAssessment = async (id) => {
 
 const createAssessment = async (req, res) => {
   try {
-    const { title, description = "", questionIds, duration = 60 } = req.body || {};
+    const { title, description = "", questionIds, questionSets: requestedQuestionSets, duration = 60 } = req.body || {};
     if (!title?.trim() || !Array.isArray(questionIds) || !questionIds.length) return errorResponse(res, { status: 400, message: "Title and imported questions are required" });
     if (!questionIds.every((id) => mongoose.isValidObjectId(id))) return errorResponse(res, { status: 400, message: "Invalid question ID" });
     const questions = await QuestionBank.find({ _id: { $in: questionIds }, isActive: true }).select("_id marks");
     if (questions.length !== questionIds.length) return errorResponse(res, { status: 400, message: "One or more imported questions are unavailable" });
+    let questionSets = [];
+    if (requestedQuestionSets !== undefined) {
+      if (!Array.isArray(requestedQuestionSets)) return errorResponse(res, { status: 400, message: "Question sets must be an array" });
+    }
+    if (Array.isArray(requestedQuestionSets) && requestedQuestionSets.length) {
+      const normalizedSets = [];
+      for (let index = 0; index < requestedQuestionSets.length; index += 1) {
+        const set = requestedQuestionSets[index];
+        if (!set || typeof set !== "object" || !Array.isArray(set.questionIds) || !set.questionIds.length || !set.questionIds.every((id) => mongoose.isValidObjectId(id) && questionIds.includes(id))) {
+          return errorResponse(res, { status: 400, message: `Set ${index + 1} contains invalid questions` });
+        }
+        const setNumber = Number(set.setNumber);
+        if (!Number.isInteger(setNumber) || setNumber < 1) return errorResponse(res, { status: 400, message: `Set ${index + 1} has an invalid set number` });
+        normalizedSets.push({ setNumber, questions: [...new Set(set.questionIds)] });
+      }
+      if (new Set(normalizedSets.map((set) => set.setNumber)).size !== normalizedSets.length) {
+        return errorResponse(res, { status: 400, message: "Question set numbers must be unique" });
+      }
+      const assignedQuestionIds = normalizedSets.flatMap((set) => set.questions.map((id) => id.toString()));
+      if (new Set(assignedQuestionIds).size !== assignedQuestionIds.length) {
+        return errorResponse(res, { status: 400, message: "A question cannot belong to more than one set" });
+      }
+      if (assignedQuestionIds.length !== questionIds.length || questionIds.some((id) => !assignedQuestionIds.includes(id.toString()))) {
+        return errorResponse(res, { status: 400, message: "Every assessment question must belong to exactly one set" });
+      }
+      questionSets = normalizedSets;
+    }
     const totalMarks = questions.reduce((sum, question) => sum + (Number(question.marks) || 1), 0);
     const assessment = await Assessment.create({
       title: title.trim(), description, questions: questionIds, totalMarks,
       duration: Math.max(1, Number(duration) || 60), status: "Draft", isActive: true,
-      assessmentType: "Practice", createdByAdmin: req.user.id,
+      assessmentType: "Practice", createdByAdmin: req.user.id, questionSets,
     });
     return successResponse(res, { status: 201, message: "Assessment created successfully. Assign a department to publish it.", data: assessment });
   } catch (error) { return errorResponse(res, { status: error.status || (error.name === "ValidationError" ? 400 : 500), message: error.message }); }
@@ -147,4 +174,140 @@ const deleteAssessment = async (req, res) => {
   } catch (error) { return errorResponse(res, { status: error.status || 500, message: error.message }); }
 };
 
-module.exports = { createAssessment, getDepartments, getAssessments, assignAssessment, updateDeadline, enableAssessment, getAssessmentDetails, updateTitle, deleteAssessment };
+// Multi-set assignment: assigns each set to multiple departments with their own dates
+const assignMultipleSets = async (req, res) => {
+  try {
+    const { id: assessmentId } = req.params;
+    const { sets } = req.body || {};
+
+    if (!mongoose.isValidObjectId(assessmentId)) {
+      return errorResponse(res, { status: 400, message: "Invalid assessment ID" });
+    }
+
+    // Validate input
+    if (!Array.isArray(sets) || !sets.length) {
+      return errorResponse(res, { status: 400, message: "At least one set configuration is required" });
+    }
+
+    // Validate each set
+    const normalizedSetIndexes = new Set();
+    for (const set of sets) {
+      if (!set || typeof set !== "object") return errorResponse(res, { status: 400, message: "Each set configuration must be an object" });
+      const setIndex = Number(set.setIndex);
+      if (!Number.isInteger(setIndex) || setIndex < 0 || normalizedSetIndexes.has(setIndex)) {
+        return errorResponse(res, { status: 400, message: "Each configured set must have a unique valid set index" });
+      }
+      normalizedSetIndexes.add(setIndex);
+      if (!Array.isArray(set.departments) || !set.departments.length) {
+        return errorResponse(res, { status: 400, message: `Set ${Number(set.setIndex) + 1}: Please select at least one department` });
+      }
+      if (!set.startDate) {
+        return errorResponse(res, { status: 400, message: `Set ${Number(set.setIndex) + 1}: Start date is required` });
+      }
+      if (!set.endDate) {
+        return errorResponse(res, { status: 400, message: `Set ${Number(set.setIndex) + 1}: End date is required` });
+      }
+
+      const startDate = new Date(set.startDate);
+      const endDate = new Date(set.endDate);
+
+      if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+        return errorResponse(res, { status: 400, message: `Set ${set.setIndex + 1}: Invalid date format` });
+      }
+      if (endDate <= startDate) {
+        return errorResponse(res, { status: 400, message: `Set ${set.setIndex + 1}: End date must be after start date` });
+      }
+      set.departments = [...new Set(set.departments.map((department) => String(department).trim()).filter(Boolean))];
+      if (!set.departments.length) return errorResponse(res, { status: 400, message: `Set ${set.setIndex + 1}: Please select at least one department` });
+
+      if (startDate <= new Date()) return errorResponse(res, { status: 400, message: `Set ${set.setIndex + 1}: Start date must be in the future` });
+    }
+
+    // Get assessment
+    const assessment = await Assessment.findById(assessmentId);
+    if (!assessment) {
+      return errorResponse(res, { status: 404, message: "Assessment not found" });
+    }
+
+    // Check ownership
+    if (assessment.assignedFaculty) {
+      return errorResponse(res, { status: 403, message: "Cannot modify faculty-created assessments" });
+    }
+
+    const questionSets = assessment.questionSets;
+    if (!Array.isArray(questionSets) || !questionSets.length) {
+      return errorResponse(res, { status: 400, message: "This assessment has no question sets to assign" });
+    }
+
+    const validSetIndexes = new Set(questionSets.map((set, index) => index));
+    if (sets.some((set) => !Number.isInteger(Number(set.setIndex)) || !validSetIndexes.has(Number(set.setIndex)))) {
+      return errorResponse(res, { status: 400, message: "One or more question set selections are invalid" });
+    }
+
+    // Collect all unique students from all departments in all sets
+    const allDepartments = [...new Set(sets.flatMap((s) => s.departments))];
+    // Create set-wise assignment data
+    const setAssignments = [];
+    for (const set of sets) {
+      const setStudents = await Student.find({
+        department: { $in: set.departments },
+        isActive: true,
+      }).select("_id");
+
+      if (!setStudents.length) {
+        return errorResponse(res, { status: 400, message: `Set ${Number(set.setIndex) + 1}: No active students found in the selected departments` });
+      }
+
+      setAssignments.push({
+        setIndex: Number(set.setIndex),
+        departments: set.departments,
+        startDate: new Date(set.startDate),
+        endDate: new Date(set.endDate),
+        assignedStudents: setStudents.map((s) => s._id),
+      });
+    }
+
+    const studentSetIndex = new Map();
+    for (const assignment of setAssignments) {
+      for (const studentId of assignment.assignedStudents) {
+        const key = studentId.toString();
+        if (studentSetIndex.has(key) && studentSetIndex.get(key) !== assignment.setIndex) {
+          return errorResponse(res, {
+            status: 400,
+            message: "A student cannot be assigned to multiple question sets. Choose departments that do not overlap between sets.",
+          });
+        }
+        studentSetIndex.set(key, assignment.setIndex);
+      }
+    }
+
+    // Update assessment
+    const updatedAssessment = await Assessment.findByIdAndUpdate(
+      assessmentId,
+      {
+        assignedStudents: [...new Set(setAssignments.flatMap((assignment) => assignment.assignedStudents.map((id) => id.toString())))],
+        startDate: new Date(Math.min(...setAssignments.map((assignment) => assignment.startDate.getTime()))),
+        endDate: new Date(Math.max(...setAssignments.map((assignment) => assignment.endDate.getTime()))),
+        department: allDepartments.join(", "),
+        status: "Published",
+        usesMultiSetAssignment: true,
+        setAssignments: setAssignments, // Store set-wise assignments
+      },
+      { new: true }
+    );
+
+    const persisted = await Assessment.findById(assessmentId).lean();
+
+    return successResponse(res, {
+      message: "Assessment assigned successfully to all sets",
+      data: persisted || updatedAssessment,
+    });
+  } catch (error) {
+    return errorResponse(res, {
+      status: error.status || 500,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { createAssessment, getDepartments, getAssessments, assignAssessment, updateDeadline, enableAssessment, getAssessmentDetails, updateTitle, deleteAssessment, assignMultipleSets };

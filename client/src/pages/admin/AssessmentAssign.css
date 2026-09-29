@@ -1,0 +1,197 @@
+.assignment-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.assignment-table th {
+  background: #f5f5f5;
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #ddd;
+  font-size: 0.9rem;
+}
+
+.assignment-table td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.assignment-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.set-label {
+  font-weight: 600;
+  width: 70px;
+}
+
+.department-cell {
+  position: relative;
+}
+
+.department-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-button {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.dropdown-button:hover {
+  border-color: #aaa;
+}
+
+.dropdown-button:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.dropdown-arrow {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.checkbox-item:hover {
+  background: #f9f9f9;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin: 0 0.5rem 0 0;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.checkbox-item span {
+  flex: 1;
+  user-select: none;
+  font-size: 0.9rem;
+}
+
+.assignment-table input[type="datetime-local"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.assignment-table input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+@media (max-width: 1024px) {
+  .assignment-table {
+    font-size: 0.85rem;
+  }
+
+  .assignment-table td,
+  .assignment-table th {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .dropdown-panel {
+    max-height: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .assignment-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .assignment-table thead {
+    display: none;
+  }
+
+  .assignment-table tbody,
+  .assignment-table tr,
+  .assignment-table td {
+    display: block;
+  }
+
+  .assignment-table tr {
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .assignment-table td {
+    text-align: right;
+    padding: 0.75rem;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .assignment-table td:last-child {
+    border-bottom: none;
+  }
+
+  .assignment-table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+  }
+
+  .set-label::before {
+    content: "Set: ";
+  }
+
+  .form-actions {
+    justify-content: center;
+  }
+}
+

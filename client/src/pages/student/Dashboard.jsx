@@ -16,18 +16,30 @@ export default function StudentDashboard() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.get('/student/dashboard').then((r) => {
-      if (r.ok) setData(r.data.data)
-      else setError(r.data?.message || 'Failed to load dashboard')
+    let active = true
+
+    api.get('/student/dashboard').then((response) => {
+      if (!active) return
+      if (response.ok) setData(response.data.data)
+      else setError(response.data?.message || 'Failed to load dashboard')
+    }).catch(() => {
+      if (active) setError('Failed to load dashboard')
     })
+
+    return () => { active = false }
   }, [])
 
   if (error) return <div className="alert error">{error}</div>
   if (!data) return <div className="loading">Loading dashboard...</div>
 
   const kpi = data.kpiCards || {}
-  const readiness = data.placementReadiness || data.readiness || {}
+  const readiness = data.placementReadiness || data.overallPlacementReadiness || data.readiness || {}
   const ai = data.aiInsights || data.aiSummary || {}
+
+  const placementScore = kpi.placementReadinessScore ?? readiness.score
+  const resumeScore = kpi.resumeScore ?? data.resumeAnalysis?.resumeScore ?? data.resumeSummary?.resumeScore
+  const codingScore = kpi.codingScore ?? data.codingSummary?.score
+  const assessmentCount = kpi.assessmentsCompleted ?? data.assessmentSummary?.completedAssessments
 
   return (
     <>
@@ -39,20 +51,20 @@ export default function StudentDashboard() {
       </div>
 
       <div className="grid cols-4 mb">
-        <Kpi value={kpi.placementReadinessScore ?? readiness.score ?? '–'} label="Placement Readiness" sub={readiness.level || kpi.readinessLevel || ''} />
-        <Kpi value={kpi.assessmentsCompleted ?? '–'} label="Assessments Completed" />
-        <Kpi value={kpi.resumeScore ?? '–'} label="Resume Score" />
-        <Kpi value={kpi.codingScore ?? '–'} label="Coding Score" />
+        <Kpi value={placementScore == null ? '–' : `${placementScore}%`} label="Placement Readiness" sub={readiness.level || kpi.readinessLevel || ''} />
+        <Kpi value={assessmentCount ?? '–'} label="Assessments Completed" />
+        <Kpi value={resumeScore == null ? '–' : `${resumeScore}%`} label="Resume Score" />
+        <Kpi value={codingScore == null ? '–' : `${codingScore}%`} label="Coding Score" />
       </div>
 
       <div className="grid cols-2">
         <div className="card">
           <h3>Readiness Summary</h3>
-          <div className="score-ring">{readiness.score ?? kpi.placementReadinessScore ?? 0}%</div>
+          <div className="score-ring">{placementScore == null ? '–' : `${placementScore}%`}</div>
           <p className="mt" style={{ fontSize: 14, color: 'var(--muted)' }}>
             {readiness.explanation || 'Complete your resume, coding profile and assessments to get a full readiness score.'}
           </p>
-          {readiness.level && (
+          {(readiness.level || readiness.level === 'Low') && (
             <div className="mt">
               <span className={`badge ${readiness.level === 'High' ? 'green' : readiness.level === 'Medium' ? 'amber' : 'red'}`}>{readiness.level}</span>
             </div>

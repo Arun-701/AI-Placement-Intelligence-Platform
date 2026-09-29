@@ -28,8 +28,15 @@ const validateAssessmentExists = async (assessmentId) => {
  */
 const validateStudentAssigned = (assessment, studentId) => {
     const studentIdStr = studentId.toString();
+    if (assessment.usesMultiSetAssignment) {
+        const assignment = (assessment.setAssignments || []).find((set) =>
+            (set.assignedStudents || []).some((assigned) => assigned && assigned.toString() === studentIdStr)
+        );
+        if (!assignment) return { valid: false, message: "You are not assigned to this assessment" };
+        return { valid: true, assignment };
+    }
     const hasExplicitAssignments = Array.isArray(assessment.assignedStudents) && assessment.assignedStudents.length > 0;
-    
+
     if (assessment.isInitialAssessment) {
         return { valid: true };
     }
@@ -52,14 +59,19 @@ const validateStudentAssigned = (assessment, studentId) => {
 /**
  * Validate assessment deadline
  */
-const validateAssessmentDeadline = (assessment) => {
+const validateAssessmentDeadline = (assessment, studentId) => {
     const now = new Date();
+    const studentAssignment = assessment.usesMultiSetAssignment && studentId
+        ? (assessment.setAssignments || []).find((set) => (set.assignedStudents || []).some((assigned) => assigned.toString() === studentId.toString()))
+        : null;
 
-    if (assessment.startDate && new Date(assessment.startDate) > now) {
+    const startDate = studentAssignment?.startDate || assessment.startDate;
+    const endDate = studentAssignment?.endDate || assessment.endDate;
+    if (startDate && new Date(startDate) > now) {
         return { valid: false, message: "Assessment has not started yet" };
     }
 
-    if (assessment.endDate && new Date(assessment.endDate) < now) {
+    if (endDate && new Date(endDate) < now) {
         return { valid: false, message: "Assessment deadline has expired." };
     }
 
@@ -132,7 +144,7 @@ const validateAnswers = (answers, assessmentQuestions) => {
     // Check for duplicate questions
     const questionIds = answers.map((a) => a.question.toString());
     const uniqueQuestionIds = [...new Set(questionIds)];
-    
+
     if (uniqueQuestionIds.length !== questionIds.length) {
         return { valid: false, message: "Cannot answer the same question multiple times" };
     }
