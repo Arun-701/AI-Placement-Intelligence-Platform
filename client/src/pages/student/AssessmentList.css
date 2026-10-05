@@ -1,0 +1,87 @@
+.assessment-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.assessment-request-cancelled {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  max-width: 280px;
+}
+
+.assessment-request-cancelled p {
+  margin: 0;
+  color: #7f1d1d;
+  font-size: 12px;
+  text-align: right;
+}
+
+.assessment-date-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.assessment-date-box {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.assessment-date-start {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.assessment-date-end {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.assessment-date-label {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.assessment-date-box time {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .main:has(.assessment-card-actions) {
+    min-width: 0;
+  }
+
+  .assessment-card-actions {
+    align-self: stretch;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .assessment-date-boxes {
+    width: 100%;
+  }
+
+  .assessment-request-cancelled {
+    justify-items: start;
+    max-width: 100%;
+  }
+
+  .assessment-request-cancelled p {
+    text-align: left;
+  }
+
+  .assessment-date-box {
+    flex: 1 1 190px;
+  }
+}

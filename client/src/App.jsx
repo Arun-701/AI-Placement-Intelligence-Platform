@@ -4,25 +4,40 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
 import Layout from './pages/Layout'
 import StudentDashboard from './pages/student/Dashboard'
 import AssessmentList from './pages/student/AssessmentList'
 import TakeAssessment from './pages/student/TakeAssessment'
 import AssessmentResult from './pages/student/AssessmentResult'
-import MyResults from './pages/student/MyResults'
 import ResumeAnalysis from './pages/student/ResumeAnalysis'
 import CodingProfile from './pages/student/CodingProfile'
 import Roadmap from './pages/student/Roadmap'
-import CareerRecommendation from './pages/student/CareerRecommendation'
 import AIChat from './pages/student/AIChat'
+import AdaptiveAssessment from './pages/student/AdaptiveAssessment'
+import AdaptiveAssessmentResult from './pages/student/AdaptiveAssessmentResult'
 import FacultyDashboard from './pages/faculty/Dashboard'
 import FacultyStudents from './pages/faculty/Students'
 import FacultyResults from './pages/faculty/Results'
+import FacultyAssessments from './pages/faculty/Assessments'
+import FacultyAssessmentResults from './pages/faculty/AssessmentResults'
+import FacultyAssessmentEdit from './pages/faculty/AssessmentEdit'
+import FacultyAssessmentAssign from './pages/faculty/AssessmentAssign'
 import AdminDashboard from './pages/admin/Dashboard'
+import AdminAssignmentHistory from './pages/admin/AssignmentHistory'
 import AdminStudents from './pages/admin/Students'
 import AdminFaculties from './pages/admin/Faculties'
 import AdminReports from './pages/admin/Reports'
+import AdminAssessments from './pages/admin/Assessments'
+import AdminAssessmentDetails from './pages/admin/AssessmentDetails'
+import AdminAssessmentAssign from './pages/admin/AssessmentAssign'
+import AdminAssessmentResults from './pages/admin/AssessmentResults'
+import AdminAssessmentEdit from './pages/admin/AssessmentEdit'
+import AdminQuestionUpload from './pages/admin/QuestionUpload'
+import AdminQuestionBank from './pages/admin/QuestionBank'
 import Notifications from './pages/Notifications'
+import Announcements from './pages/Announcements'
+import AdminAnnouncements from './pages/admin/Announcements'
 import Profile from './pages/Profile'
 
 function Protected({ role, children }) {
@@ -84,27 +99,35 @@ function App() {
           <Route path="/register" element={<PublicOnly><Register /></PublicOnly>} />
           <Route path="/forgot-password" element={<PublicOnly><ForgotPassword /></PublicOnly>} />
           <Route path="/reset-password" element={<PublicOnly><ResetPassword /></PublicOnly>} />
+          <Route path="/verify-email" element={<PublicOnly><VerifyEmail /></PublicOnly>} />
 
           <Route path="/student" element={<Protected role="student"><Layout /></Protected>}>
             <Route index element={<StudentDashboard />} />
             <Route path="assessments" element={<AssessmentList />} />
             <Route path="assessments/:id/take" element={<TakeAssessment />} />
             <Route path="assessments/result/:resultId" element={<AssessmentResult />} />
-            <Route path="results" element={<MyResults />} />
             <Route path="resume" element={<ResumeAnalysis />} />
             <Route path="coding" element={<CodingProfile />} />
             <Route path="roadmap" element={<Roadmap />} />
-            <Route path="career" element={<CareerRecommendation />} />
             <Route path="ai-chat" element={<AIChat />} />
+            <Route path="adaptive-assessment/:id" element={<AdaptiveAssessment />} />
+            <Route path="adaptive-assessment/:id/result" element={<AdaptiveAssessmentResult />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<Announcements />} />
             <Route path="profile" element={<Profile />} />
           </Route>
 
           <Route path="/faculty" element={<Protected role="faculty"><Layout /></Protected>}>
             <Route index element={<FacultyDashboard />} />
+            <Route path="assessments" element={<FacultyAssessments />} />
+            <Route path="assessments/upload" element={<FacultyAssessments uploadOnly />} />
+            <Route path="assessments/results/:assessmentId" element={<FacultyAssessmentResults />} />
+            <Route path="assessments/assign/:assessmentId" element={<FacultyAssessmentAssign />} />
+            <Route path="assessments/edit/:assessmentId" element={<FacultyAssessmentEdit />} />
             <Route path="students" element={<FacultyStudents />} />
             <Route path="results" element={<FacultyResults />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<Announcements />} />
             <Route path="profile" element={<Profile />} />
           </Route>
 
@@ -113,7 +136,19 @@ function App() {
             <Route path="students" element={<AdminStudents />} />
             <Route path="faculties" element={<AdminFaculties />} />
             <Route path="reports" element={<AdminReports />} />
+            <Route path="assessments" element={<AdminAssessments />} />
+            <Route path="assignment-history" element={<AdminAssignmentHistory />} />
+            <Route path="assessments/upload" element={<AdminQuestionUpload />} />
+            <Route path="question-bank" element={<AdminQuestionBank />} />
+            <Route path="assessments/:assessmentId/assign" element={<AdminAssessmentAssign />} />
+            <Route path="assessments/assign/:assessmentId" element={<AdminAssessmentAssign />} />
+            <Route path="assessments/assign-questions/:assessmentId" element={<AdminAssessmentAssign reattempt />} />
+            <Route path="assessments/results/:assessmentId" element={<AdminAssessmentResults />} />
+            <Route path="assessments/edit/:assessmentId" element={<AdminAssessmentEdit />} />
+            <Route path="assessments/:assessmentId" element={<AdminAssessmentDetails />} />
+            <Route path="questions/upload" element={<Navigate to="/admin/assessments/upload" replace />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<AdminAnnouncements />} />
             <Route path="profile" element={<Profile />} />
           </Route>
 

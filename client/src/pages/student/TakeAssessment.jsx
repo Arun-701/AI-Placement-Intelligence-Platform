@@ -69,7 +69,10 @@ export default function TakeAssessment() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft === 0 ? null : timeLeft])
 
-  const handleSubmit = () => submitRef.current()
+  const handleSubmit = () => {
+    const confirmed = window.confirm('Are you sure you want to submit the assessment?\nYou will not be able to change your answers after submission.')
+    if (confirmed) submitRef.current()
+  }
 
   if (error) return <div className="alert error">{error}</div>
   if (!assessment) return <div className="loading">Loading assessment...</div>

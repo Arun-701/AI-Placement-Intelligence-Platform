@@ -153,18 +153,27 @@ All responses follow a standard wrapper format:
 
 ### Verify Email
 - Method: POST
-- URL: `/api/auth/verify-email`
-- Description: Verify a student account email using a token.
+- URL: `/api/auth/verify-email-otp`
+- Description: Verify an account email using a six-digit one-time code sent by email.
 - Authentication Required: No
 - Required Role: None
 - Request Body:
-  - `token` (string, required)
+  - `email` (string, required)
+  - `otp` (six-digit string, required)
 - Success Response:
   - `success: true`
   - `message`: email verified successfully
 - Error Responses:
-  - 400 invalid token or payload
+  - 400 invalid, expired, or already-used verification code
   - 500 server error
+
+### Resend Verification Code
+- Method: POST
+- URL: `/api/auth/resend-verification`
+- Description: Send a new six-digit verification code to an unverified account. Requests are limited to one per minute.
+- Authentication Required: No
+- Request Body:
+  - `email` (string, required)
 
 ### Student Profile - Authenticated
 #### Get Profile

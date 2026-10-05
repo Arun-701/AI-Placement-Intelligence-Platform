@@ -1,0 +1,59 @@
+.roadmap-domain-picker {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.roadmap-domain-picker input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.roadmap-domain-picker input:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: var(--primary);
+}
+
+.roadmap-domain-menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.roadmap-domain-option,
+.roadmap-domain-message {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+}
+
+.roadmap-domain-option {
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.roadmap-domain-option:last-child { border-bottom: 0; }
+.roadmap-domain-option:hover,
+.roadmap-domain-option:focus { background: #eff6ff; outline: none; }
+.roadmap-domain-message { color: var(--muted); }
+
+@media (max-width: 700px) {
+  .roadmap-domain-picker { width: 100%; }
+}

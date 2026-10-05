@@ -57,7 +57,20 @@ const roadmapSchema = new mongoose.Schema(
                     },
                     source: { type: String, trim: true, default: "RuleEngine" },
                     relatedSkills: { type: [{ type: String, trim: true }], default: [] },
+                    learningResources: {
+                        type: [{
+                            title: { type: String, trim: true, required: true },
+                            url: { type: String, trim: true, required: true },
+                        }],
+                        default: [],
+                    },
                     week: { type: Number, default: 1 },
+                    adaptiveReadiness: {
+                        accuracy: { type: Number, min: 0, max: 100, default: null },
+                        level: { type: String, enum: ["Very Low", "Low", "Medium", "High"], default: null },
+                        assessedAt: { type: Date, default: null },
+                        topics: { type: [mongoose.Schema.Types.Mixed], default: [] },
+                    },
                 },
             ],
             default: [],

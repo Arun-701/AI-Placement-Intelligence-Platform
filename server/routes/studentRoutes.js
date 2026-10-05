@@ -4,6 +4,7 @@ const router = express.Router();
 const {
     getCodingProfile,
     updateCodingProfile,
+    refreshCodingProfile,
     uploadResume,
     getResume,
     replaceResume,
@@ -24,6 +25,7 @@ const upload = require("../middleware/uploadMiddleware");
 // These routes require the student to have completed onboarding (profile + assignment)
 router.get("/coding-profile", verifyToken, authorizeRoles("student"), requireAssignmentComplete, getCodingProfile);
 router.put("/coding-profile", verifyToken, authorizeRoles("student"), requireAssignmentComplete, updateCodingProfile);
+router.post("/coding-profile/refresh", verifyToken, authorizeRoles("student"), requireAssignmentComplete, refreshCodingProfile);
 router.post("/resume", verifyToken, authorizeRoles("student"), requireAssignmentComplete, upload.single("resume"), uploadResume);
 router.get("/resume", verifyToken, authorizeRoles("student"), requireAssignmentComplete, getResume);
 router.put("/resume", verifyToken, authorizeRoles("student"), requireAssignmentComplete, upload.single("resume"), replaceResume);

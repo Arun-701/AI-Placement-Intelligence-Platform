@@ -8,7 +8,8 @@ const {
     changePassword,
     forgotPassword,
     resetPassword,
-    verifyEmail,
+    verifyEmailOtp,
+    resendVerificationEmail,
     updateAccountStatus,
     uploadResume,
     registerFaculty,
@@ -26,7 +27,8 @@ router.post("/register", authLimiter, registerStudent);
 router.post("/login", authLimiter, loginStudent);
 router.post("/forgot-password", authLimiter, forgotPassword);
 router.post("/reset-password", authLimiter, resetPassword);
-router.post("/verify-email", authLimiter, verifyEmail);
+router.post("/verify-email-otp", authLimiter, verifyEmailOtp);
+router.post("/resend-verification", authLimiter, resendVerificationEmail);
 
 // Faculty Routes - Public (rate-limited)
 router.post("/faculty/register", authLimiter, registerFaculty);

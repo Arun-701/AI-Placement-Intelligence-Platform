@@ -52,7 +52,7 @@ const ensureInitialAssessmentExists = async () => {
         questions: questions.map((question) => question._id),
         totalMarks,
         duration: 30,
-        passingMarks: 0,
+        passingMarks: 9,
         status: "Published",
         isActive: true
     };

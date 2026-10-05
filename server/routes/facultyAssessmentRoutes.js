@@ -1,0 +1,18 @@
+const router = require("express").Router();
+const verifyToken = require("../middleware/authMiddleware");
+const { authorizeRoles } = require("../middleware/roleMiddleware");
+const upload = require("../middleware/assessmentMaterialUpload");
+const controller = require("../controllers/facultyAssessmentController");
+const assessmentRequestController = require("../controllers/adminAssessmentController");
+const facultyOnly = [verifyToken, authorizeRoles("faculty")];
+router.get("/", facultyOnly, controller.getAssessments);
+router.get("/students", facultyOnly, controller.getStudents);
+router.post("/extract", facultyOnly, upload, controller.extractMaterial);
+router.post("/", facultyOnly, controller.createAssessment);
+router.post("/:id/assign", facultyOnly, controller.assignAssessment);
+router.get("/:id/details", facultyOnly, controller.getAssessmentDetails);
+router.post("/:id/cancel-requests", facultyOnly, assessmentRequestController.cancelAttendanceRequests);
+router.put("/:id/title", facultyOnly, controller.updateAssessmentTitle);
+router.patch("/:id/deadline", facultyOnly, controller.updateDeadline);
+router.delete("/:id", facultyOnly, controller.deleteAssessment);
+module.exports = router;

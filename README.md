@@ -96,7 +96,7 @@ The Vite dev server proxies all `/api` requests to `http://localhost:5000` (conf
 ## 3. Verify it works
 
 - Open the frontend URL (e.g. `http://localhost:5174`)
-- Register a **Student** account → verify email (token returned in the API response in dev) → login
+- Register a **Student** account → enter the 6-digit email verification code → login
 - The student dashboard loads; `GET /api/student/dashboard` should return 200
 - Try AI: `POST /api/ai/chat` with `{ "prompt": "..." }` (auth required)
 
@@ -104,7 +104,7 @@ The Vite dev server proxies all `/api` requests to `http://localhost:5000` (conf
 
 | Area | Routes |
 | ---- | ------ |
-| Auth | `/api/auth/register`, `/api/auth/login`, `/api/auth/verify-email`, `/api/auth/forgot-password`, `/api/auth/reset-password` |
+| Auth | `/api/auth/register`, `/api/auth/login`, `/api/auth/verify-email-otp`, `/api/auth/resend-verification`, `/api/auth/forgot-password`, `/api/auth/reset-password` |
 | Student | `/api/student/dashboard`, `/api/student/profile`, `/api/student/coding-profile`, `/api/student/assessments` |
 | Assessment | `/api/assessment` (list/take/submit), `/api/assessment-result` |
 | Roadmap | `/api/roadmap/generate`, `/api/roadmap/me`, `/api/roadmap/progress`, `/api/roadmap/milestone/:id` |

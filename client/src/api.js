@@ -28,7 +28,8 @@ async function request(method, path, body, isForm = false) {
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (body && !isForm) headers['Content-Type'] = 'application/json';
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const requestUrl = `${API_BASE}${path}`
+  const res = await fetch(requestUrl, {
     method,
     headers,
     body: isForm ? body : body ? JSON.stringify(body) : undefined,
@@ -39,6 +40,13 @@ async function request(method, path, body, isForm = false) {
     data = await res.json();
   } catch {
     data = null;
+  }
+
+  if (path === '/faculty/assessments/extract') {
+    console.log('=== API FETCH RESPONSE ===')
+    console.log('URL:', requestUrl)
+    console.log('HTTP status:', res.status)
+    console.log('Response:', data)
   }
 
   if (res.status === 401 && path !== '/auth/login' && path !== '/admin/login') {

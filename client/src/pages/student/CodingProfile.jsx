@@ -1,87 +1,251 @@
 import { useState, useEffect } from 'react'
 import { api } from '../../api'
 
+const platforms = [
+  { key: 'leetcode', name: 'LeetCode', host: 'leetcode.com', placeholder: 'https://leetcode.com/username' },
+  { key: 'codechef', name: 'CodeChef', host: 'codechef.com', placeholder: 'https://www.codechef.com/users/username' },
+  { key: 'github', name: 'GitHub', host: 'github.com', placeholder: 'https://github.com/username' },
+  { key: 'hackerrank', name: 'HackerRank', host: 'hackerrank.com', placeholder: 'https://www.hackerrank.com/username' },
+  { key: 'codeforces', name: 'Codeforces', host: 'codeforces.com', placeholder: 'https://codeforces.com/profile/username' },
+]
+
+const emptyForm = Object.fromEntries(platforms.map(({ key }) => [key, '']))
+const displayValue = (value) => {
+  if (value === null || value === undefined || value === '' || (typeof value === 'number' && !Number.isFinite(value))) return '—'
+  if (typeof value === 'string' && ['Nill', '—', 'N/A', 'NA', 'null', 'undefined'].includes(value.trim())) return '—'
+  return value
+}
+
+const formatResponseError = (response, fallback) => {
+  const message = response.data?.message || fallback
+  const detail = response.data?.data?.detail
+  return detail ? `${message} Details: ${detail}` : message
+}
+
+const isValidPlatformUrl = (value, host) => {
+  if (!value.trim()) return true
+  try {
+    const url = new URL(value.trim())
+    const hostname = url.hostname.toLowerCase()
+    return ['http:', 'https:'].includes(url.protocol)
+      && (hostname === host || hostname.endsWith(`.${host}`))
+      && url.pathname.split('/').filter(Boolean).length > 0
+  } catch {
+    return false
+  }
+}
+
 export default function CodingProfile() {
   const [profile, setProfile] = useState(null)
-  const [form, setForm] = useState({ leetcode: '', hackerrank: '', codechef: '', github: '', linkedin: '', totalProblemsSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0, contestsParticipated: 0 })
+  const [form, setForm] = useState(emptyForm)
+  const [fieldErrors, setFieldErrors] = useState({})
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const applyProfileResponse = (response) => {
+    if (!response.ok) {
+      setError(formatResponseError(response, 'Failed to load coding profile'))
+      return
+    }
+    const data = response.data?.data
+    if (!data || typeof data !== 'object') {
+      setError('The coding profile response was empty or invalid.')
+      return
+    }
+    setProfile(data)
+    setForm({ ...emptyForm, ...(data.profileUrls || Object.fromEntries((data.platforms || []).map((platform) => [platform.platform?.toLowerCase(), platform.profileUrl]))) })
+  }
 
   useEffect(() => {
-    api.get('/student/coding-profile').then((r) => {
-      if (r.ok) {
-        const s = r.data.data
-        const st = s.student || s
-        setProfile(s)
-        setForm({
-          leetcode: st.leetcode || '', hackerrank: st.hackerrank || '', codechef: st.codechef || '',
-          github: st.github || '', linkedin: st.linkedin || '',
-          totalProblemsSolved: s.codingProfile?.totalProblemsSolved || 0,
-          easySolved: s.codingProfile?.easySolved || 0,
-          mediumSolved: s.codingProfile?.mediumSolved || 0,
-          hardSolved: s.codingProfile?.hardSolved || 0,
-          contestsParticipated: s.codingProfile?.contestsParticipated || 0,
-        })
-      } else setError(r.data?.message || 'Failed to load coding profile')
+    let active = true
+    api.get('/student/coding-profile').then((response) => {
+      if (active) applyProfileResponse(response)
+    }).catch(() => {
+      if (active) setError('Unable to load coding profile. Check your connection and try again.')
     })
+    return () => { active = false }
   }, [])
 
   const save = async () => {
     setError('')
     setInfo('')
-    const r = await api.put('/student/coding-profile', form)
-    if (r.ok) {
-      setInfo('Coding profile updated successfully!')
-      api.get('/student/coding-profile').then((res) => { if (res.ok) setProfile(res.data.data) })
-    } else setError(r.data?.message || 'Update failed')
+    const errors = {}
+    platforms.forEach(({ key, name, host }) => {
+      if (!isValidPlatformUrl(form[key] || '', host)) errors[key] = `Enter a valid ${name} profile URL.`
+    })
+    if (Object.keys(errors).length) {
+      setFieldErrors(errors)
+      return
+    }
+
+    setFieldErrors({})
+    setSaving(true)
+    let response
+    try {
+      response = await api.put('/student/coding-profile', form)
+    } catch {
+      setSaving(false)
+      setError('Unable to verify this profile. Check your connection and try again.')
+      return
+    }
+    setSaving(false)
+    if (!response.ok) {
+      setFieldErrors(response.data?.data?.fieldErrors || {})
+      setError(formatResponseError(response, 'Unable to save coding profile'))
+      return
+    }
+    setInfo('Coding profile verified and updated successfully!')
+    if (response.data?.data?.profileUrls) {
+      applyProfileResponse(response)
+    } else {
+      const refreshed = await api.get('/student/coding-profile')
+      applyProfileResponse(refreshed)
+    }
   }
 
-  const cp = profile?.codingProfile || {}
+  const refresh = async () => {
+    setError('')
+    setInfo('')
+    setRefreshing(true)
+    let response
+    try {
+      response = await api.post('/student/coding-profile/refresh')
+    } catch {
+      setRefreshing(false)
+      setError('Unable to refresh coding profile. Check your connection and try again.')
+      return
+    }
+    setRefreshing(false)
+    if (!response.ok) {
+      setError(formatResponseError(response, 'Unable to refresh coding profile'))
+      return
+    }
+    applyProfileResponse(response)
+    const refreshErrors = response.data?.data?.refreshErrors || []
+    setInfo(refreshErrors.length > 0
+      ? refreshErrors.map((item) => `${item.platform}: ${item.message}`).join(' | ')
+      : 'Coding profile refreshed successfully!')
+  }
+
+  const platformStats = Object.fromEntries((profile?.platforms || []).map((item) => [item.platform?.toLowerCase(), item]))
+  const countablePlatforms = new Set(['leetcode', 'codeforces', 'codechef'])
+  const codingPlatforms = Object.values(platformStats).filter((stats) =>
+    stats.profileVerified && countablePlatforms.has(stats.platform?.toLowerCase())
+  )
+  const aggregateCount = (field) => {
+    const values = codingPlatforms
+      .map((stats) => stats[field])
+      .filter((value) => value !== null && value !== undefined && Number.isFinite(Number(value)))
+    return values.length ? values.reduce((sum, value) => sum + Number(value), 0) : null
+  }
+  const total = aggregateCount('totalSolved')
+  const easy = aggregateCount('easySolved')
+  const medium = aggregateCount('mediumSolved')
+  const hard = aggregateCount('hardSolved')
+  const hasCodingStats = [total, easy, medium, hard].some((value) => value !== null)
+
+  const statBlock = (label, value, tone = '', key = label) => (
+    <div className={`coding-stat ${tone}`} key={key}>
+      <span>{label}</span>
+      <strong>{displayValue(value)}</strong>
+    </div>
+  )
+
+  const getCurrentRating = (stats) => stats?.currentRating ?? stats?.contestDetails?.currentRating
+  const getContestSummary = (stats) => stats?.contestDetails?.contestsParticipated ?? null
 
   return (
     <>
       <div className="page-title">
-        <div>
-          <h1>Coding Profile</h1>
-          <div className="subtitle">Connect your coding platforms and track your progress</div>
-        </div>
+        <div><h1>Coding Profile</h1><div className="subtitle">Connect verified public profiles and track your coding progress</div></div>
+        <div><button className="btn" onClick={refresh} disabled={refreshing || saving}>{refreshing ? 'Refreshing...' : 'Refresh'}</button></div>
       </div>
 
       {error && <div className="alert error">{error}</div>}
       {info && <div className="alert success">{info}</div>}
 
-      <div className="grid cols-4 mb">
-        <div className="card kpi-card"><div className="kpi-value">{cp.totalProblemsSolved ?? 0}</div><div className="kpi-label">Total Problems</div></div>
-        <div className="card kpi-card"><div className="kpi-value" style={{ color: 'var(--green)' }}>{cp.easySolved ?? 0}</div><div className="kpi-label">Easy</div></div>
-        <div className="card kpi-card"><div className="kpi-value" style={{ color: 'var(--amber)' }}>{cp.mediumSolved ?? 0}</div><div className="kpi-label">Medium</div></div>
-        <div className="card kpi-card"><div className="kpi-value" style={{ color: 'var(--red)' }}>{cp.hardSolved ?? 0}</div><div className="kpi-label">Hard</div></div>
-      </div>
-
-      <div className="card mb">
-        <h3>Platform Links</h3>
-        <div className="grid cols-2">
-          {['leetcode', 'hackerrank', 'codechef', 'github', 'linkedin'].map((p) => (
-            <div className="form-group" key={p}>
-              <label style={{ textTransform: 'capitalize' }}>{p}</label>
-              <input value={form[p]} onChange={(e) => setForm({ ...form, [p]: e.target.value })} placeholder={`https://...`} />
+      <section className="coding-summary">
+        {hasCodingStats ? (
+          <>
+            <div><span className="eyebrow">Verified activity</span><h2>Coding progress</h2></div>
+            <div className="coding-summary-grid">
+              {statBlock('Total solved', total, 'total')}
+              {statBlock('Easy', easy, 'easy')}
+              {statBlock('Medium', medium, 'medium')}
+              {statBlock('Hard', hard, 'hard')}
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <div><span className="eyebrow">Verified activity</span><h2>Coding progress</h2><p>No verified coding statistics are available yet.</p></div>
+        )}
+      </section>
+
+      <div className="coding-platform-grid">
+        {platforms.map(({ key, name, placeholder }) => {
+          const stats = platformStats[key]
+          const isLeetCode = key === 'leetcode'
+          const isHackerRank = key === 'hackerrank'
+          const isCodeChef = key === 'codechef'
+          const isCodeforces = key === 'codeforces'
+          return (
+            <article className={`coding-platform-card ${isLeetCode ? 'featured' : ''}`} key={key}>
+              <div className="coding-card-header">
+                <div><span className="eyebrow">{isLeetCode ? 'Primary signal' : 'Public profile'}</span><h3>{name}</h3></div>
+                <span className={`platform-mark ${key}`}>{name.slice(0, 1)}</span>
+              </div>
+              <div className="form-group coding-url-group">
+                <label>Profile URL</label>
+                <input value={form[key] || ''} onChange={(event) => {
+                  setForm({ ...form, [key]: event.target.value })
+                  setFieldErrors({ ...fieldErrors, [key]: '' })
+                }} placeholder={placeholder} />
+                {fieldErrors[key] && <div className="alert error" style={{ marginTop: 8 }}>{fieldErrors[key]}</div>}
+              </div>
+
+              {stats && isLeetCode && <>
+                <div className="coding-stat-grid four">
+                  {statBlock('Total solved', stats.totalSolved, 'total')}
+                  {statBlock('Easy', stats.easySolved, 'easy')}
+                  {statBlock('Medium', stats.mediumSolved, 'medium')}
+                  {statBlock('Hard', stats.hardSolved, 'hard')}
+                </div>
+                <div className="coding-stat-grid two">
+                  {statBlock('Badges', stats.badges, 'badges')}
+                  {statBlock('Current rating', getCurrentRating(stats), 'rating')}
+                </div>
+              </>}
+
+              {stats && isHackerRank && <div className="coding-stat-grid two">
+                {statBlock('Badges', stats.badges, 'badges')}
+                {statBlock('Contest', getContestSummary(stats), 'rating')}
+                {statBlock('Certificates', stats.certificates, 'certificates')}
+                {statBlock('Skills', stats.skills, 'github-stat')}
+              </div>}
+
+              {stats && isCodeChef && <div className="coding-stat-grid three">
+                {statBlock('Total solved', stats.totalSolved, 'total')}
+                {statBlock('Badges', stats.badges, 'badges')}
+                {statBlock('Current rating', getCurrentRating(stats), 'rating')}
+              </div>}
+
+              {stats && isCodeforces && <div className="coding-stat-grid four">
+                {statBlock('Total problems solved', stats.totalSolved, 'total')}
+                {statBlock('Current rating', stats.currentRating, 'rating')}
+                {statBlock('Max rating', stats.maxRating, 'rating')}
+                {statBlock('Contest', getContestSummary(stats), 'github-stat')}
+              </div>}
+
+              {stats && key === 'github' && <div className="coding-stat-grid three">
+                {stats.statistics?.map((stat) => statBlock(stat.label, stat.value, 'github-stat', stat.label))}
+              </div>}
+            </article>
+          )
+        })}
       </div>
 
-      <div className="card mb">
-        <h3>Problems Solved</h3>
-        <div className="grid cols-4">
-          {(['totalProblemsSolved', 'easySolved', 'mediumSolved', 'hardSolved', 'contestsParticipated']).map((f) => (
-            <div className="form-group" key={f}>
-              <label>{f.replace(/([A-Z])/g, ' $1').trim()}</label>
-              <input type="number" min="0" value={form[f]} onChange={(e) => setForm({ ...form, [f]: Number(e.target.value) })} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button className="btn" onClick={save}>Save Coding Profile</button>
+      <button className="btn" onClick={save} disabled={saving}>{saving ? 'Verifying profiles...' : 'Save Coding Profile'}</button>
     </>
   )
 }

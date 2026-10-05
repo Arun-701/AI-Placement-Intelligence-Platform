@@ -104,6 +104,12 @@ const studentSchema = new mongoose.Schema(
       default: "",
     },
 
+    codeforces: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     hackerrank: {
       type: String,
       trim: true,
@@ -208,11 +214,27 @@ const studentSchema = new mongoose.Schema(
         type: [{
           platform: { type: String, trim: true, default: "Unknown" },
           profileUrl: { type: String, trim: true, default: "" },
+          profileVerified: { type: Boolean, default: false },
+          problemsSolved: { type: Number, min: 0, default: null },
+          badges: { type: mongoose.Schema.Types.Mixed, default: null },
+          contestDetails: { type: mongoose.Schema.Types.Mixed, default: null },
+          certificates: { type: mongoose.Schema.Types.Mixed, default: null },
+          skills: { type: mongoose.Schema.Types.Mixed, default: null },
+          currentRating: { type: Number, min: 0, default: null },
+          maxRating: { type: Number, min: 0, default: null },
+          lastUpdated: { type: Date, default: null },
           totalSolved: { type: Number, min: 0, default: 0 },
           easySolved: { type: Number, min: 0, default: 0 },
           mediumSolved: { type: Number, min: 0, default: 0 },
           hardSolved: { type: Number, min: 0, default: 0 },
           contestsParticipated: { type: Number, min: 0, default: 0 },
+          statistics: {
+            type: [{
+              label: { type: String, trim: true, default: "" },
+              value: { type: Number, min: 0, default: 0 },
+            }],
+            default: [],
+          },
         }],
         default: [],
       },
@@ -255,6 +277,11 @@ const studentSchema = new mongoose.Schema(
       assessmentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Assessment",
+        default: null,
+      },
+      reattemptAssignmentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ReattemptAssignment",
         default: null,
       },
       startedAt: {
@@ -302,6 +329,16 @@ const studentSchema = new mongoose.Schema(
       default: {}
     },
 
+    resumeJDAnalysis: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
+    },
+
+    lastResumeAnalysisDate: {
+      type: Date,
+      default: null
+    },
+
     profileCompleted: {
       type: Boolean,
       default: false,
@@ -312,10 +349,30 @@ const studentSchema = new mongoose.Schema(
       default: false,
     },
 
-    verificationToken: {
+    emailVerificationRequired: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationOtpHash: {
       type: String,
-      trim: true,
       default: "",
+    },
+
+    emailVerificationOtpExpiresAt: {
+      type: Date,
+      default: null,
+    },
+
+    emailVerificationOtpAttempts: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    emailVerificationLastSentAt: {
+      type: Date,
+      default: null,
     },
 
     resetPasswordToken: {

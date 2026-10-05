@@ -5,6 +5,7 @@ const Student = require("../models/Student");
 const Faculty = require("../models/Faculty");
 const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
+const AssessmentAttendanceRequest = require("../models/AssessmentAttendanceRequest");
 const Roadmap = require("../models/Roadmap");
 
 const round = (value, precision = 2) => {
@@ -151,6 +152,8 @@ const createFaculty = async (payload) => {
     designation: payload.designation || "",
     facultyId: payload.facultyId || undefined,
     isActive: payload.isActive !== undefined ? payload.isActive : true,
+    isVerified: payload.isVerified !== undefined ? payload.isVerified : true,
+    approvalStatus: payload.approvalStatus || "APPROVED",
     role: "faculty",
     passwordChangedAt: new Date()
   });
@@ -270,7 +273,8 @@ const buildAdminDashboard = async () => {
     activeFaculties,
     totalAssessments,
     totalRoadmaps,
-    totalCompletedAssessments
+    totalCompletedAssessments,
+    studentRequestCount
   ] = await Promise.all([
     Student.countDocuments(),
     Student.countDocuments({ isActive: true }),
@@ -278,7 +282,8 @@ const buildAdminDashboard = async () => {
     Faculty.countDocuments({ isActive: true }),
     Assessment.countDocuments(),
     Roadmap.countDocuments(),
-    AssessmentResult.countDocuments({ completed: true })
+    AssessmentResult.countDocuments({ completed: true }),
+    AssessmentAttendanceRequest.countDocuments({ active: { $ne: false }, status: "Requested" })
   ]);
 
   const averageReadinessResult = await Student.aggregate([
@@ -335,6 +340,7 @@ const buildAdminDashboard = async () => {
   }, {});
 
   return {
+    studentRequestCount,
     studentOverview: {
       totalStudents,
       activeStudents,
@@ -378,15 +384,26 @@ const buildAdminStatistics = async () => {
 
 const buildAdminStudentReport = async () => {
   const students = await Student.find()
-    .select("name email department year placementReadinessScore profileCompleted isActive createdAt")
+    .select("name email department year placementReadinessScore codingProfile assessmentsCompleted profileCompleted isActive createdAt")
     .lean();
+  const resultStats = await AssessmentResult.aggregate([
+    { $match: { completed: true } },
+    { $group: { _id: "$student", assessmentCount: { $sum: 1 }, averageAssessmentScore: { $avg: "$percentage" } } }
+  ]);
+  const statsByStudent = new Map(resultStats.map((item) => [item._id.toString(), item]));
 
   const sortedStudents = students
-    .map((student) => ({
-      ...student,
-      placementReadinessScore: student.placementReadinessScore || 0
-    }))
-    .sort((a, b) => b.placementReadinessScore - a.placementReadinessScore);
+    .map((student) => {
+      const stats = statsByStudent.get(student._id.toString());
+      return {
+        ...student,
+        problemsSolved: student.codingProfile?.totalProblemsSolved || 0,
+        assessmentCount: stats?.assessmentCount || student.assessmentsCompleted || 0,
+        averageAssessmentScore: round(stats?.averageAssessmentScore || 0),
+        placementReadinessScore: student.placementReadinessScore || 0
+      };
+    })
+    .sort((a, b) => (b.placementReadinessScore - a.placementReadinessScore) || (b.averageAssessmentScore - a.averageAssessmentScore) || (b.problemsSolved - a.problemsSolved));
 
   return {
     totalStudents: students.length,

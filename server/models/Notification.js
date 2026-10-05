@@ -33,6 +33,7 @@ const notificationSchema = new mongoose.Schema(
         "Assessment Reminder",
         "Assessment Submitted",
         "Assessment Result",
+        "Student Request",
         "Resume Analysis Complete",
         "Career Recommendation Ready",
         "Roadmap Generated",
@@ -56,6 +57,10 @@ const notificationSchema = new mongoose.Schema(
       trim: true,
       default: ""
     },
+    context: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
+    },
     isRead: {
       type: Boolean,
       default: false,
@@ -68,6 +73,17 @@ const notificationSchema = new mongoose.Schema(
   },
   {
     timestamps: true
+  }
+);
+
+notificationSchema.index(
+  { recipient: 1, "context.requestId": 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      type: "Student Request",
+      "context.requestId": { $type: "string" },
+    },
   }
 );
 

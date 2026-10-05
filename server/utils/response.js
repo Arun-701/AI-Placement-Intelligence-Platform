@@ -6,11 +6,12 @@ function successResponse(res, { message = "OK", data = null, status = 200 } = {}
     });
 }
 
-function errorResponse(res, { message = "Error", status = 500, data = null } = {}) {
+function errorResponse(res, { message = "Error", status = 500, data = null, stage = undefined } = {}) {
     return res.status(status).json({
         success: false,
         message,
-        data
+        data,
+        ...(stage ? { stage } : {})
     });
 }
 

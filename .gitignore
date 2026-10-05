@@ -27,3 +27,20 @@ Thumbs.db
 
 # Vite
 client/.vite/
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Uploaded/generated files
+server/uploads/
+server/.tmp_*
+
+# Local test PDFs
+*.pdf

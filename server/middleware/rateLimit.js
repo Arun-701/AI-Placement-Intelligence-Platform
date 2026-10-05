@@ -29,7 +29,8 @@ const aiLimiter = buildLimiter({
 const adminLimiter = buildLimiter({
   windowMs: 15 * 60 * 1000,
   max: 60,
-  message: "Too many admin requests, please try again later."
+  message: "Too many admin requests, please try again later.",
+  skip: (req) => ["/login", "/register", "/forgot-password", "/reset-password"].includes(req.path)
 });
 
 const generalLimiter = buildLimiter({
