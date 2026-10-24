@@ -1,0 +1,14 @@
+What is normalization in DBMS?
+Explain 1NF, 2NF and 3NF with examples.
+What are ACID properties in DBMS?
+Explain SQL joins with an example.
+What is the difference between INNER JOIN and LEFT JOIN?
+Explain inheritance and polymorphism in Java.
+What is encapsulation in OOP?
+Write a program to reverse a linked list.
+Explain binary search and its time complexity.
+What is deadlock in an operating system?
+Explain the Banker algorithm for deadlock avoidance.
+Differentiate TCP and UDP.
+What is the OSI model?
+Solve a probability question using combinations.

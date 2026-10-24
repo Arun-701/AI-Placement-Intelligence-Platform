@@ -1,0 +1,541 @@
+.assignment-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 1.5rem;
+  overflow: visible;
+  border: 1px solid #dfeaf8;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(30, 55, 95, 0.04);
+}
+
+.assignment-table th {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e6eef8;
+  background: linear-gradient(90deg, #edf4ff, #f3f0ff);
+  color: #536b88;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.assignment-table td {
+  padding: 14px 14px;
+  border-bottom: 1px solid #edf2f8;
+  background: rgba(255,255,255,0.75);
+  vertical-align: middle;
+}
+
+.assignment-table tbody tr:hover {
+  background: #f4f9ff;
+}
+
+.assignment-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.set-label {
+  width: 72px;
+  color: #293f60;
+  font-weight: 700;
+}
+
+.assignment-table:not(.assignment-table-reattempt) th:nth-child(3),
+.assignment-table th.department-heading,
+.assignment-table td.department-cell {
+  width: 230px;
+  min-width: 230px;
+  box-sizing: border-box;
+}
+
+.assignment-table-reattempt {
+  table-layout: fixed;
+}
+
+.admin-assessment-assign-page--reattempt > .card {
+  padding: 14px;
+}
+
+.admin-assessment-assign-page--reattempt .assignment-table {
+  margin-bottom: 0;
+}
+
+.assignment-table-reattempt th:nth-child(1),
+.assignment-table-reattempt td:nth-child(1) {
+  width: 18%;
+}
+
+.assignment-table-reattempt th:nth-child(2),
+.assignment-table-reattempt td:nth-child(2) {
+  width: 18%;
+}
+
+.assignment-table-reattempt th:nth-child(3),
+.assignment-table-reattempt td:nth-child(3) {
+  width: 23%;
+  min-width: 0;
+}
+
+.assignment-table-reattempt th:nth-child(4),
+.assignment-table-reattempt td:nth-child(4),
+.assignment-table-reattempt th:nth-child(5),
+.assignment-table-reattempt td:nth-child(5) {
+  width: 20.5%;
+}
+
+.view-questions-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid #d4e1f3;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #f7fbff, #eff6ff);
+  color: #33588a;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.view-questions-button:hover {
+  border-color: #9bc0f5;
+  background: linear-gradient(135deg, #eef5ff, #e8f1ff);
+  color: #1d4ed8;
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.08);
+}
+
+.view-questions-button svg {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.question-preview-dialog {
+  width: min(680px, calc(100% - 32px));
+  max-height: min(80vh, 760px);
+  margin: auto;
+  padding: 0;
+  color: #0f172a;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.question-preview-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.question-preview-content {
+  max-height: min(80vh, 760px);
+  overflow-y: auto;
+  padding: 22px;
+}
+
+.question-preview-content h2 {
+  font-size: 18px;
+}
+
+.question-preview-list {
+  display: grid;
+  gap: 18px;
+  padding: 18px 0 0 24px;
+}
+
+.question-preview-list > li > p {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.question-preview-meta {
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.question-preview-list ol {
+  display: grid;
+  gap: 5px;
+  padding-left: 24px;
+}
+
+.question-preview-answer {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.department-cell {
+  position: relative;
+  z-index: 1;
+}
+
+.department-dropdown-row-open {
+  position: relative;
+  z-index: 20;
+}
+
+.department-dropdown-row-open .department-cell {
+  z-index: 21;
+}
+
+.reattempt-set-selection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.assignment-table-reattempt .set-label {
+  width: 18%;
+  min-width: 0;
+}
+
+.assignment-table-reattempt th,
+.assignment-table-reattempt td {
+  padding: 9px 10px;
+}
+
+.assignment-table-reattempt .reattempt-set-selection {
+  gap: 6px;
+}
+
+.reattempt-set-select {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #293f60;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reattempt-set-select.selected {
+  color: #1d4ed8;
+}
+
+.reattempt-set-select:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid #7eaee8;
+  outline-offset: 3px;
+}
+
+.reattempt-set-select:disabled {
+  cursor: not-allowed;
+}
+
+.reattempt-set-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 21px;
+  padding: 3px 7px;
+  border: 1px solid #d6e3f2;
+  border-radius: 999px;
+  background: #f7faff;
+  color: #496485;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.reattempt-set-status.assigned {
+  border-color: #e2e6ed;
+  background: #f1f3f6;
+  color: #738096;
+}
+
+.reattempt-set-status.available {
+  border-color: #cbe8d4;
+  background: #eff9f2;
+  color: #2f7b4c;
+}
+
+.reattempt-set-status.unavailable {
+  border-color: #e6e8ed;
+  background: #f5f6f8;
+  color: #7a8494;
+}
+
+.assignment-table tbody tr.reattempt-set-unavailable {
+  opacity: 0.72;
+}
+
+.assignment-table-reattempt tbody tr.reattempt-set-unavailable td {
+  background: #f8f9fc;
+}
+
+.assignment-table-reattempt .reattempt-set-selection input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.admin-assessment-assign-page--reattempt .view-questions-button {
+  min-height: 30px;
+  padding: 6px 9px;
+  font-size: 11px;
+}
+
+.admin-assessment-assign-page--reattempt .dropdown-button,
+.admin-assessment-assign-page--reattempt input[type="datetime-local"] {
+  min-height: 34px;
+  padding: 7px 9px;
+  font-size: 12px;
+}
+
+.admin-assessment-assign-page--reattempt .form-actions {
+  padding-top: 12px;
+}
+
+.department-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 9px 11px;
+  border: 1px solid #d5e2f1;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffffff, #f6faff);
+  color: #425d7e;
+  text-align: left;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.dropdown-button:hover {
+  border-color: #a6c1ea;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.06);
+}
+
+.dropdown-button:focus {
+  outline: none;
+  border-color: #7eaee8;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.dropdown-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  color: #5d7b9d;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.dropdown-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  max-height: 220px;
+  padding: 5px;
+  border: 1px solid #d9e6f7;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.98);
+  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.12);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.checkbox-item {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #324d6d;
+  font-size: 13px;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.checkbox-item:has(input[type="checkbox"]:checked) {
+  background: #edf4ff;
+  color: #2f568a;
+}
+
+.checkbox-item:hover {
+  background: #f3f8ff;
+}
+
+.admin-assessment-assign-page .dropdown-panel .checkbox-item input[type="checkbox"] {
+  display: block;
+  width: 17px;
+  min-width: 17px;
+  max-width: 17px;
+  height: 17px;
+  min-height: 17px;
+  flex: 0 0 17px;
+  margin: 0;
+  padding: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+.admin-assessment-assign-page .dropdown-panel .checkbox-item span {
+  min-width: max-content;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  user-select: none;
+  font-size: 13px;
+}
+
+.assignment-table input[type="datetime-local"] {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #d5e2f1;
+  border-radius: 10px;
+  background: #fbfdff;
+  color: #243d63;
+  font-size: 13px;
+}
+
+.assignment-table input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: #7eaee8;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+@media (max-width: 1024px) {
+  .assignment-table {
+    font-size: 0.85rem;
+  }
+
+  .assignment-table td,
+  .assignment-table th {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .dropdown-panel {
+    max-height: min(220px, 40vh);
+  }
+}
+
+@media (max-width: 768px) {
+  .assignment-table {
+    display: block;
+    overflow: visible;
+  }
+
+  .assignment-table thead {
+    display: none;
+  }
+
+  .assignment-table tbody,
+  .assignment-table tr,
+  .assignment-table td {
+    display: block;
+  }
+
+  .assignment-table tr {
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: visible;
+  }
+
+  .assignment-table td {
+    position: relative;
+    text-align: right;
+    padding: 0.75rem;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .assignment-table td:last-child {
+    border-bottom: none;
+  }
+
+  .assignment-table td.department-cell {
+    width: auto;
+    min-width: 0;
+  }
+
+  .assignment-table-reattempt td.set-label {
+    width: auto;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .assignment-table-reattempt td {
+    width: auto;
+  }
+
+  .admin-assessment-assign-page--reattempt > .card {
+    padding: 10px;
+  }
+
+  .assignment-table-reattempt tr {
+    margin-bottom: 0.75rem;
+  }
+
+  .assignment-table-reattempt td {
+    padding: 0.6rem;
+  }
+
+  .assignment-table-reattempt .set-label::before {
+    content: none;
+  }
+
+  .assignment-table .department-dropdown-row-open .department-cell {
+    z-index: 22;
+  }
+
+  .assignment-table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+  }
+
+  .set-label::before {
+    content: "Set: ";
+  }
+
+  .form-actions {
+    justify-content: center;
+  }
+
+}

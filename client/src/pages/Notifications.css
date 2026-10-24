@@ -1,0 +1,343 @@
+.main:has(.student-notifications-page) {
+  max-width: none;
+  min-width: 0;
+  padding: 22px 30px 36px;
+  background:
+    radial-gradient(ellipse at 86% 8%, rgba(173, 155, 255, .13), transparent 30%),
+    linear-gradient(140deg, #f6f9ff 0%, #f8f8ff 55%, #f1f7ff 100%);
+}
+
+.student-notifications-page {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  color: #203451;
+}
+
+.student-notifications-hero {
+  display: grid;
+  min-height: 194px;
+  grid-template-columns: minmax(0, 1fr) minmax(350px, 380px);
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 22px;
+  padding: 28px 38px;
+  overflow: hidden;
+  border: 1px solid rgba(166, 183, 227, .5);
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 78% 65%, rgba(167, 158, 255, .16), transparent 38%),
+    linear-gradient(108deg, #fff 0%, #eff6ff 51%, #f5f1ff 100%);
+  box-shadow: 0 12px 26px rgba(55, 75, 137, .075);
+}
+
+.student-notifications-hero-copy { min-width: 0; }
+.student-notifications-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 9px;
+  padding: 6px 11px 6px 8px;
+  border: 1px solid rgba(106, 127, 204, .18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .78);
+  color: #5366a3;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.student-notifications-badge svg { width: 16px; height: 16px; color: #5975cf; }
+.student-notifications-hero h1 { margin: 0 0 6px; color: #1c2d50; font-size: clamp(32px, 3vw, 36px); font-weight: 800; line-height: 1.1; letter-spacing: -.035em; }
+.student-notifications-hero p { margin: 0; color: #52647f; font-size: 16px; line-height: 1.5; }
+.student-notifications-hero-actions { display: flex; min-width: 0; height: 100%; align-items: center; justify-content: flex-end; gap: 12px; }
+
+.student-notifications-mark-all {
+  display: inline-flex;
+  min-height: 40px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid #d7e3f5;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .9);
+  color: #35547e;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 5px 13px rgba(49, 76, 131, .08);
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.student-notifications-mark-all:hover:not(:disabled) { transform: translateY(-1px); border-color: #b9cbed; background: #fff; }
+.student-notifications-mark-all:disabled { border-color: #d8dee8; background: #f1f4f8; color: #526176; cursor: default; }
+.student-notifications-mark-all svg { width: 17px; height: 17px; color: #5975cf; }
+.student-notifications-mark-all:disabled svg { color: #66758b; }
+.student-notifications-hero .admin-notifications-illustration { width: min(54%, 188px); max-height: 135px; flex: 0 1 188px; }
+
+.student-notifications-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 11px 14px;
+  border: 1px solid #f0c4c7;
+  border-radius: 9px;
+  background: #fff5f5;
+  color: #8f2933;
+  font-size: 12px;
+}
+
+.student-notifications-error button { padding: 5px 9px; border: 1px solid #e8b4b8; border-radius: 6px; background: #fff; color: #8f2933; cursor: pointer; font: inherit; font-size: 11px; font-weight: 700; }
+
+.student-notifications-filters {
+  display: flex;
+  min-height: 46px;
+  align-items: stretch;
+  gap: 23px;
+  margin-bottom: 14px;
+  padding: 0 7px;
+  border-bottom: 1px solid #dce5f1;
+}
+
+.student-notifications-filters button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: #40536d;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.student-notifications-filters button.active { color: #2869c5; font-weight: 750; }
+.student-notifications-filters button.active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; border-radius: 2px 2px 0 0; background: #3479d9; content: ''; }
+.student-notifications-filters button span { display: inline-grid; min-width: 20px; height: 20px; place-items: center; padding: 0 5px; border-radius: 999px; background: #e7eef9; color: #334b6a; font-size: 11px; font-weight: 750; }
+.student-notifications-filters button.active span { background: #e2edff; color: #2860aa; }
+
+.student-notifications-list { display: grid; gap: 14px; }
+.student-notification-item {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 17px;
+  min-height: 112px;
+  padding: 22px 24px;
+  border: 1px solid #dce6f4;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 7px 18px rgba(42, 64, 111, .055);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.student-notification-item.is-unread { border-color: #c7d9f3; box-shadow: 0 8px 20px rgba(54, 92, 164, .085); }
+.student-notification-type-icon { display: grid; width: 44px; height: 44px; flex: 0 0 44px; place-items: center; border: 1px solid #dbe6f6; border-radius: 13px; background: #f0f6ff; color: #5d7fc2; }
+.student-notification-item.is-unread .student-notification-type-icon { border-color: #d2def8; background: linear-gradient(145deg, #e8f2ff, #f0edff); color: #4d70c4; }
+.student-notification-type-icon svg { width: 21px; height: 21px; }
+.student-notification-type-icon.roadmap { background: #f0efff; color: #6559b5; }
+.student-notification-type-icon.assignments { background: #eaf3ff; color: #386cae; }
+.student-notification-type-icon.profile { background: #eaf7f1; color: #347956; }
+.student-notification-type-icon.other { background: #eef3fa; color: #526b8d; }
+.student-notification-body { min-width: 0; flex: 1; }
+.student-notification-title-row { display: flex; min-width: 0; align-items: center; gap: 10px; margin-bottom: 4px; }
+.student-notification-title-row h2 { min-width: 0; margin: 0; color: #203858; font-size: 18px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
+.student-notification-item.is-read .student-notification-title-row h2 { color: #344a68; }
+.student-notification-new { flex: 0 0 auto; padding: 3px 8px; border-radius: 999px; background: #eaf3ff; color: #3e63a2; font-size: 10px; font-weight: 750; letter-spacing: .04em; text-transform: uppercase; }
+.student-notification-body > p { margin: 0 0 9px; color: #475d78; font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
+.student-notification-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; color: #5f7189; font-size: 13px; }
+.student-notification-meta time { color: #5f7189; font-variant-numeric: tabular-nums; }
+.student-notification-category { padding: 4px 9px; border-radius: 999px; background: #edf3fa; color: #435b79; font-size: 12px; font-weight: 650; }
+.student-notification-category.roadmap { background: #f0edff; color: #564b9a; }
+.student-notification-category.assignments { background: #eaf2ff; color: #2d5a96; }
+.student-notification-category.profile { background: #eaf6ef; color: #2f704e; }
+.student-notification-read-action { flex: 0 0 auto; padding: 9px 13px; border: 1px solid #d8e3f1; border-radius: 9px; background: #f4f7fc; color: #425d83; cursor: pointer; font: inherit; font-size: 14px; font-weight: 650; }
+.student-notification-read-action:hover:not(:disabled) { background: #e8effa; }
+.student-notification-read-action:disabled { border-color: #d8dee8; background: #f1f4f8; color: #526176; cursor: default; }
+.student-notification-unread-dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: #3478f6; }
+
+.student-notifications-state {
+  display: flex;
+  min-height: 250px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 22px;
+  border: 1px solid rgba(185, 201, 229, .8);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 9px 22px rgba(42, 64, 111, .06);
+  color: #71819a;
+  text-align: center;
+}
+
+.student-notifications-state h2 { margin: 12px 0 6px; color: #263b5d; font-size: 18px; font-weight: 750; }
+.student-notifications-state p { margin: 0; color: #62738c; font-size: 13px; line-height: 1.55; }
+.student-notifications-empty-icon { display: grid; width: 58px; height: 58px; place-items: center; margin-bottom: 2px; border: 1px solid #d8e5f9; border-radius: 18px; background: linear-gradient(145deg, #eaf3ff, #f0edff); color: #5d79c1; }
+.student-notifications-empty-icon svg { width: 28px; height: 28px; }
+
+.main:has(.faculty-notifications-page) {
+  max-width: none;
+  min-width: 0;
+  padding: 22px 30px 36px;
+  background:
+    radial-gradient(ellipse at 86% 8%, rgba(173, 155, 255, .13), transparent 30%),
+    linear-gradient(140deg, #f6f9ff 0%, #f8f8ff 55%, #f1f7ff 100%);
+}
+
+.faculty-notifications-page { width: 100%; max-width: 1500px; margin: 0 auto; color: #203451; }
+.faculty-notifications-hero {
+  display: grid;
+  min-height: 176px;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 330px);
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 22px 32px;
+  overflow: hidden;
+  border: 1px solid rgba(166, 183, 227, .5);
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 78% 65%, rgba(167, 158, 255, .16), transparent 38%),
+    linear-gradient(108deg, #fff 0%, #eff6ff 51%, #f5f1ff 100%);
+  box-shadow: 0 12px 26px rgba(55, 75, 137, .075);
+}
+.faculty-notifications-hero-copy { min-width: 0; }
+.faculty-notifications-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 9px;
+  padding: 6px 11px 6px 8px;
+  border: 1px solid rgba(106, 127, 204, .18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .78);
+  color: #5366a3;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.faculty-notifications-badge svg { width: 16px; height: 16px; color: #5975cf; }
+.faculty-notifications-hero h1 { margin: 0 0 6px; color: #1c2d50; font-size: clamp(32px, 3vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -.035em; }
+.faculty-notifications-hero p { margin: 0; color: #52647f; font-size: 16px; line-height: 1.5; }
+.faculty-notifications-hero-actions { display: flex; min-width: 0; height: 100%; align-items: center; justify-content: flex-end; gap: 10px; }
+.faculty-notifications-mark-all {
+  display: inline-flex;
+  min-height: 40px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid #d7e3f5;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .9);
+  color: #35547e;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 5px 13px rgba(49, 76, 131, .08);
+}
+.faculty-notifications-mark-all:disabled { border-color: #d8dee8; background: #f1f4f8; color: #526176; cursor: default; }
+.faculty-notifications-mark-all svg { width: 17px; height: 17px; color: #5975cf; }
+.faculty-notifications-hero .admin-notifications-illustration { width: min(54%, 188px); max-height: 135px; flex: 0 1 188px; }
+.faculty-notifications-list { display: grid; gap: 14px; }
+.faculty-notification-card {
+  display: flex;
+  min-width: 0;
+  min-height: 112px;
+  align-items: center;
+  gap: 17px;
+  padding: 22px 24px;
+  border: 1px solid #dce6f4;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 7px 18px rgba(42, 64, 111, .055);
+}
+.faculty-notification-card.is-unread { border-color: #c7d9f3; box-shadow: 0 8px 20px rgba(54, 92, 164, .085); }
+.faculty-notification-icon { display: grid; width: 44px; height: 44px; flex: 0 0 44px; place-items: center; border: 1px solid #dbe6f6; border-radius: 13px; background: #f0f6ff; color: #5d7fc2; }
+.faculty-notification-icon svg { width: 21px; height: 21px; }
+.faculty-notification-icon.roadmap { background: #f0efff; color: #6559b5; }
+.faculty-notification-icon.assignments { background: #eaf3ff; color: #386cae; }
+.faculty-notification-icon.profile { background: #eaf7f1; color: #347956; }
+.faculty-notification-icon.other { background: #eef3fa; color: #526b8d; }
+.faculty-notification-content { min-width: 0; flex: 1; }
+.faculty-notification-title-row { display: flex; min-width: 0; align-items: center; gap: 10px; margin-bottom: 5px; }
+.faculty-notification-title-row h2 { min-width: 0; margin: 0; color: #203858; font-size: 17px; font-weight: 750; line-height: 1.4; overflow-wrap: anywhere; }
+.faculty-notification-card.is-read .faculty-notification-title-row h2 { color: #344a68; }
+.faculty-notification-status { flex: 0 0 auto; padding: 3px 8px; border-radius: 999px; background: #eaf3ff; color: #3e63a2; font-size: 10px; font-weight: 750; letter-spacing: .04em; text-transform: uppercase; }
+.faculty-notification-status.is-read { background: #edf7f1; color: #458260; }
+.faculty-notification-content > p { margin: 0 0 9px; color: #475d78; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+.faculty-notification-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; color: #5f7189; font-size: 12px; }
+.faculty-notification-meta time { color: #5f7189; font-variant-numeric: tabular-nums; }
+.faculty-notification-category { max-width: 100%; padding: 4px 9px; border-radius: 999px; background: #edf3fa; color: #435b79; font-size: 11px; font-weight: 650; overflow-wrap: anywhere; }
+.faculty-notification-read-action { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; padding: 8px 12px; border: 1px solid #d8e3f1; border-radius: 9px; background: #f4f7fc; color: #425d83; cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; text-decoration: none; }
+.faculty-notification-read-action:hover:not(:disabled) { background: #e8effa; }
+.faculty-notification-read-action:disabled { border-color: #d8dee8; background: #f1f4f8; color: #526176; cursor: default; }
+.faculty-notifications-error { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; padding: 11px 14px; border: 1px solid #f0c4c7; border-radius: 9px; background: #fff5f5; color: #8f2933; font-size: 13px; }
+.faculty-notifications-error button { flex: 0 0 auto; padding: 6px 10px; border: 1px solid #e8b4b8; border-radius: 6px; background: #fff; color: #8f2933; cursor: pointer; font: inherit; font-weight: 700; }
+.faculty-notifications-state { display: flex; min-height: 250px; flex-direction: column; align-items: center; justify-content: center; padding: 30px 22px; border: 1px solid rgba(185, 201, 229, .8); border-radius: 18px; background: rgba(255, 255, 255, .96); box-shadow: 0 9px 22px rgba(42, 64, 111, .06); color: #5f7189; text-align: center; }
+.faculty-notifications-state h2 { margin: 12px 0 6px; color: #263b5d; font-size: 19px; font-weight: 750; }
+.faculty-notifications-state p { margin: 0; color: #62738c; font-size: 14px; line-height: 1.55; }
+.faculty-notifications-empty-icon { display: grid; width: 58px; height: 58px; place-items: center; margin-bottom: 2px; border: 1px solid #d8e5f9; border-radius: 18px; background: linear-gradient(145deg, #eaf3ff, #f0edff); color: #5d79c1; }
+.faculty-notifications-empty-icon svg { width: 28px; height: 28px; }
+
+@media (max-width: 900px) {
+  .main:has(.student-notifications-page) { padding: 20px 22px 30px; }
+  .student-notifications-hero { min-height: 176px; grid-template-columns: minmax(0, 1fr) minmax(300px, 330px); padding: 24px 28px; }
+  .student-notifications-hero .admin-notifications-illustration { width: min(48%, 160px); }
+  .main:has(.faculty-notifications-page) { padding: 20px 22px 30px; }
+}
+
+@media (max-width: 620px) {
+  .main:has(.student-notifications-page) { padding: 14px 12px 24px; }
+  .student-notifications-hero { min-height: 0; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px; border-radius: 19px; }
+  .student-notifications-hero h1 { font-size: 32px; }
+  .student-notifications-hero p { font-size: 16px; }
+  .student-notifications-hero-actions { min-height: 108px; justify-content: space-between; }
+  .student-notifications-hero .admin-notifications-illustration { width: min(48%, 155px); max-height: 110px; }
+  .student-notifications-filters { gap: 0; justify-content: space-between; overflow-x: auto; padding: 0 2px; }
+  .student-notifications-filters button { padding: 0 8px; font-size: 13px; }
+  .student-notification-item { min-height: 0; align-items: flex-start; flex-wrap: wrap; gap: 12px; padding: 18px; border-radius: 14px; }
+  .student-notification-body { flex-basis: calc(100% - 58px); }
+  .student-notification-title-row { align-items: flex-start; flex-wrap: wrap; }
+  .student-notification-title-row h2 { font-size: 17px; }
+  .student-notification-body > p { font-size: 15px; }
+  .student-notification-meta { font-size: 13px; }
+  .student-notification-category { font-size: 12px; }
+  .student-notification-read-action { font-size: 13px; }
+  .student-notification-read-action { margin-left: 56px; }
+}
+
+@media (max-width: 620px) {
+  .main:has(.faculty-notifications-page) { padding: 14px 12px 24px; }
+  .faculty-notifications-hero { min-height: 0; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px; border-radius: 19px; }
+  .faculty-notifications-hero h1 { font-size: 32px; }
+  .faculty-notifications-hero p { font-size: 15px; }
+  .faculty-notifications-hero-actions { min-height: 108px; justify-content: space-between; }
+  .faculty-notifications-hero .admin-notifications-illustration { width: min(48%, 155px); max-height: 110px; }
+  .faculty-notification-card { min-height: 0; align-items: flex-start; flex-wrap: wrap; gap: 12px; padding: 18px; border-radius: 14px; }
+  .faculty-notification-content { flex-basis: calc(100% - 58px); }
+  .faculty-notification-title-row { align-items: flex-start; flex-wrap: wrap; }
+  .faculty-notification-title-row h2 { font-size: 16px; }
+  .faculty-notification-content > p { font-size: 14px; }
+  .faculty-notification-read-action { margin-left: 56px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .student-notification-item,
+  .student-notifications-mark-all { transition: none; }
+}

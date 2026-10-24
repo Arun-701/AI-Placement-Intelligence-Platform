@@ -1,0 +1,160 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './AuthContext'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
+import Layout from './pages/Layout'
+import StudentDashboard from './pages/student/Dashboard'
+import AssessmentList from './pages/student/AssessmentList'
+import TakeAssessment from './pages/student/TakeAssessment'
+import AssessmentResult from './pages/student/AssessmentResult'
+import ResumeAnalysis from './pages/student/ResumeAnalysis'
+import ResumeAnalysisResult from './pages/student/ResumeAnalysisResult'
+import ResumeAnalysisReport from './pages/student/ResumeAnalysisReport'
+import CodingProfile from './pages/student/CodingProfile'
+import Roadmap from './pages/student/Roadmap'
+import AIChat from './pages/student/AIChat'
+import AdaptiveAssessment from './pages/student/AdaptiveAssessment'
+import AdaptiveAssessmentResult from './pages/student/AdaptiveAssessmentResult'
+import FacultyDashboard from './pages/faculty/Dashboard'
+import FacultyStudents from './pages/faculty/Students'
+import FacultyResults from './pages/faculty/Results'
+import FacultyAssessmentsPlaceholder from './pages/faculty/AssessmentsPlaceholder'
+import AdminDashboard from './pages/admin/Dashboard'
+import AdminAssignmentHistory from './pages/admin/AssignmentHistory'
+import AdminStudents from './pages/admin/Students'
+import AdminFaculties from './pages/admin/Faculties'
+import AdminReports from './pages/admin/Reports'
+import AdminAssessments from './pages/admin/Assessments'
+import AdminAssessmentDetails from './pages/admin/AssessmentDetails'
+import AdminAssessmentAssign from './pages/admin/AssessmentAssign'
+import AdminAssessmentResults from './pages/admin/AssessmentResults'
+import AdminAssessmentEdit from './pages/admin/AssessmentEdit'
+import AdminQuestionUpload from './pages/admin/QuestionUpload'
+import AdminQuestionBank from './pages/admin/QuestionBank'
+import Notifications from './pages/Notifications'
+import Announcements from './pages/Announcements'
+import AdminAnnouncements from './pages/admin/Announcements'
+import Profile from './pages/Profile'
+
+function Protected({ role, children }) {
+  const { user, loading } = useAuth()
+  const location = window.location
+  if (loading) return <div className="loading">Loading...</div>
+  if (!user) return <Navigate to="/login" replace />
+  if (role && user.role !== role) {
+    if (user.role === 'student') return <Navigate to="/student" replace />
+    if (user.role === 'faculty') return <Navigate to="/faculty" replace />
+    return <Navigate to="/admin" replace />
+  }
+
+  // If student, enforce onboarding stages client-side for UX
+  if (user.role === 'student') {
+    const path = (location && location.pathname) || '';
+    // If profile incomplete: only allow /student/profile
+    if (!user.profileCompleted) {
+      if (!path.startsWith('/student/profile')) return <Navigate to="/student/profile" replace />
+      return children
+    }
+    // If profile complete but assignment incomplete: allow profile and assessments routes only
+    if (!user.initialAssessmentCompleted) {
+      if (path.startsWith('/student/assessments') || path.startsWith('/student/profile')) return children
+      return <Navigate to="/student/assessments" replace />
+    }
+  }
+  return children
+}
+
+function PublicOnly({ children }) {
+  const { user, loading } = useAuth()
+  if (loading) return <div className="loading">Loading...</div>
+  if (user) {
+    if (user.role === 'faculty') return <Navigate to="/faculty" replace />
+    if (user.role === 'admin') return <Navigate to="/admin" replace />
+    return <Navigate to="/student" replace />
+  }
+  return children
+}
+
+function Home() {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role === 'faculty') return <Navigate to="/faculty" replace />
+  if (user.role === 'admin') return <Navigate to="/admin" replace />
+  if (!user.profileCompleted) return <Navigate to="/student/profile" replace />
+  if (!user.initialAssessmentCompleted) return <Navigate to="/student/assessments" replace />
+  return <Navigate to="/student" replace />
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<PublicOnly><Login /></PublicOnly>} />
+          <Route path="/register" element={<PublicOnly><Register /></PublicOnly>} />
+          <Route path="/forgot-password" element={<PublicOnly><ForgotPassword /></PublicOnly>} />
+          <Route path="/reset-password" element={<PublicOnly><ResetPassword /></PublicOnly>} />
+          <Route path="/verify-email" element={<PublicOnly><VerifyEmail /></PublicOnly>} />
+
+          <Route path="/student" element={<Protected role="student"><Layout /></Protected>}>
+            <Route index element={<StudentDashboard />} />
+            <Route path="assessments" element={<AssessmentList />} />
+            <Route path="assessments/:id/take" element={<TakeAssessment />} />
+            <Route path="assessments/result/:resultId" element={<AssessmentResult />} />
+            <Route path="resume" element={<ResumeAnalysis />} />
+            <Route path="resume/report/:analysisId" element={<ResumeAnalysisReport />} />
+            <Route path="resume/analysis-result" element={<ResumeAnalysisResult />} />
+            <Route path="resume/result" element={<Navigate to="/student/resume/analysis-result" replace />} />
+            <Route path="coding" element={<CodingProfile />} />
+            <Route path="roadmap" element={<Roadmap />} />
+            <Route path="ai-chat" element={<AIChat />} />
+            <Route path="adaptive-assessment/:id" element={<AdaptiveAssessment />} />
+            <Route path="adaptive-assessment/:id/result" element={<AdaptiveAssessmentResult />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+
+          <Route path="/faculty" element={<Protected role="faculty"><Layout /></Protected>}>
+            <Route index element={<FacultyDashboard />} />
+            <Route path="assessments/*" element={<FacultyAssessmentsPlaceholder />} />
+            <Route path="students" element={<FacultyStudents />} />
+            <Route path="results" element={<FacultyResults />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+
+          <Route path="/admin" element={<Protected role="admin"><Layout /></Protected>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="students" element={<AdminStudents />} />
+            <Route path="faculties" element={<AdminFaculties />} />
+            <Route path="reports" element={<AdminReports />} />
+            <Route path="assessments" element={<AdminAssessments />} />
+            <Route path="assignment-history" element={<AdminAssignmentHistory />} />
+            <Route path="assessments/upload" element={<AdminQuestionUpload />} />
+            <Route path="question-bank" element={<AdminQuestionBank />} />
+            <Route path="assessments/:assessmentId/assign" element={<AdminAssessmentAssign />} />
+            <Route path="assessments/assign/:assessmentId" element={<AdminAssessmentAssign />} />
+            <Route path="assessments/assign-questions/:assessmentId" element={<AdminAssessmentAssign reattempt />} />
+            <Route path="assessments/results/:assessmentId" element={<AdminAssessmentResults />} />
+            <Route path="assessments/edit/:assessmentId" element={<AdminAssessmentEdit />} />
+            <Route path="assessments/:assessmentId" element={<AdminAssessmentDetails />} />
+            <Route path="questions/upload" element={<Navigate to="/admin/assessments/upload" replace />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="announcements" element={<AdminAnnouncements />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  )
+}
+
+export default App

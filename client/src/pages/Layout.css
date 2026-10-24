@@ -1,0 +1,282 @@
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  width: 246px;
+  min-width: 246px;
+  height: 100vh;
+  flex: 0 0 246px;
+  flex-direction: column;
+  gap: 4px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 22px 12px 14px;
+  border-right: 1px solid rgba(148, 171, 218, 0.16);
+  background: linear-gradient(180deg, #101d40 0%, #0d1836 56%, #111f43 100%);
+  box-shadow: 8px 0 24px rgba(8, 16, 36, 0.14);
+  color: #d6e2f5;
+  scrollbar-color: rgba(173, 193, 232, 0.3) transparent;
+  scrollbar-width: thin;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar h2 {
+  margin: 0 4px 10px;
+  padding: 4px 8px 17px;
+  border: 0;
+  border-bottom: 1px solid rgba(189, 205, 237, 0.14);
+  color: #f7f9ff;
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar a {
+  display: flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  gap: 11px;
+  margin: 0;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #cad7eb;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar a::before {
+  display: none !important;
+  content: none !important;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar a:hover:not(.active) {
+  border-color: rgba(170, 191, 230, 0.1);
+  background: rgba(174, 195, 233, 0.075);
+  color: #fff;
+  transform: translateX(1px);
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar a.active {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: linear-gradient(108deg, #2878f2 0%, #536be8 57%, #7950dc 100%);
+  box-shadow: 0 7px 17px rgba(54, 88, 204, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .admin-sidebar-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border: 1px solid rgba(186, 204, 240, 0.13);
+  border-radius: 10px;
+  background: rgba(174, 195, 233, 0.075);
+  color: #d9e5fa;
+  line-height: 0;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .admin-sidebar-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar a.active .admin-sidebar-icon {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .logout {
+  display: flex;
+  width: 100%;
+  min-height: 43px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 11px;
+  margin: auto 0 0;
+  padding: 5px 9px;
+  border: 1px solid rgba(244, 114, 182, 0.2);
+  border-radius: 12px;
+  background: rgba(120, 34, 67, 0.15);
+  color: #f5b5c5;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  text-align: left;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .logout:hover {
+  border-color: rgba(251, 146, 170, 0.38);
+  background: rgba(139, 38, 76, 0.24);
+  box-shadow: 0 5px 14px rgba(99, 25, 55, 0.18);
+  color: #ffe2e9;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .logout::before {
+  display: none !important;
+  content: none !important;
+}
+
+.app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .logout .admin-sidebar-icon {
+  border-color: rgba(244, 114, 182, 0.15);
+  background: rgba(244, 114, 182, 0.09);
+  color: #f5adbf;
+}
+
+.student-app .student-sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  width: 242px;
+  min-width: 242px;
+  height: 100vh;
+  flex: 0 0 242px;
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px 12px 14px;
+  border-right: 1px solid #17294e;
+  background: linear-gradient(180deg, #111f40 0%, #101a35 62%, #111f40 100%);
+  color: #d4deef;
+}
+
+.student-app .student-sidebar h2 {
+  margin: 0 4px 10px;
+  padding: 5px 9px 17px;
+  border-bottom: 1px solid rgba(209, 222, 246, 0.14);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.student-app .student-sidebar a:not(.student-readiness-mini) {
+  position: relative;
+  display: flex;
+  min-height: 43px;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #c5d1e5;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+
+.student-app .student-sidebar a:not(.student-readiness-mini)::before { display: none; content: none; }
+.student-app .student-sidebar a:not(.student-readiness-mini):hover { border-color: rgba(190, 207, 239, 0.1); background: rgba(255, 255, 255, 0.06); color: #fff; }
+.student-app .student-sidebar a:not(.student-readiness-mini).active { border-color: rgba(255, 255, 255, 0.13); background: #286cce; box-shadow: 0 5px 13px rgba(25, 80, 166, 0.24); color: #fff; }
+.student-app .student-sidebar .admin-sidebar-icon { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; border: 1px solid rgba(193, 211, 242, 0.12); border-radius: 8px; background: rgba(255, 255, 255, 0.045); color: #cbd8ec; line-height: 0; }
+.student-app .student-sidebar .admin-sidebar-icon svg { display: block; width: 17px; height: 17px; }
+.student-app .student-sidebar a.active .admin-sidebar-icon { border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.14); color: #fff; }
+.student-app .student-sidebar-label { min-width: 0; flex: 1; }
+.student-sidebar-count { display: inline-grid; min-width: 19px; height: 19px; flex: 0 0 auto; place-items: center; padding: 0 5px; border-radius: 999px; background: #dc5363; color: #fff; font-size: 9px; font-weight: 800; }
+
+.student-app .student-sidebar .student-readiness-mini {
+  display: grid;
+  gap: 5px;
+  margin: auto 1px 0;
+  padding: 13px;
+  border: 1px solid rgba(175, 198, 237, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #fff;
+  text-decoration: none;
+}
+
+.student-app .student-sidebar .student-readiness-mini:hover { background: rgba(255, 255, 255, 0.09); }
+.student-readiness-mini-label { color: #afbfda; font-size: 10px; font-weight: 650; }
+.student-readiness-mini strong { color: #fff; font-size: 21px; line-height: 1.1; }
+.student-readiness-mini small { color: #9db2d5; font-size: 10px; }
+
+.student-app .student-sidebar .logout {
+  display: flex;
+  min-height: 40px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 7px 10px;
+  border: 1px solid rgba(221, 111, 127, 0.2);
+  border-radius: 8px;
+  background: rgba(126, 43, 60, 0.13);
+  color: #f0aab4;
+  font-size: 12px;
+}
+
+.student-app .student-sidebar .logout:hover { background: rgba(126, 43, 60, 0.24); }
+.student-app .student-main { max-width: none; min-width: 0; flex: 1; padding: 24px 28px; background: #f6f8fc; }
+
+@media (max-width: 760px) {
+  .app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar {
+    width: 72px;
+    min-width: 72px;
+    flex-basis: 72px;
+    align-items: stretch;
+    padding: 16px 7px 10px;
+  }
+
+  .app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar h2 {
+    margin: 0 0 8px;
+    padding: 4px 0 13px;
+    font-size: 9px;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar a {
+    min-height: 42px;
+    justify-content: center;
+    gap: 0;
+    padding: 4px;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .admin-sidebar-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar .logout {
+    min-height: 42px;
+    justify-content: center;
+    gap: 0;
+    padding: 4px;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .student-app .student-sidebar {
+    width: 68px;
+    min-width: 68px;
+    flex-basis: 68px;
+    align-items: stretch;
+    padding: 15px 6px 10px;
+  }
+
+  .student-app .student-sidebar h2 { margin: 0 0 7px; padding: 4px 0 12px; font-size: 9px; line-height: 1.25; text-align: center; }
+  .student-app .student-sidebar a:not(.student-readiness-mini) { justify-content: center; gap: 0; padding: 4px; overflow: hidden; font-size: 0; }
+  .student-app .student-sidebar .admin-sidebar-icon { width: 32px; height: 32px; }
+  .student-app .student-sidebar-label { display: none; }
+  .student-app .student-sidebar-count { position: absolute; top: 0; right: 0; min-width: 15px; height: 15px; padding: 0 3px; border: 1px solid #111f40; font-size: 8px; }
+  .student-app .student-sidebar .student-readiness-mini { display: none; }
+  .student-app .student-sidebar .logout { justify-content: center; gap: 0; padding: 4px; overflow: hidden; font-size: 0; }
+  .student-app .student-main { padding: 18px 16px; }
+}

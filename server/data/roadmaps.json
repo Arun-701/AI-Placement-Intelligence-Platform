@@ -1,0 +1,323 @@
+{
+  "java-development": {
+    "displayName": "Java Development",
+    "aliases": ["java", "java dev", "java development"],
+    "topics": [
+      {"title": "Java Basics", "description": "Syntax, types, control flow, and basic I/O.", "suggestedTime": "4-7 days"},
+      {"title": "OOP in Java", "description": "Classes, objects, inheritance, polymorphism, encapsulation.", "suggestedTime": "5-8 days"},
+      {"title": "Collections Framework", "description": "Lists, Sets, Maps, queues and iterators.", "suggestedTime": "4-6 days"},
+      {"title": "Exception Handling & I/O", "description": "Robust error handling and file I/O patterns.", "suggestedTime": "3-5 days"},
+      {"title": "Multithreading & Concurrency", "description": "Threads, synchronization, concurrent collections.", "suggestedTime": "5-8 days"},
+      {"title": "JDBC & Persistence", "description": "Database connectivity and basic ORM concepts.", "suggestedTime": "4-6 days"},
+      {"title": "Spring Framework", "description": "Spring core concepts and dependency injection.", "suggestedTime": "7-10 days"},
+      {"title": "Spring Boot & REST APIs", "description": "Build RESTful services with Spring Boot.", "suggestedTime": "7-10 days"},
+      {"title": "Testing & Best Practices", "description": "Unit testing, integration tests and code quality.", "suggestedTime": "3-5 days"}
+    ]
+  },
+  "python-development": {
+    "displayName": "Python Development",
+    "aliases": ["python", "python dev", "python development"],
+    "topics": [
+      {"title": "Python Fundamentals", "description": "Syntax, data types, control flow, functions.", "suggestedTime": "4-7 days"},
+      {"title": "OOP in Python", "description": "Classes, objects, inheritance and modules.", "suggestedTime": "4-6 days"},
+      {"title": "Testing & Debugging", "description": "Unit tests, pytest, debugging workflows.", "suggestedTime": "3-5 days"},
+      {"title": "APIs with Flask/Django", "description": "Create REST APIs and simple web apps.", "suggestedTime": "7-10 days"},
+      {"title": "Packaging & Virtualenv", "description": "Environments, packaging, dependency management.", "suggestedTime": "3-4 days"}
+    ]
+  },
+  "c-programming": {
+    "displayName": "C Programming",
+    "aliases": ["c", "c programming"],
+    "topics": [
+      {"title": "C Basics", "description": "Syntax, pointers, memory model, control flow.", "suggestedTime": "6-9 days"},
+      {"title": "Data Structures in C", "description": "Arrays, linked lists, stacks, queues in C.", "suggestedTime": "5-8 days"},
+      {"title": "Memory Management", "description": "malloc/free, stack vs heap, debugging memory issues.", "suggestedTime": "4-6 days"},
+      {"title": "File I/O and System Calls", "description": "Working with files and basic OS interaction.", "suggestedTime": "3-5 days"}
+    ]
+  },
+  "cpp-development": {
+    "displayName": "C++ Development",
+    "aliases": ["c++", "cpp", "c++ development"],
+    "topics": [
+      {"title": "C++ Fundamentals", "description": "Syntax, memory model, RAII, basic STL.", "suggestedTime": "6-9 days"},
+      {"title": "OOP & Templates", "description": "Templates, generic programming, advanced OOP.", "suggestedTime": "6-9 days"},
+      {"title": "STL & Algorithms", "description": "Vectors, maps, iterators and common algorithms.", "suggestedTime": "5-8 days"},
+      {"title": "Performance & Memory", "description": "Move semantics, profiling, optimization techniques.", "suggestedTime": "5-7 days"}
+    ]
+  },
+  "web-development": {
+    "displayName": "Web Development",
+    "aliases": ["web", "web dev", "web development", "webdev"],
+    "topics": [
+      {"title": "HTML", "description": "Semantic HTML and document structure.", "suggestedTime": "2-4 days"},
+      {"title": "CSS", "description": "Styling, layouts, responsive design.", "suggestedTime": "4-6 days"},
+      {"title": "JavaScript", "description": "Core JS, DOM, events and ES6+ features.", "suggestedTime": "5-8 days"},
+      {"title": "Git & GitHub", "description": "Version control workflows and collaboration.", "suggestedTime": "2-4 days"},
+      {"title": "Responsive Design", "description": "Media queries and mobile-first patterns.", "suggestedTime": "3-5 days"},
+      {"title": "React.js", "description": "Component-based UI and state management.", "suggestedTime": "7-10 days"},
+      {"title": "Node.js & Express", "description": "Server-side JavaScript and REST APIs.", "suggestedTime": "6-9 days"},
+      {"title": "Databases", "description": "Relational and NoSQL basics for web apps.", "suggestedTime": "4-6 days"},
+      {"title": "Authentication & Deployment", "description": "User auth, hosting and CI/CD basics.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "frontend-development": {
+    "displayName": "Frontend Development",
+    "aliases": ["frontend", "frontend development", "front-end"],
+    "topics": [
+      {"title": "HTML & Accessibility", "description": "Semantic markup and accessible UI patterns.", "suggestedTime": "3-5 days"},
+      {"title": "Advanced CSS", "description": "Flexbox, Grid, animations and responsive systems.", "suggestedTime": "4-6 days"},
+      {"title": "JavaScript & DOM", "description": "Modern JS patterns and DOM APIs.", "suggestedTime": "5-8 days"},
+      {"title": "React Ecosystem", "description": "Hooks, routing, state management.", "suggestedTime": "7-10 days"}
+    ]
+  },
+  "backend-development": {
+    "displayName": "Backend Development",
+    "aliases": ["backend", "backend development", "server"],
+    "topics": [
+      {"title": "HTTP & REST", "description": "Protocols, status codes and REST design.", "suggestedTime": "3-5 days"},
+      {"title": "Server Frameworks", "description": "Node/Express, Python/Flask or Java/Spring basics.", "suggestedTime": "6-9 days"},
+      {"title": "Databases & ORM", "description": "Schema design, queries and persistence patterns.", "suggestedTime": "5-8 days"},
+      {"title": "Security Basics", "description": "Authentication, authorization and common vulnerabilities.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "full-stack-development": {
+    "displayName": "Full Stack Development",
+    "aliases": ["fullstack", "full stack", "full stack development"],
+    "topics": [
+      {"title": "Frontend Foundations", "description": "HTML, CSS, JavaScript fundamentals.", "suggestedTime": "6-9 days"},
+      {"title": "Backend Fundamentals", "description": "APIs, server logic and databases.", "suggestedTime": "6-9 days"},
+      {"title": "Integration", "description": "Connect frontend to backend and handle state.", "suggestedTime": "4-6 days"},
+      {"title": "Deployment & DevOps Basics", "description": "Hosting, CI/CD and monitoring.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "react-js": {
+    "displayName": "React.js",
+    "aliases": ["react", "reactjs", "react.js"],
+    "topics": [
+      {"title": "React Basics", "description": "Components, JSX, props and state.", "suggestedTime": "4-6 days"},
+      {"title": "Hooks & State", "description": "useState, useEffect and custom hooks.", "suggestedTime": "4-6 days"},
+      {"title": "Routing & Patterns", "description": "React Router and composition patterns.", "suggestedTime": "3-5 days"},
+      {"title": "Performance & Testing", "description": "Optimizations and unit/integration tests.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "node-js": {
+    "displayName": "Node.js",
+    "aliases": ["node", "nodejs", "node.js"],
+    "topics": [
+      {"title": "Node Basics", "description": "Event loop, modules, npm and core APIs.", "suggestedTime": "3-5 days"},
+      {"title": "Express & APIs", "description": "Routing, middleware and REST services.", "suggestedTime": "5-8 days"},
+      {"title": "Asynchronous Patterns", "description": "Callbacks, promises and async/await.", "suggestedTime": "3-5 days"},
+      {"title": "Testing & Deployment", "description": "Testing, logging and deployment patterns.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "android-development": {
+    "displayName": "Android Development",
+    "aliases": ["android", "android dev", "android development"],
+    "topics": [
+      {"title": "Android Basics", "description": "Activities, layouts and resources.", "suggestedTime": "6-9 days"},
+      {"title": "Lifecycle & Architecture", "description": "ViewModel, LiveData and architecture patterns.", "suggestedTime": "5-8 days"},
+      {"title": "Networking & Persistence", "description": "REST integration and local storage.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "dsa": {
+    "displayName": "DSA",
+    "aliases": ["dsa", "data structures", "algorithms"],
+    "topics": [
+      {"title": "Complexity Analysis", "description": "Big-O notation and complexity reasoning.", "suggestedTime": "2-4 days"},
+      {"title": "Arrays & Strings", "description": "Fundamental array and string techniques.", "suggestedTime": "3-5 days"},
+      {"title": "Linked Lists, Stacks, Queues", "description": "Implement and use linked structures.", "suggestedTime": "4-6 days"},
+      {"title": "Trees & Graphs", "description": "Traversals, search and path algorithms.", "suggestedTime": "6-9 days"},
+      {"title": "Sorting & Searching", "description": "Classic algorithms and variants.", "suggestedTime": "3-5 days"},
+      {"title": "Dynamic Programming", "description": "DP patterns and problem reduction.", "suggestedTime": "6-10 days"}
+    ]
+  },
+  "oop": {
+    "displayName": "OOP",
+    "aliases": ["oop", "object oriented programming"],
+    "topics": [
+      {"title": "OOP Principles", "description": "Encapsulation, inheritance, polymorphism, abstraction.", "suggestedTime": "3-5 days"},
+      {"title": "Design Patterns", "description": "Common reusable solutions (Factory, Singleton, etc.).", "suggestedTime": "5-8 days"}
+    ]
+  },
+  "dbms": {
+    "displayName": "DBMS",
+    "aliases": ["dbms", "database", "databases"],
+    "topics": [
+      {"title": "Relational Databases", "description": "Schemas, normalization and SQL basics.", "suggestedTime": "4-6 days"},
+      {"title": "Advanced SQL", "description": "Joins, window functions and query optimization.", "suggestedTime": "4-6 days"},
+      {"title": "NoSQL Basics", "description": "Document stores and when to use them.", "suggestedTime": "3-5 days"}
+    ]
+  },
+  "computer-networks": {
+    "displayName": "Computer Networks",
+    "aliases": ["networks", "computer networks"],
+    "topics": [
+      {"title": "Network Models", "description": "OSI & TCP/IP stack basics.", "suggestedTime": "3-5 days"},
+      {"title": "Transport & Routing", "description": "TCP/UDP and routing fundamentals.", "suggestedTime": "4-6 days"},
+      {"title": "Network Security Basics", "description": "Firewalls, TLS and common threats.", "suggestedTime": "3-5 days"}
+    ]
+  },
+  "operating-systems": {
+    "displayName": "Operating Systems",
+    "aliases": ["os", "operating systems"],
+    "topics": [
+      {"title": "Processes & Threads", "description": "Concurrency, scheduling and context switches.", "suggestedTime": "4-6 days"},
+      {"title": "Memory Management", "description": "Virtual memory, paging and allocation.", "suggestedTime": "4-6 days"},
+      {"title": "File Systems", "description": "Storage, permissions and file I/O.", "suggestedTime": "3-5 days"}
+    ]
+  },
+  "software-engineering": {
+    "displayName": "Software Engineering",
+    "aliases": ["software engineering", "software eng"],
+    "topics": [
+      {"title": "Software Development Lifecycle", "description": "Waterfall, Agile and iterative development.", "suggestedTime": "3-5 days"},
+      {"title": "Design & Architecture", "description": "High-level system design and modularity.", "suggestedTime": "5-8 days"},
+      {"title": "Testing & QA", "description": "Testing strategies and CI practices.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "computer-architecture": {
+    "displayName": "Computer Architecture",
+    "aliases": ["architecture", "computer architecture"],
+    "topics": [
+      {"title": "Digital Logic & CPUs", "description": "Basic digital circuits and CPU components.", "suggestedTime": "4-6 days"},
+      {"title": "Memory Hierarchy", "description": "Caches, main memory and storage tradeoffs.", "suggestedTime": "3-5 days"}
+    ]
+  },
+  "software-testing": {
+    "displayName": "Software Testing",
+    "aliases": ["testing", "software testing"],
+    "topics": [
+      {"title": "Testing Fundamentals", "description": "Unit, integration and system testing basics.", "suggestedTime": "3-5 days"},
+      {"title": "Automation & Tools", "description": "Test automation frameworks and CI integration.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "git-github": {
+    "displayName": "Git & GitHub",
+    "aliases": ["git", "github", "git & github"],
+    "topics": [
+      {"title": "Version Control Basics", "description": "Commit, branch, merge and pull requests.", "suggestedTime": "2-4 days"},
+      {"title": "Collaboration Workflows", "description": "Feature branches and code review best practices.", "suggestedTime": "2-4 days"}
+    ]
+  },
+  "data-science": {
+    "displayName": "Data Science",
+    "aliases": ["data science", "datascience"],
+    "topics": [
+      {"title": "Python for Data", "description": "NumPy, Pandas and data cleaning techniques.", "suggestedTime": "5-8 days"},
+      {"title": "Statistics & Probability", "description": "Foundational statistics for data analysis.", "suggestedTime": "5-8 days"},
+      {"title": "Data Visualization", "description": "Presenting data with plots and dashboards.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "machine-learning": {
+    "displayName": "Machine Learning",
+    "aliases": ["ml", "machine learning"],
+    "topics": [
+      {"title": "ML Basics", "description": "Supervised vs unsupervised learning and evaluation.", "suggestedTime": "5-8 days"},
+      {"title": "Feature Engineering", "description": "Data preparation and feature selection.", "suggestedTime": "4-6 days"},
+      {"title": "Modeling & Validation", "description": "Common algorithms and cross-validation.", "suggestedTime": "6-9 days"}
+    ]
+  },
+  "deep-learning": {
+    "displayName": "Deep Learning",
+    "aliases": ["deep learning", "dl"],
+    "topics": [
+      {"title": "Neural Networks", "description": "Perceptrons, backpropagation and training basics.", "suggestedTime": "5-8 days"},
+      {"title": "CNNs & RNNs", "description": "Architectures for vision and sequence data.", "suggestedTime": "6-9 days"}
+    ]
+  },
+  "artificial-intelligence": {
+    "displayName": "Artificial Intelligence",
+    "aliases": ["ai", "artificial intelligence"],
+    "topics": [
+      {"title": "AI Concepts", "description": "Search, planning and symbolic methods overview.", "suggestedTime": "4-6 days"},
+      {"title": "Applied AI", "description": "Applying ML/DL to practical problems.", "suggestedTime": "6-9 days"}
+    ]
+  },
+  "nlp": {
+    "displayName": "Natural Language Processing",
+    "aliases": ["nlp", "natural language processing"],
+    "topics": [
+      {"title": "Text Processing", "description": "Tokenization, normalization and feature extraction.", "suggestedTime": "4-6 days"},
+      {"title": "Language Models", "description": "Statistical and neural approaches to language.", "suggestedTime": "6-9 days"}
+    ]
+  },
+  "data-analytics": {
+    "displayName": "Data Analytics",
+    "aliases": ["data analytics", "analytics"],
+    "topics": [
+      {"title": "SQL & Querying", "description": "Data retrieval and aggregation techniques.", "suggestedTime": "4-6 days"},
+      {"title": "Exploratory Analysis", "description": "Summarization and visualization of data.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "cloud-computing": {
+    "displayName": "Cloud Computing",
+    "aliases": ["cloud", "cloud computing"],
+    "topics": [
+      {"title": "Cloud Fundamentals", "description": "IaaS, PaaS, SaaS and core services.", "suggestedTime": "4-6 days"},
+      {"title": "Deployment & Storage", "description": "VMs, object storage and networking basics.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "devops": {
+    "displayName": "DevOps",
+    "aliases": ["devops"],
+    "topics": [
+      {"title": "CI/CD Basics", "description": "Continuous integration and delivery pipelines.", "suggestedTime": "3-5 days"},
+      {"title": "Infrastructure as Code", "description": "Automation and reproducible infrastructure.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "cybersecurity": {
+    "displayName": "Cybersecurity",
+    "aliases": ["security", "cybersecurity"],
+    "topics": [
+      {"title": "Security Fundamentals", "description": "Threat models, encryption and secure design.", "suggestedTime": "4-6 days"},
+      {"title": "Application Security", "description": "OWASP top 10 and secure coding practices.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "docker-kubernetes": {
+    "displayName": "Docker & Kubernetes",
+    "aliases": ["docker", "kubernetes", "docker & kubernetes"],
+    "topics": [
+      {"title": "Containers with Docker", "description": "Images, containers and basic orchestration.", "suggestedTime": "3-5 days"},
+      {"title": "Kubernetes Basics", "description": "Pods, services and deployment patterns.", "suggestedTime": "5-8 days"}
+    ]
+  },
+  "aws": {
+    "displayName": "AWS",
+    "aliases": ["aws"],
+    "topics": [
+      {"title": "AWS Core Services", "description": "EC2, S3, IAM basics and common patterns.", "suggestedTime": "4-6 days"},
+      {"title": "Serverless & Deployment", "description": "Lambda, API Gateway and deployment models.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "azure": {
+    "displayName": "Azure",
+    "aliases": ["azure"],
+    "topics": [
+      {"title": "Azure Fundamentals", "description": "Core platform services and portal usage.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "aptitude": {
+    "displayName": "Aptitude",
+    "aliases": ["aptitude", "apt"],
+    "topics": [
+      {"title": "Quantitative Aptitude Basics", "description": "Number systems, ratios and percentages.", "suggestedTime": "4-6 days"},
+      {"title": "Logical Reasoning", "description": "Puzzles, series and pattern recognition.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "sql": {
+    "displayName": "SQL",
+    "aliases": ["sql"],
+    "topics": [
+      {"title": "SQL Basics", "description": "SELECT, WHERE, basic joins and aggregations.", "suggestedTime": "3-5 days"},
+      {"title": "Advanced Queries", "description": "Window functions, subqueries and optimization.", "suggestedTime": "4-6 days"}
+    ]
+  },
+  "system-design": {
+    "displayName": "System Design",
+    "aliases": ["system design", "system-design"],
+    "topics": [
+      {"title": "Scalability Basics", "description": "Load balancing, caching and sharding concepts.", "suggestedTime": "5-8 days"},
+      {"title": "Design Patterns for Systems", "description": "Designing for reliability and availability.", "suggestedTime": "6-9 days"}
+    ]
+  }
+}

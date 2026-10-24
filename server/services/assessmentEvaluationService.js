@@ -1,0 +1,353 @@
+const Assessment = require("../models/Assessment");
+const AssessmentResult = require("../models/AssessmentResult");
+const QuestionBank = require("../models/QuestionBank");
+
+/**
+ * Evaluate MCQ answer
+ */
+const evaluateMCQAnswer = (question, selectedAnswer) => {
+    if (!question || question.questionType !== "MCQ") {
+        return { isCorrect: false, marksObtained: 0 };
+    }
+
+    const isCorrect = selectedAnswer && selectedAnswer.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
+    const marksObtained = isCorrect ? question.marks : 0;
+
+    return {
+        isCorrect,
+        marksObtained
+    };
+};
+
+/**
+ * Evaluate coding answer - Store code, placeholder for future compiler integration
+ */
+const evaluateCodingAnswer = (question, selectedAnswer) => {
+    if (!question || question.questionType !== "Coding") {
+        return { isCorrect: false, marksObtained: 0, status: "pending" };
+    }
+
+    // Store the code submission
+    return {
+        isCorrect: false, // Will be evaluated by compiler/manual review
+        marksObtained: 0,
+        status: "pending_evaluation",
+        submittedCode: selectedAnswer,
+        evaluatedAt: null
+    };
+};
+
+/**
+ * Evaluate subjective answer - Manual evaluation placeholder
+ */
+const evaluateSubjectiveAnswer = (question, selectedAnswer) => {
+    if (!question || question.questionType !== "Subjective") {
+        return { isCorrect: false, marksObtained: 0, status: "pending" };
+    }
+
+    // Placeholder for manual evaluation
+    return {
+        isCorrect: false,
+        marksObtained: 0,
+        status: "pending_manual_review",
+        submittedAnswer: selectedAnswer,
+        evaluatedAt: null
+    };
+};
+
+/**
+ * Compute total marks from the assessment questions
+ */
+const computeTotalMarks = (questions) => {
+    return (questions || []).reduce((total, question) => {
+        return total + (Number(question.marks) || 0);
+    }, 0);
+};
+
+/**
+ * Evaluate all answers and calculate results
+ */
+const evaluateAnswers = async (assessmentId, answers, studentId, attemptContext = {}) => {
+    const assessment = await Assessment.findById(assessmentId).populate("questions");
+
+    if (!assessment) {
+        throw new Error("Assessment not found");
+    }
+
+    let questionsForAttempt = assessment.questions;
+    if (attemptContext.reattemptAssignmentId && Number.isInteger(attemptContext.questionSetIndex)) {
+        const questionSet = assessment.questionSets?.[attemptContext.questionSetIndex];
+        const attemptQuestionIds = questionSet?.questions?.length
+            ? questionSet.questions
+            : questionSet?.questionIds || [];
+        const allowedIds = new Set(attemptQuestionIds.map((id) => id.toString()));
+        const submittedIds = (answers || []).map((answer) => answer.question?.toString());
+        if (!allowedIds.size && attemptContext.questionSetIndex === 0 && !assessment.questionSets?.length) {
+            assessment.questions.forEach((question) => allowedIds.add(question._id.toString()));
+        }
+        if (submittedIds.some((id) => !allowedIds.has(id))) throw new Error("Answers contain questions outside the assigned re-attempt set");
+        questionsForAttempt = assessment.questions.filter((question) => allowedIds.has(question._id.toString()));
+        if (submittedIds.length !== allowedIds.size || [...allowedIds].some((id) => !submittedIds.includes(id))) {
+            throw new Error("All questions in the assigned re-attempt set must be answered");
+        }
+    } else if (assessment.usesMultiSetAssignment) {
+        const assignedSet = (assessment.setAssignments || []).find((set) =>
+            (set.assignedStudents || []).some((assigned) => assigned.toString() === studentId.toString())
+        );
+        if (!assignedSet) throw new Error("Student does not have an assigned question set");
+        const allowedIds = new Set((assessment.questionSets?.[assignedSet.setIndex]?.questions || []).map((id) => id.toString()));
+        const submittedIds = (answers || []).map((answer) => answer.question?.toString());
+        if (submittedIds.some((id) => !allowedIds.has(id))) throw new Error("Answers contain questions outside the assigned set");
+        questionsForAttempt = assessment.questions.filter((question) => allowedIds.has(question._id.toString()));
+        if (submittedIds.length !== allowedIds.size || [...allowedIds].some((id) => !submittedIds.includes(id))) {
+            throw new Error("All questions in the assigned set must be answered");
+        }
+    }
+    const totalMarks = (assessment.usesMultiSetAssignment || attemptContext.reattemptAssignmentId)
+        ? computeTotalMarks(questionsForAttempt)
+        : (assessment.totalMarks > 0 ? assessment.totalMarks : computeTotalMarks(assessment.questions));
+
+    const evaluatedAnswers = [];
+    let totalScore = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let skippedCount = 0;
+    const topicScores = {};
+
+    // Create a map for quick question lookup
+    const questionMap = {};
+    questionsForAttempt.forEach((q) => {
+        questionMap[q._id.toString()] = q;
+    });
+
+    // Evaluate each answer
+    for (const answer of answers) {
+        const question = questionMap[answer.question.toString()];
+
+        if (!question) {
+            continue;
+        }
+
+        // Check if answer was skipped (empty or null)
+        const isSkipped = !answer.selectedAnswer || answer.selectedAnswer.trim() === "";
+
+        let evaluationResult;
+        if (isSkipped) {
+            skippedCount++;
+            evaluationResult = {
+                isCorrect: false,
+                marksObtained: 0,
+                status: "skipped"
+            };
+        } else {
+            // Evaluate based on question type
+            if (question.questionType === "MCQ") {
+                evaluationResult = evaluateMCQAnswer(question, answer.selectedAnswer);
+                if (evaluationResult.isCorrect) correctCount++;
+                else wrongCount++;
+            } else if (question.questionType === "Coding") {
+                evaluationResult = evaluateCodingAnswer(question, answer.selectedAnswer);
+                wrongCount++;
+            } else if (question.questionType === "Subjective") {
+                evaluationResult = evaluateSubjectiveAnswer(question, answer.selectedAnswer);
+                wrongCount++;
+            } else {
+                // Aptitude, Technical, HR - treat as MCQ for now
+                evaluationResult = evaluateMCQAnswer(question, answer.selectedAnswer);
+                if (evaluationResult.isCorrect) correctCount++;
+                else wrongCount++;
+            }
+        }
+
+        // Track topic-wise scores
+        const topic = question.topic || "General";
+        if (!topicScores[topic]) {
+            topicScores[topic] = {
+                topic,
+                correctAnswers: 0,
+                totalQuestions: 0,
+                score: 0,
+                totalMarks: 0,
+                accuracy: 0
+            };
+        }
+
+        topicScores[topic].totalQuestions++;
+        topicScores[topic].totalMarks += question.marks;
+
+        if (evaluationResult.isCorrect) {
+            topicScores[topic].correctAnswers++;
+            topicScores[topic].score += question.marks;
+        }
+
+        totalScore += evaluationResult.marksObtained;
+
+        evaluatedAnswers.push({
+            question: answer.question,
+            selectedAnswer: answer.selectedAnswer || "",
+            isCorrect: evaluationResult.isCorrect,
+            marksObtained: evaluationResult.marksObtained,
+            ...evaluationResult
+        });
+    }
+
+    // Calculate accuracy for each topic
+    Object.keys(topicScores).forEach((topic) => {
+        if (topicScores[topic].totalQuestions > 0) {
+            topicScores[topic].accuracy = Math.round(
+                (topicScores[topic].correctAnswers / topicScores[topic].totalQuestions) * 100
+            );
+        }
+    });
+
+    const percentage = totalMarks > 0 ? Math.round((totalScore / totalMarks) * 100) : 0;
+
+    return {
+        score: totalScore,
+        totalMarks,
+        percentage: Math.min(100, percentage),
+        answers: evaluatedAnswers,
+        stats: {
+            correctAnswers: correctCount,
+            wrongAnswers: wrongCount,
+            skippedAnswers: skippedCount,
+            totalQuestions: questionsForAttempt.length
+        },
+        topicAnalysis: Object.values(topicScores)
+    };
+};
+
+/**
+ * Identify strengths and weaknesses
+ */
+const identifyStrengthsAndWeaknesses = (evaluationResult, threshold = 70) => {
+    const strengths = [];
+    const weaknesses = [];
+
+    evaluationResult.topicAnalysis.forEach((topic) => {
+        if (topic.accuracy >= threshold) {
+            strengths.push(`Strong in ${topic.topic} (${topic.accuracy}% accuracy)`);
+        } else if (topic.accuracy < threshold && topic.accuracy > 0) {
+            weaknesses.push(`Needs improvement in ${topic.topic} (${topic.accuracy}% accuracy)`);
+        } else if (topic.accuracy === 0) {
+            weaknesses.push(`Very weak in ${topic.topic} (0% accuracy)`);
+        }
+    });
+
+    return { strengths, weaknesses };
+};
+
+/**
+ * Generate recommendations based on performance
+ */
+const generateRecommendations = (evaluationResult, strengths, weaknesses) => {
+    const recommendations = [];
+
+    const { percentage } = evaluationResult;
+
+    if (percentage >= 80) {
+        recommendations.push("Excellent performance! Keep practicing to maintain this level");
+        recommendations.push("Try harder difficulty questions to further improve");
+    } else if (percentage >= 60) {
+        recommendations.push("Good performance! Focus on weak topics to improve further");
+        weaknesses.forEach((weakness) => {
+            recommendations.push(`Work on: ${weakness}`);
+        });
+    } else if (percentage >= 40) {
+        recommendations.push("Average performance. Dedicate more time to practice");
+        recommendations.push("Review concepts in weak areas before next attempt");
+        weaknesses.forEach((weakness) => {
+            recommendations.push(`Priority: ${weakness}`);
+        });
+    } else {
+        recommendations.push("Needs significant improvement. Start with basic concepts");
+        recommendations.push("Review all topics systematically");
+        recommendations.push("Practice similar questions multiple times");
+    }
+
+    return recommendations;
+};
+
+/**
+ * Create assessment result with evaluation
+ */
+const createAssessmentResult = async (studentId, assessmentId, answers, timeTaken = 0, attemptContext = {}) => {
+    // Evaluate answers
+    const evaluationResult = await evaluateAnswers(assessmentId, answers, studentId, attemptContext);
+
+    // Identify strengths and weaknesses
+    const { strengths, weaknesses } = identifyStrengthsAndWeaknesses(evaluationResult);
+
+    // Generate recommendations
+    const recommendations = generateRecommendations(evaluationResult, strengths, weaknesses);
+
+    // Create result document
+    const result = new AssessmentResult({
+        student: studentId,
+        assessment: assessmentId,
+        attemptNumber: await AssessmentResult.countDocuments({ student: studentId, assessment: assessmentId }) + 1,
+        questionSetIndex: attemptContext.questionSetIndex ?? null,
+        reattemptAssignment: attemptContext.reattemptAssignmentId || null,
+        score: evaluationResult.score,
+        totalMarks: evaluationResult.totalMarks,
+        percentage: evaluationResult.percentage,
+        answers: evaluationResult.answers,
+        strengths,
+        weaknesses,
+        recommendations,
+        topicAnalysis: evaluationResult.topicAnalysis,
+        submittedAt: new Date(),
+        completed: true
+    });
+
+    await result.save();
+
+    return result;
+};
+
+/**
+ * Get result summary
+ */
+const getResultSummary = async (resultId) => {
+    const result = await AssessmentResult.findById(resultId)
+        .populate("student", "name email studentId department")
+        .populate("assessment", "title totalMarks duration assessmentType")
+        .lean();
+
+    if (!result) {
+        return null;
+    }
+
+    return {
+        _id: result._id,
+        student: result.student,
+        assessment: result.assessment,
+        score: result.score,
+        totalMarks: result.totalMarks,
+        percentage: result.percentage,
+        submittedAt: result.submittedAt,
+        completed: result.completed,
+        stats: {
+            correctAnswers: result.answers.filter((a) => a.isCorrect).length,
+            wrongAnswers: result.answers.filter((a) => !a.isCorrect && a.selectedAnswer).length,
+            skippedAnswers: result.answers.filter((a) => !a.selectedAnswer).length,
+            totalQuestions: result.answers.length
+        },
+        strengths: result.strengths,
+        weaknesses: result.weaknesses,
+        recommendations: result.recommendations,
+        topicAnalysis: result.topicAnalysis
+    };
+};
+
+module.exports = {
+    evaluateMCQAnswer,
+    evaluateCodingAnswer,
+    evaluateSubjectiveAnswer,
+    evaluateAnswers,
+    identifyStrengthsAndWeaknesses,
+    generateRecommendations,
+    createAssessmentResult,
+    getResultSummary,
+    computeTotalMarks
+};

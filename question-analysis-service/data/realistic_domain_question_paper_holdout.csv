@@ -1,0 +1,157 @@
+question,domain
+"Explain the time complexity of search, insertion and deletion operations in a balanced binary search tree.",Data Structures
+What is the trade-off between memory speed and memory capacity across the hierarchy?,Computer Architecture
+What is the difference between the Transport layer and the Network layer of the OSI model?,Computer Networks
+What is the purpose of a subnet mask in identifying the network and host portions of an IP address?,Computer Networks
+What is the difference between a shallow copy and a deep copy of an object in JavaScript?,Full Stack
+Explain how virtualization allows multiple operating systems to run on a single physical machine.,Cloud Computing
+Explain Boyce-Codd Normal Form (BCNF) and how it differs from Third Normal Form (3NF).,DBMS
+What is the difference between the Shortest Job First (SJF) and First Come First Served (FCFS) scheduling algorithms?,Operating Systems
+"What is a deadlock in the context of database transactions, and how can it be avoided?",DBMS
+Explain the concept of multilevel paging and why it is used for large address spaces.,Operating Systems
+Explain how the alpha-beta pruning technique improves the efficiency of the minimax algorithm.,Artificial Intelligence
+Explain the concept of a schedule in transaction management and what makes it serializable.,DBMS
+What is the difference between an informed search algorithm and an uninformed search algorithm?,Artificial Intelligence
+What is the difference between classification and regression problems in supervised learning?,Machine Learning
+Explain how Docker containers help in achieving consistency across development and production environments.,Cloud Computing
+What is the difference between round-robin load balancing and least-connections load balancing?,Cloud Computing
+Write a simple Express.js route handler that returns a JSON response for a GET request.,Full Stack
+Explain how deletion is performed in a binary search tree when the node has two children.,Data Structures
+What is the difference between the Factory pattern and the Abstract Factory pattern?,Software Engineering
+"Given a network address of 172.16.0.0/16, explain how you would divide it into 4 equal subnets.",Computer Networks
+What is the difference between an adjacency matrix and an adjacency list representation of a graph?,Data Structures
+Explain the difference between the A* search algorithm and the Breadth-First Search algorithm.,Artificial Intelligence
+What is the difference between a production rule system and a semantic network for representing knowledge?,Artificial Intelligence
+What is the length of a rectangle? Statement I: The perimeter of the rectangle is 40 cm. Statement II: The breadth of the rectangle is 8 cm. Are the statements sufficient to find the length?,Aptitude
+What factors should an organization consider when choosing between a private and public cloud?,Cloud Computing
+Explain the memory trade-offs of using a trie compared to a hash set for string storage.,Data Structures
+What is the difference between a write-allocate and a no-write-allocate cache policy?,Computer Architecture
+Explain the concept of an abstract syntax tree and how it differs from a parse tree.,Compiler Design
+Explain the difference between a target-independent and target-dependent code optimizer.,Compiler Design
+Explain the difference between Breadth-First Search (BFS) and Depth-First Search (DFS) in graph traversal.,Data Structures
+Write a program to find the number of triplets in an array that sum to zero using the two-pointer technique.,Coding
+Explain the importance of the testing phase in ensuring software quality within the SDLC.,Software Engineering
+Explain the concept of left recursion and how it can be eliminated from a grammar.,Compiler Design
+Explain the concept of the Shortest Remaining Time First (SRTF) scheduling algorithm.,Operating Systems
+Explain the concept of ridge regression and how it differs from ordinary least squares regression.,Machine Learning
+What is the purpose of the softmax activation function in a neural network's output layer?,Machine Learning
+Explain the concept of linear regression and how it is used to predict a continuous variable.,Machine Learning
+What is the trade-off between speed and cost across different levels of memory hierarchy?,Computer Architecture
+Write a program to find the shortest palindrome that can be formed by adding characters to the front of a string.,Coding
+Explain how a load balancer distinguishes between session-persistent and session-independent traffic.,Cloud Computing
+"What is the difference between the First Fit, Best Fit and Worst Fit memory allocation strategies?",Operating Systems
+What is the difference between the Session layer and the Presentation layer in the OSI model?,Computer Networks
+"What is the k-nearest neighbors (KNN) algorithm, and how does it classify data points?",Machine Learning
+Explain how the sliding window technique reduces the time complexity of finding the longest substring without repeating characters.,Coding
+What is the difference between TCP's connection-oriented approach and UDP's connectionless approach?,Computer Networks
+What is the difference between a semantic network and a frame-based representation in AI?,Artificial Intelligence
+Compare the First-Come-First-Served (FCFS) and Shortest Job First (SJF) scheduling algorithms.,Operating Systems
+"Explain the different types of relationships (one-to-one, one-to-many, many-to-many) in the ER model.",DBMS
+Statement: 'All employees must complete the online security training by the end of the month.' Assumption: Some employees have not yet completed the training. Is this assumption implicit?,Aptitude
+Explain the concept of a set-associative cache and how it balances the trade-offs of direct-mapped and fully associative caches.,Computer Architecture
+Explain the difference between a two-address instruction and a three-address instruction.,Computer Architecture
+What is the difference between a decision tree classifier and a k-nearest neighbours classifier?,Machine Learning
+What is the role of a Content Delivery Network (CDN) in accelerating access to cloud-stored content?,Cloud Computing
+Explain the difference between a relational database and MongoDB's document-based model.,Full Stack
+What is the purpose of HTTPS in securing authentication credentials during transmission?,Full Stack
+Write a program to find the minimum number of character deletions needed to make two strings anagrams of each other.,Coding
+Question: What is the value of a two-digit number? Statement I: The sum of its digits is 9. Statement II: The number is a multiple of 9. Determine whether the statements together are sufficient.,Aptitude
+"Explain the difference between public cloud, private cloud and hybrid cloud deployment models.",Cloud Computing
+Explain the difference between a one-to-many relationship and a many-to-many relationship in an ER diagram.,DBMS
+Explain how dropout is used as a regularization technique to reduce overfitting in neural networks.,Machine Learning
+What is the difference between register-indirect addressing and memory-indirect addressing?,Computer Architecture
+Explain why passing the Turing Test does not necessarily imply true understanding by a machine.,Artificial Intelligence
+Explain the difference between functional requirements and non-functional requirements.,Software Engineering
+Statement: 'The library will remain closed on public holidays.' Assumption: Some visitors may be unaware of public holidays. Determine whether this assumption is implicit in the statement.,Aptitude
+Write a MongoDB query to find all documents in a collection where the age field is greater than 25.,Full Stack
+Explain the difference between the Iterative model and the Incremental model in SDLC.,Software Engineering
+What is the age of Ravi? Statement I: Ravi is 5 years younger than his brother. Statement II: Ravi's brother is 20 years old. Is the data in the two statements together sufficient to answer the question?,Aptitude
+Explain how DOM manipulation is performed using jQuery methods such as '.append()' and '.remove()'.,Full Stack
+What is the difference between a load-store architecture and a memory-to-memory architecture?,Computer Architecture
+Write a program to find the length of the longest substring without repeating characters using sliding window.,Coding
+Explain how Variable Length Subnet Masking (VLSM) allows more efficient use of IP addresses.,Computer Networks
+"Explain the difference between block storage, file storage and object storage in cloud computing.",Cloud Computing
+Write a program to find the smallest subarray with a sum greater than or equal to a given value using sliding window.,Coding
+Explain how a trie can be used to check if a given prefix exists among a set of strings.,Data Structures
+What is the difference between horizontal scaling and vertical scaling in relation to load balancing?,Cloud Computing
+What is the difference between a rule-based expert system and a case-based expert system?,Artificial Intelligence
+"What is the difference between the HTTP methods GET, POST, PUT and DELETE in the context of REST APIs?",Full Stack
+Write a program to find a pair of elements in a sorted array that sum to a given target using the two-pointer technique.,Coding
+"Write an SQL query to list all employees whose department is 'Sales', ordered by salary in descending order.",DBMS
+"What is the V-model in software development, and how does it differ from the Waterfall model?",Software Engineering
+"Explain the difference between creational, structural and behavioral design patterns.",Software Engineering
+Explain the difference between a flat file system and a hierarchical file system.,Operating Systems
+Write a program to count the number of substrings with exactly k distinct characters using sliding window.,Coding
+Explain the difference between AJAX requests made using the Fetch API and jQuery's ajax() method.,Full Stack
+Explain the concept of control hazards in a pipelined processor and how branch prediction addresses them.,Computer Architecture
+Explain the purpose of Secure Sockets Layer (SSL) and Transport Layer Security (TLS) in network security.,Computer Networks
+Explain how a hybrid cloud handles data that must remain on-premises for compliance reasons.,Cloud Computing
+Explain the concept of a page replacement algorithm and name two common examples.,Operating Systems
+Explain how Agile methodology handles changing requirements compared to the Waterfall model.,Software Engineering
+"Explain the role of registers, cache, main memory and secondary storage in the memory hierarchy.",Computer Architecture
+What is the purpose of a requirements traceability matrix in software engineering?,Software Engineering
+Write an SQL query to update the salary of employees in a specific department by 10%.,DBMS
+What is the difference between static semantic checking and dynamic semantic checking?,Compiler Design
+Statement: 'The airline has increased the baggage allowance for economy class passengers.' Assumption: Passengers previously found the baggage allowance insufficient. Is this assumption valid?,Aptitude
+Explain the difference between embedded documents and references when modeling relationships in MongoDB.,Full Stack
+Explain the difference between a convolutional neural network and a recurrent neural network.,Machine Learning
+Explain the role of syntax analysis in a compiler and its relationship to context-free grammars.,Compiler Design
+What is the difference between application virtualization and desktop virtualization?,Cloud Computing
+Explain the concept of a Virtual Private Network (VPN) and how it secures data transmission.,Computer Networks
+"Given the IP address 192.168.1.0/24, determine the number of usable host addresses in that subnet.",Computer Networks
+"What is a virtual private cloud (VPC), and how does it fit into cloud deployment models?",Cloud Computing
+Explain how a hash map is used to solve the problem of finding the longest consecutive sequence in an array.,Coding
+Statement: 'Customers are advised to keep their purchase receipts for future reference.' Assumption: Some customers may need to return or exchange products later. Is this assumption implicit?,Aptitude
+Explain the difference between the sliding window technique and the brute-force approach for subarray problems.,Coding
+What is the difference between auto-increment and auto-decrement addressing modes?,Computer Architecture
+What is the difference between application-level and router-level middleware in Express.js?,Full Stack
+Explain the trade-off between read performance and write performance when adding indexes.,DBMS
+Explain the difference between interior gateway protocols and exterior gateway protocols.,Computer Networks
+What is the difference between sequential access and direct access in a file system?,Operating Systems
+Explain how a counting semaphore can be used to manage a pool of limited resources.,Operating Systems
+Explain the difference between a primary key and a unique key in terms of null value handling.,DBMS
+"Six friends A, B, C, D, E and F are sitting in a row facing north. B is to the immediate right of A, and D is at one of the ends. Determine a possible arrangement satisfying these conditions.",Aptitude
+Explain the difference between a description logic and a rule-based knowledge representation approach.,Artificial Intelligence
+Explain the role of a Deterministic Finite Automaton (DFA) in lexical analysis.,Compiler Design
+"What is fragmentation in memory management, and what is the difference between internal and external fragmentation?",Operating Systems
+"Two towns are 300 km apart. A car starts from one town at 60 km/hr and another car starts from the second town at 40 km/hr, both moving towards each other. Find the time after which they will meet.",Aptitude
+Explain the concept of iterative deepening depth-first search and its advantage over plain DFS.,Artificial Intelligence
+Explain how the sliding window technique can be applied to find the longest substring with at most k distinct characters.,Coding
+What is the difference between an Intrusion Detection System (IDS) and an Intrusion Prevention System (IPS)?,Computer Networks
+What is the difference between concurrency and parallelism in multithreaded programs?,Operating Systems
+"Six people A, B, C, D, E and F are sitting in a row facing north. B is immediately to the right of A, and D is at one of the ends. If C sits between D and E, describe one possible arrangement.",Aptitude
+What is the difference between busy waiting and blocking in semaphore implementation.,Operating Systems
+What are the memory overhead trade-offs of a doubly linked list compared to a singly linked list?,Data Structures
+"A jar contains a mixture of two liquids A and B in the ratio 4:1. When 10 litres of the mixture is taken out and replaced with liquid B, the ratio becomes 2:3. Find the initial quantity of liquid A.",Aptitude
+Explain how ensemble methods such as random forests improve prediction accuracy in supervised learning.,Machine Learning
+What is the difference between primary storage and secondary storage in the memory hierarchy?,Computer Architecture
+"What is single sign-on (SSO), and how does it benefit users across multiple applications?",Full Stack
+Explain the concept of a finite automaton and its use in building a lexical analyzer.,Compiler Design
+Explain what happens to the performance of a binary search tree when it becomes skewed.,Data Structures
+What is a parse tree and how does it represent the syntactic structure of an expression?,Compiler Design
+Explain the concept of a sprint retrospective and its purpose in Agile development.,Software Engineering
+What is the difference between intermediate code and target code in a compiler?,Compiler Design
+What is the difference between direct code generation and code generation via an intermediate representation?,Compiler Design
+"Write an SQL query using a JOIN to combine data from two related tables, 'Orders' and 'Customers'.",DBMS
+"What is a knowledge graph, and how is it used to represent relationships between entities?",Artificial Intelligence
+What is the difference between recursive descent parsing and predictive parsing?,Compiler Design
+Explain the difference between requirements validation and requirements verification.,Software Engineering
+Explain the difference between parametric and non-parametric supervised learning models.,Machine Learning
+"Write a program to check whether one string can be formed by rearranging the characters of another, allowing repeated characters.",Coding
+What is the difference between the Factory design pattern and the Observer design pattern?,Software Engineering
+"A pie chart divides a company's expenditure among rent, salaries, utilities and miscellaneous costs. If salaries occupy 120 degrees of the chart, what percentage of total expenditure does it represent?",Aptitude
+Explain the concept of left recursion and why it must be eliminated in top-down parsing.,Compiler Design
+What is the difference between simple linear regression and multiple linear regression?,Machine Learning
+Explain why AVL trees provide better worst-case search performance than unbalanced BSTs.,Data Structures
+Explain how a doubly linked list is used to implement a browser's forward and backward navigation.,Data Structures
+Explain the difference between synchronous and asynchronous code execution in JavaScript.,Full Stack
+Explain the concept of a partial key and identifying relationship in the ER model for weak entities.,DBMS
+What is the difference between symmetric and asymmetric encryption in securing network communication?,Computer Networks
+Explain the concept of a recurrent neural network's hidden state and its role in sequence modeling.,Machine Learning
+What is the difference between system testing and acceptance testing in the SDLC?,Software Engineering
+What is the difference between an expert system's knowledge base and its inference engine?,Artificial Intelligence
+What is the effective access time formula in a system with cache and main memory?,Computer Architecture
+Explain why AVL trees may require more rotations than Red-Black trees during insertion.,Data Structures
+What is the difference between the knowledge base and the inference engine in an expert system?,Artificial Intelligence
+Write an SQL query to count the number of employees in each department using GROUP BY.,DBMS
+Write a program to find the lowest common ancestor of two nodes in a binary search tree.,Data Structures
