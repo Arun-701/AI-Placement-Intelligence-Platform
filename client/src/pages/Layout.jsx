@@ -89,8 +89,8 @@ export default function Layout() {
     return (
       <div className="app-root">
         <main className="main onboarding">
-          <div style={{ maxWidth: 900, margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <div className="student-onboarding-content">
+            <div className="student-onboarding-header">
               <h2>{title}</h2>
               <button className="logout" onClick={handleLogout}>Sign Out</button>
             </div>

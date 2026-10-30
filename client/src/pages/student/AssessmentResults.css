@@ -1,0 +1,432 @@
+.assessment-result-page {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 16px;
+  padding-bottom: 12px;
+  color: #203652;
+}
+
+.assessment-result-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8391a5;
+  font-size: 11px;
+}
+
+.assessment-result-breadcrumb a {
+  color: #5279ad;
+}
+
+.assessment-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e3eaf2;
+}
+
+.assessment-result-eyebrow {
+  color: #4a78b2;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.assessment-result-header h1 {
+  margin: 4px 0 3px;
+  color: #172e4d;
+  font-size: 25px;
+  font-weight: 760;
+}
+
+.assessment-result-header p {
+  margin: 0;
+  color: #77869b;
+  font-size: 12px;
+}
+
+.assessment-result-status {
+  padding: 6px 10px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 720;
+}
+
+.assessment-result-status.is-passed {
+  border-color: #bde4cc;
+  background: #eff9f2;
+  color: #2b7445;
+}
+
+.assessment-result-status.is-failed {
+  border-color: #f0c9c7;
+  background: #fff5f4;
+  color: #a14843;
+}
+
+.assessment-result-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.assessment-result-metrics > article {
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  gap: 7px;
+  min-height: 83px;
+  padding: 14px;
+  border: 1px solid #e2e9f2;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.assessment-result-metrics > article > span {
+  color: #78889e;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.assessment-result-metrics > article > strong {
+  color: #203d61;
+  font-size: 21px;
+  font-weight: 760;
+}
+
+.assessment-result-metrics > .assessment-result-score {
+  grid-column: span 1;
+}
+
+.assessment-result-score > strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.assessment-result-score > strong small {
+  color: #7d8ba0;
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.assessment-result-score > div {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #eaf0f8;
+}
+
+.assessment-result-score > div > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #4380c6;
+}
+
+.assessment-result-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #e2e9f2;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(27, 55, 94, .03);
+}
+
+.assessment-result-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  padding: 14px 18px;
+}
+
+.assessment-result-summary > div {
+  display: grid;
+  gap: 4px;
+  min-width: 85px;
+}
+
+.assessment-result-summary span {
+  color: #8592a5;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.assessment-result-summary strong {
+  color: #314a68;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.assessment-result-summary > div:last-child strong {
+  font-size: 10px;
+}
+
+.assessment-result-section-heading {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.assessment-result-section-heading h2 {
+  margin: 0;
+  color: #294361;
+  font-size: 14px;
+  font-weight: 730;
+}
+
+.assessment-result-section-heading p {
+  margin: 4px 0 0;
+  color: #8592a5;
+  font-size: 10px;
+}
+
+.assessment-result-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.assessment-result-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.assessment-result-table th {
+  padding: 10px;
+  border-bottom: 1px solid #e8edf4;
+  background: #f8fafd;
+  color: #79889e;
+  font-size: 9px;
+  font-weight: 720;
+  text-transform: uppercase;
+}
+
+.assessment-result-table td {
+  padding: 11px 10px;
+  border-bottom: 1px solid #edf1f6;
+  color: #52657e;
+  font-size: 11px;
+}
+
+.assessment-result-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.assessment-topic-progress {
+  height: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #eaf0f8;
+}
+
+.assessment-topic-progress > div {
+  height: 100%;
+  border-radius: inherit;
+  background: #4783c8;
+}
+
+.assessment-result-analysis {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.assessment-result-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: #52657e;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.assessment-result-list li::marker {
+  color: #4880c0;
+}
+
+.assessment-result-secondary-heading {
+  margin-top: 20px;
+}
+
+.assessment-result-empty {
+  margin: 0;
+  color: #8492a6;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.assessment-answer-review {
+  display: grid;
+  gap: 10px;
+  scroll-margin-top: 14px;
+}
+
+.assessment-answer-review .assessment-result-section-heading {
+  margin-bottom: 2px;
+}
+
+.assessment-answer-item {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid #e5eaf1;
+  border-left: 3px solid #bac5d4;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.assessment-answer-item.is-correct {
+  border-left-color: #4ca06b;
+  background: #fbfefc;
+}
+
+.assessment-answer-item.is-incorrect {
+  border-left-color: #cc6c63;
+  background: #fffdfd;
+}
+
+.assessment-answer-item.is-unanswered {
+  border-left-color: #d3a542;
+  background: #fffefa;
+}
+
+.assessment-answer-item-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  color: #304966;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.assessment-answer-item-heading > span {
+  flex: 0 0 auto;
+  color: #718198;
+  font-size: 9px;
+  font-weight: 720;
+}
+
+.assessment-answer-item.is-correct .assessment-answer-item-heading > span { color: #32774a; }
+.assessment-answer-item.is-incorrect .assessment-answer-item-heading > span { color: #a44c47; }
+.assessment-answer-item.is-unanswered .assessment-answer-item-heading > span { color: #936c20; }
+
+.assessment-answer-item p {
+  margin: 8px 0 0;
+  color: #718198;
+  font-size: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.assessment-answer-item p strong {
+  color: #3c526f;
+  font-weight: 650;
+}
+
+.assessment-answer-item small {
+  display: block;
+  margin-top: 7px;
+  color: #8290a4;
+  font-size: 9px;
+}
+
+.assessment-answer-explanation {
+  padding-top: 7px;
+  border-top: 1px solid #e9edf3;
+}
+
+.assessment-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 9px;
+  padding-bottom: 4px;
+}
+
+.assessment-result-primary-button,
+.assessment-result-secondary-button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid #d8e2ee;
+  border-radius: 8px;
+  background: #fff;
+  color: #4c627f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 680;
+  text-decoration: none;
+}
+
+.assessment-result-primary-button {
+  border-color: #3472bd;
+  background: #3979c5;
+  color: #fff;
+}
+
+.assessment-result-alert,
+.assessment-result-loading {
+  padding: 18px;
+  border: 1px solid #e3e9f1;
+  border-radius: 10px;
+  background: #fff;
+  color: #74839a;
+  font-size: 12px;
+}
+
+.assessment-result-alert {
+  border-color: #efc9c6;
+  background: #fff6f5;
+  color: #9c4540;
+}
+
+@media (max-width: 760px) {
+  .assessment-result-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .assessment-result-analysis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .assessment-result-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .assessment-result-header h1 {
+    font-size: 21px;
+  }
+
+  .assessment-result-card {
+    padding: 14px;
+  }
+
+  .assessment-result-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .assessment-result-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .assessment-result-actions > * {
+    width: 100%;
+  }
+}

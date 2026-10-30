@@ -43,12 +43,16 @@ function AssessmentIcon() {
   )
 }
 
-function AssessmentAction({ assessment, now, requestingAssessmentId, requestToAttend }) {
+function AssessmentAction({ assessment, now, requestingAssessmentId, requestToAttend, onStart }) {
   if (isCompleted(assessment)) {
     const resultId = getResultId(assessment)
     return resultId
-      ? <Link className="assessment-action result-action" to={`/student/assessments/result/${resultId}`}>View Result</Link>
+      ? <Link className="assessment-action result-action" to={`/student/assessments/result/${resultId}`}>Review Answers</Link>
       : <span className="assessment-action muted-action">Completed</span>
+  }
+
+  if (assessment.isInProgress) {
+    return <button className="assessment-action start-action" type="button" onClick={() => onStart(assessment)}>Continue Assessment</button>
   }
 
   if (isExpired(assessment, now)) {
@@ -86,11 +90,16 @@ function AssessmentAction({ assessment, now, requestingAssessmentId, requestToAt
     )
   }
 
-  return <Link className="assessment-action start-action" to={`/student/assessments/${assessment._id}/take`}>Start Test</Link>
+  return (
+    <button className="assessment-action start-action" type="button" onClick={() => onStart(assessment)}>
+      {assessment.isInProgress ? 'Continue Assessment' : 'Start Assessment'}
+    </button>
+  )
 }
 
 function getStatus(assessment, now) {
   if (isCompleted(assessment)) return 'Completed'
+  if (assessment.isInProgress) return 'In Progress'
   if (isExpired(assessment, now)) return 'Expired'
   if (assessment.startDate && dateValue(assessment.startDate) > now) return 'Upcoming'
   if (isAvailable(assessment)) return 'Available'
@@ -102,7 +111,7 @@ function StatusBadges({ assessment, now }) {
   const expired = status === 'Expired'
   return (
     <div className="assessment-status-stack">
-      <span className={`assessment-status status-${status.toLowerCase()}`}>{status}</span>
+      <span className={`assessment-status status-${status.toLowerCase().replace(/\s+/g, '-')}`}>{status}</span>
       {expired && assessment.requestStatus === 'Requested' && (
         <span className="assessment-status status-requested">Retest Requested</span>
       )}
@@ -119,7 +128,7 @@ function StatusBadges({ assessment, now }) {
   )
 }
 
-function AssessmentRow({ assessment, now, requestingAssessmentId, requestToAttend }) {
+function AssessmentRow({ assessment, now, requestingAssessmentId, requestToAttend, openInstructions }) {
   const title = assessment.title || assessment.assessment?.title || 'Assessment'
   const category = getCategory(assessment)
   const topics = Array.isArray(assessment.topicAnalysis) ? assessment.topicAnalysis.map((topic) => topic.topic).filter(Boolean) : []
@@ -139,11 +148,12 @@ function AssessmentRow({ assessment, now, requestingAssessmentId, requestToAtten
         {category ? <span className="assessment-category-badge">{category}</span> : <span className="assessment-cell-muted">—</span>}
       </div>
       <div className="assessment-row-fact" data-label="Duration">{assessment.duration ? `${assessment.duration} min` : '—'}</div>
+      <div className="assessment-row-fact" data-label="Questions">{Array.isArray(assessment.questions) && assessment.questions.length ? assessment.questions.length : '—'}</div>
       <div className="assessment-row-fact" data-label="Marks">{assessment.totalMarks ?? assessment.assessment?.totalMarks ?? '—'}</div>
       <div className="assessment-row-date" data-label="Deadline"><time>{formatDate(deadline)}</time></div>
       <div className="assessment-row-status" data-label="Status"><StatusBadges assessment={assessment} now={now} /></div>
       <div className="assessment-row-action" data-label="Action">
-        <AssessmentAction assessment={assessment} now={now} requestingAssessmentId={requestingAssessmentId} requestToAttend={requestToAttend} />
+        <AssessmentAction assessment={assessment} now={now} requestingAssessmentId={requestingAssessmentId} requestToAttend={requestToAttend} onStart={openInstructions} />
       </div>
     </article>
   )
@@ -153,6 +163,7 @@ const statusTabs = [
   { id: 'all', label: 'All' },
   { id: 'assigned', label: 'Assigned' },
   { id: 'available', label: 'Available' },
+  { id: 'in-progress', label: 'In Progress' },
   { id: 'completed', label: 'Completed' },
   { id: 'expired', label: 'Expired' },
 ]
@@ -190,6 +201,7 @@ export default function AssessmentList() {
   const [sort, setSort] = useState('deadline-soon')
   const [selectedTab, setSelectedTab] = useState('all')
   const [now, setNow] = useState(0)
+  const [instructionAssessment, setInstructionAssessment] = useState(null)
   const { unreadCount = 0 } = useOutletContext() || {}
 
   useEffect(() => {
@@ -270,12 +282,14 @@ export default function AssessmentList() {
   const completedAssessmentIds = new Set(completedRows.map(getAssessmentId))
   const expiredRows = items.filter((item) => isExpired(item, now) && !isCompleted(item))
   const activeRows = items.filter((item) => !isExpired(item, now) && !isCompleted(item))
-  const assignedRows = activeRows.filter((item) => item.isAssigned === true || item.reattemptAssigned === true || (item.isAssigned === undefined && item.isAvailable !== true))
+  const assignedRows = activeRows.filter((item) => !item.isInProgress && (item.isAssigned === true || item.reattemptAssigned === true || (item.isAssigned === undefined && item.isAvailable !== true)))
+  const inProgressRows = allRows.filter((item) => item.isInProgress)
   const availableRows = activeRows.filter(isAvailable)
   const counts = {
-    all: assignedRows.length + availableRows.length + completedAssessmentIds.size + expiredRows.length,
+    all: allRows.length,
     assigned: assignedRows.length,
     available: availableRows.length,
+    'in-progress': inProgressRows.length,
     completed: completedAssessmentIds.size,
     expired: expiredRows.length,
   }
@@ -299,6 +313,7 @@ export default function AssessmentList() {
   const tabRows = allRows.filter((assessment) => {
     if (selectedTab === 'assigned') return assignedRows.includes(assessment)
     if (selectedTab === 'available') return availableRows.includes(assessment)
+    if (selectedTab === 'in-progress') return assessment.isInProgress
     if (selectedTab === 'completed') return isCompleted(assessment)
     if (selectedTab === 'expired') return isExpired(assessment, now) && !isCompleted(assessment)
     return true
@@ -317,6 +332,13 @@ export default function AssessmentList() {
           {unreadCount > 0 && <span>{unreadCount > 99 ? '99+' : unreadCount}</span>}
         </Link>
       </header>
+
+      <section className="assessment-summary" aria-label="Assessment overview">
+        <div><span>Total assessments</span><strong>{counts.all}</strong></div>
+        <div><span>Not started</span><strong>{counts.assigned + counts.available}</strong></div>
+        <div><span>In progress</span><strong>{inProgressRows.length}</strong></div>
+        <div><span>Completed</span><strong>{counts.completed}</strong></div>
+      </section>
 
       <div className="assessment-controls">
         <label className="assessment-search">
@@ -359,7 +381,7 @@ export default function AssessmentList() {
           <span>{visibleRows.length} shown</span>
         </div>
         <div className="assessment-list-columns" aria-hidden="true">
-          <span>Assessment</span><span>Category</span><span>Duration</span><span>Marks</span><span>Deadline / Date</span><span>Status</span><span>Action</span>
+          <span>Assessment</span><span>Category</span><span>Duration</span><span>Questions</span><span>Marks</span><span>Deadline / Date</span><span>Status</span><span>Action</span>
         </div>
         {visibleRows.length ? (
           <div className="assessment-list-rows">
@@ -370,6 +392,7 @@ export default function AssessmentList() {
                 now={now}
                 requestingAssessmentId={requestingAssessmentId}
                 requestToAttend={requestToAttend}
+                openInstructions={setInstructionAssessment}
               />
             ))}
           </div>
@@ -380,6 +403,35 @@ export default function AssessmentList() {
           </div>
         )}
       </section>
+      {instructionAssessment && (
+        <div className="assessment-dialog-backdrop" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setInstructionAssessment(null)
+        }}>
+          <section className="assessment-instructions-dialog" role="dialog" aria-modal="true" aria-labelledby="assessment-instructions-title">
+            <button type="button" className="assessment-dialog-close" aria-label="Close assessment instructions" onClick={() => setInstructionAssessment(null)}>×</button>
+            <span className="assessment-dialog-kicker">{instructionAssessment.isInProgress ? 'Resume your attempt' : 'Before you begin'}</span>
+            <h2 id="assessment-instructions-title">{instructionAssessment.title || 'Assessment'}</h2>
+            <p>{instructionAssessment.description || 'Review the assessment details before starting.'}</p>
+            <div className="assessment-instructions-facts">
+              <span><strong>{Array.isArray(instructionAssessment.questions) ? instructionAssessment.questions.length : '—'}</strong> Questions</span>
+              <span><strong>{instructionAssessment.totalMarks ?? '—'}</strong> Total marks</span>
+              <span><strong>{instructionAssessment.duration ?? '—'}</strong> Minutes</span>
+              <span><strong>{instructionAssessment.assessmentType || 'Assessment'}</strong> Type</span>
+              <span><strong>{formatDate(instructionAssessment.startDate)}</strong> Available from</span>
+              <span><strong>{formatDate(instructionAssessment.endDate)}</strong> Deadline</span>
+            </div>
+            <ul className="assessment-instructions-list">
+              <li>Your attempt is timed according to the assessment settings.</li>
+              <li>Your answers are saved as you work. Avoid closing the page before submitting.</li>
+              <li>Submission is final and the server applies the current attempt eligibility rules.</li>
+            </ul>
+            <div className="assessment-instructions-actions">
+              <button type="button" className="assessment-secondary-button" onClick={() => setInstructionAssessment(null)}>Go Back</button>
+              <Link className="assessment-primary-button" to={`/student/assessments/${instructionAssessment._id}/take`}>{instructionAssessment.isInProgress ? 'Continue Assessment' : 'Start Assessment'}</Link>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   )
 }

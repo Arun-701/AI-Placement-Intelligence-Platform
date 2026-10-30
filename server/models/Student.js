@@ -72,11 +72,31 @@ const studentSchema = new mongoose.Schema(
       trim: true,
     },
 
+    degree: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     year: {
       type: Number,
       required: true,
       min: 1,
       max: 8,
+    },
+
+    semester: {
+      type: Number,
+      min: 1,
+      max: 16,
+      default: null,
+    },
+
+    graduationYear: {
+      type: Number,
+      min: 1950,
+      max: 2200,
+      default: null,
     },
 
     section: {
@@ -117,6 +137,12 @@ const studentSchema = new mongoose.Schema(
     },
 
     linkedin: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    portfolio: {
       type: String,
       trim: true,
       default: "",
@@ -295,6 +321,30 @@ const studentSchema = new mongoose.Schema(
       dueAt: {
         type: Date,
         default: null,
+      },
+      timeSpent: {
+        type: Number,
+        min: 0,
+        default: 0,
+      },
+      answers: {
+        type: [{
+          question: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "QuestionBank",
+            required: true,
+          },
+          selectedAnswer: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+          markedForReview: {
+            type: Boolean,
+            default: false,
+          },
+        }],
+        default: [],
       },
       status: {
         type: String,

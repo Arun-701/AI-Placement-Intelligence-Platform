@@ -1,5 +1,5 @@
 const { successResponse, errorResponse } = require("../utils/response");
-const { validateProfileInput } = require("../validators/studentProfileValidator");
+const { validateProfileInput, profileFields } = require("../validators/studentProfileValidator");
 const {
   getStudentProfile,
   updateStudentProfile,
@@ -19,6 +19,10 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
+    const invalidFields = Object.keys(req.body || {}).filter((field) => !profileFields.includes(field));
+    if (invalidFields.length > 0) {
+      return errorResponse(res, { message: `Unsupported profile field(s): ${invalidFields.join(", ")}`, status: 400 });
+    }
     const { errors, data } = validateProfileInput(req.body);
     if (errors.length > 0) {
       return errorResponse(res, { message: errors.join(", "), status: 400 });
@@ -50,6 +54,9 @@ const updateProfile = async (req, res) => {
       }
     });
   } catch (error) {
+    if (error.code === "DUPLICATE_STUDENT_ID" || (error.code === 11000 && error.keyPattern?.studentId)) {
+      return errorResponse(res, { message: "That registration number is already in use.", status: 409 });
+    }
     return errorResponse(res, { message: error.message, status: 500 });
   }
 };

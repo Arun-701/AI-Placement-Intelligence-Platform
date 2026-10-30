@@ -21,6 +21,57 @@ const PROFILE_FIELDS = [
   "cgpa"
 ];
 
+const PROFILE_UPDATE_FIELDS = [
+  ...PROFILE_FIELDS,
+  "studentId",
+  "department",
+  "degree",
+  "year",
+  "semester",
+  "graduationYear",
+  "portfolio"
+];
+
+const PROFILE_COMPLETENESS_FIELDS = [
+  ["fullName", "Full name"],
+  ["emailVerified", "Verified email"],
+  ["phone", "Phone number"],
+  ["studentId", "Registration number"],
+  ["college", "College"],
+  ["department", "Department"],
+  ["degree", "Degree"],
+  ["year", "Current year"],
+  ["semester", "Current semester"],
+  ["section", "Section"],
+  ["cgpa", "CGPA"],
+  ["graduationYear", "Graduation year"],
+  ["skills", "Skills"],
+  ["github", "GitHub profile"],
+  ["linkedin", "LinkedIn profile"],
+  ["portfolio", "Portfolio URL"],
+  ["resumeUploaded", "Resume"]
+];
+
+const calculateProfileCompleteness = (student) => {
+  const missingFields = PROFILE_COMPLETENESS_FIELDS
+    .filter(([field]) => {
+      const value = field === "emailVerified"
+        ? student.isVerified
+        : field === "resumeUploaded"
+          ? Boolean(student.resume)
+          : student[field];
+      if (Array.isArray(value)) return value.length === 0;
+      if (typeof value === "string") return value.trim() === "";
+      return value === null || value === undefined || value === false;
+    })
+    .map(([, label]) => label);
+
+  return {
+    percentage: Math.round(((PROFILE_COMPLETENESS_FIELDS.length - missingFields.length) / PROFILE_COMPLETENESS_FIELDS.length) * 100),
+    missingFields
+  };
+};
+
 const calculateProfileCompletion = (student) => {
   const missingFields = PROFILE_FIELDS.filter((field) => {
     const value = student[field];
@@ -40,13 +91,14 @@ const calculateProfileCompletion = (student) => {
 
 const getStudentProfile = async (studentId) => {
   const student = await Student.findById(studentId)
-    .select("fullName email phone gender dateOfBirth department year section cgpa college skills interests linkedin github leetcode hackerrank codechef codeforces resume resumeAnalysis resumeScore lastResumeAnalysisDate placementReadinessScore readinessProfile codingProfile isVerified isActive assessmentsCompleted profileCompleted initialAssessmentCompleted")
+    .select("fullName email phone studentId gender dateOfBirth department degree year semester section graduationYear cgpa college skills interests linkedin github portfolio leetcode hackerrank codechef codeforces resume resumeOriginalName resumeSize resumeAnalysis resumeScore lastResumeAnalysisDate placementReadinessScore readinessProfile codingProfile isVerified isActive assessmentsCompleted profileCompleted initialAssessmentCompleted")
     .lean();
   if (!student) {
     throw new Error("Student not found");
   }
 
   const completion = calculateProfileCompletion(student);
+  const profileCompleteness = calculateProfileCompleteness(student);
   const storedResumeScore = toOptionalScore(student.resumeScore);
   const analyzedResumeScore = toOptionalScore(student.resumeAnalysis?.resumeScore ?? student.resumeAnalysis?.overallScore);
   return {
@@ -54,16 +106,21 @@ const getStudentProfile = async (studentId) => {
       fullName: student.fullName || "",
       email: student.email,
       phone: student.phone || "",
+      studentId: student.studentId || "",
       gender: student.gender || "",
       dateOfBirth: student.dateOfBirth || null,
       department: student.department || "",
+      degree: student.degree || "",
       year: student.year || null,
+      semester: student.semester ?? null,
+      graduationYear: student.graduationYear ?? null,
       cgpa: student.cgpa === undefined ? null : student.cgpa,
       college: student.college || "",
       skills: student.skills || [],
       interests: student.interests || [],
       linkedin: student.linkedin || "",
       github: student.github || "",
+      portfolio: student.portfolio || "",
       leetcode: student.leetcode || "",
       hackerrank: student.hackerrank || "",
       codechef: student.codechef || "",
@@ -75,12 +132,15 @@ const getStudentProfile = async (studentId) => {
       placementReadinessScore: student.placementReadinessScore ?? null,
       readinessProfile: student.readinessProfile || null,
       resume: student.resume || "",
+      resumeFileName: student.resumeOriginalName || "",
+      resumeSize: Number(student.resumeSize) || 0,
       emailVerified: student.isVerified,
       accountActive: student.isActive,
       assessmentsCompleted: student.assessmentsCompleted || 0,
       initialAssessmentCompleted: student.initialAssessmentCompleted || false,
       profileCompleted: completion.profileCompleted,
-      profileCompletion: completion.percentage
+      profileCompletion: completion.percentage,
+      profileCompleteness
     }
   };
 };
@@ -142,20 +202,38 @@ const updateStudentProfile = async (studentId, updates) => {
     throw new Error("Student not found");
   }
 
-  PROFILE_FIELDS.forEach((field) => {
+  if (updates.studentId && updates.studentId !== student.studentId) {
+    const existingStudent = await Student.exists({
+      studentId: updates.studentId,
+      _id: { $ne: student._id }
+    });
+    if (existingStudent) {
+      const error = new Error("That registration number is already in use.");
+      error.code = "DUPLICATE_STUDENT_ID";
+      throw error;
+    }
+  }
+
+  PROFILE_UPDATE_FIELDS.forEach((field) => {
     if (Object.prototype.hasOwnProperty.call(updates, field)) {
-      student[field] = updates[field];
+      if (field === "studentId" && updates[field] === null) {
+        student[field] = undefined;
+      } else {
+        student[field] = updates[field];
+      }
     }
   });
 
   const completion = calculateProfileCompletion(student);
   student.profileCompleted = completion.profileCompleted;
   await student.save();
+  const profile = await getStudentProfile(studentId);
 
   return {
-    student,
+    student: profile.student,
     profileCompletion: completion.percentage,
-    missingFields: completion.missingFields
+    missingFields: completion.missingFields,
+    profileCompleteness: profile.student.profileCompleteness
   };
 };
 
@@ -170,6 +248,8 @@ const getProfileCompletionStatus = async (studentId) => {
 
 module.exports = {
   PROFILE_FIELDS,
+  PROFILE_UPDATE_FIELDS,
+  calculateProfileCompleteness,
   calculateProfileCompletion,
   getStudentProfile,
   getStudentDashboard,

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { api } from '../../api'
 import { useAuth } from '../../AuthContext'
 import { normalizeTopicAnalysis } from '../../utils/topicPerformance'
+import './AssessmentResults.css'
 
 const formatTopicSummary = (item) => {
   const match = String(item).match(/^(?:Very strong in|Strong in|Needs improvement in|Very weak in)\s+(.+?)\s+\((\d+(?:\.\d+)?)%\s+accuracy\)$/)
@@ -28,8 +29,8 @@ export default function AssessmentResult() {
     return () => { active = false }
   }, [resultId])
 
-  if (error) return <div className="alert error">{error}</div>
-  if (!result) return <div className="loading">Loading result...</div>
+  if (error) return <div className="assessment-result-page"><div className="assessment-result-alert" role="alert">{error}</div></div>
+  if (!result) return <div className="assessment-result-page"><div className="assessment-result-loading">Loading your result…</div></div>
 
   const answers = result.answers || {}
   const totalQuestions = answers.totalQuestions ?? answers.details?.length ?? 0
@@ -38,42 +39,43 @@ export default function AssessmentResult() {
   const skipped = answers.skipped ?? 0
   const attempted = correct + incorrect
   const passingMarks = typeof result.assessment?.passingMarks === 'number' ? result.assessment.passingMarks : 0
-  const passed = result.score >= passingMarks
+  const score = result.score ?? 0
+  const passed = score >= passingMarks
   const topicPerformance = normalizeTopicAnalysis(result.topicAnalysis)
 
   return (
-    <>
-      <div className="page-title">
+    <main className="assessment-result-page">
+      <nav className="assessment-result-breadcrumb"><Link to="/student/assessments">My Assessments</Link><span>/</span><span>Result</span></nav>
+      <header className="assessment-result-header">
         <div>
-          <h1>Assessment Completed</h1>
-          <div className="subtitle">{result.assessment?.title || 'Assessment'}</div>
+          <span className="assessment-result-eyebrow">Assessment result</span>
+          <h1>Assessment completed</h1>
+          <p>{result.assessment?.title || 'Assessment'}</p>
         </div>
-        <span className={`badge ${passed ? 'green' : 'red'}`}>{passed ? 'Passed' : 'Failed'}</span>
+        <span className={`assessment-result-status${passed ? ' is-passed' : ' is-failed'}`}>{passed ? 'Passed' : 'Not passed'}</span>
+      </header>
+
+      <div className="assessment-result-metrics">
+        <article className="assessment-result-score"><span>Marks obtained</span><strong>{score} <small>/ {result.totalMarks ?? 0}</small></strong><div><span style={{ width: `${Math.min(100, Math.max(0, Number(result.percentage) || 0))}%` }} /></div></article>
+        <article><span>Percentage</span><strong>{result.percentage ?? 0}%</strong></article>
+        <article><span>Correct answers</span><strong>{correct}</strong></article>
+        <article><span>Incorrect answers</span><strong>{incorrect}</strong></article>
       </div>
 
-      <div className="grid cols-4 mb">
-        <div className="card kpi-card"><div className="kpi-value">{result.score} / {result.totalMarks}</div><div className="kpi-label">Score</div></div>
-        <div className="card kpi-card"><div className="kpi-value">{result.percentage}%</div><div className="kpi-label">Percentage</div></div>
-        <div className="card kpi-card"><div className="kpi-value">{correct}</div><div className="kpi-label">Correct Answers</div></div>
-        <div className="card kpi-card"><div className="kpi-value">{incorrect}</div><div className="kpi-label">Incorrect Answers</div></div>
-      </div>
+      <section className="assessment-result-card assessment-result-summary">
+        <div><span>Total questions</span><strong>{totalQuestions}</strong></div>
+        <div><span>Attempted</span><strong>{attempted}</strong></div>
+        <div><span>Correct</span><strong>{correct}</strong></div>
+        <div><span>Incorrect</span><strong>{incorrect}</strong></div>
+        <div><span>Unanswered</span><strong>{skipped}</strong></div>
+        {result.submittedAt && <div><span>Submitted</span><strong>{new Date(result.submittedAt).toLocaleString()}</strong></div>}
+      </section>
 
-      <div className="card mb">
-        <h3>Result Summary</h3>
-        <div className="row" style={{ gap: 24, flexWrap: 'wrap', fontSize: 14, color: 'var(--muted)' }}>
-          <span>Total Questions: <strong>{totalQuestions}</strong></span>
-          <span>Attempted: <strong>{attempted}</strong></span>
-          <span>Correct Answers: <strong>{correct}</strong></span>
-          <span>Incorrect Answers: <strong>{incorrect}</strong></span>
-          <span>Skipped: <strong>{skipped}</strong></span>
-        </div>
-      </div>
-
-      <div className="card mb">
-        <h3>Topic-wise Performance</h3>
+      <section className="assessment-result-card">
+        <div className="assessment-result-section-heading"><div><h2>Topic-wise performance</h2><p>Performance details returned for this assessment.</p></div></div>
         {topicPerformance.length ? (
-          <div className="table-wrap">
-            <table className="topic-performance-table">
+          <div className="assessment-result-table-wrap">
+            <table className="assessment-result-table">
               <thead>
                 <tr>
                   <th>Topic</th>
@@ -89,8 +91,8 @@ export default function AssessmentResult() {
                     <td>
                       <div className="topic-name-cell">
                         <strong>{topic.topic}</strong>
-                        <div className="topic-progress" aria-label={`${topic.topic} progress`}>
-                          <div className="topic-progress-fill" style={{ width: `${topic.accuracy}%` }} />
+                        <div className="assessment-topic-progress" aria-label={`${topic.topic} progress`}>
+                          <div style={{ width: `${topic.accuracy}%` }} />
                         </div>
                       </div>
                     </td>
@@ -104,32 +106,37 @@ export default function AssessmentResult() {
             </table>
           </div>
         ) : (
-          <p style={{ color: 'var(--muted)', fontSize: 14, margin: 0 }}>Topic-wise analysis is not available for this assessment.</p>
+          <p className="assessment-result-empty">Topic-wise analysis is not available for this assessment.</p>
         )}
-      </div>
+      </section>
 
-      <div className="grid cols-2">
-        <div className="card">
-          <h3>Strengths</h3>
-          {result.strengths?.length ? <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.strengths.map((item, index) => <li key={index} className="list-item">{formatTopicSummary(item)}</li>)}</ul> : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No strengths identified yet.</p>}
-          <h3 className="mt">Weaknesses</h3>
-          {result.weaknesses?.length ? <ul style={{ paddingLeft: 20, fontSize: 14 }}>{result.weaknesses.map((item, index) => <li key={index} className="list-item">{formatTopicSummary(item)}</li>)}</ul> : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No weaknesses identified.</p>}
-        </div>
+      <div className="assessment-result-analysis">
+        <section className="assessment-result-card">
+          <div className="assessment-result-section-heading"><div><h2>Strengths</h2><p>Based on your submitted result.</p></div></div>
+          {result.strengths?.length ? <ul className="assessment-result-list">{result.strengths.map((item, index) => <li key={`${item}-${index}`}>{formatTopicSummary(item)}</li>)}</ul> : <p className="assessment-result-empty">No strengths identified yet.</p>}
+          <div className="assessment-result-section-heading assessment-result-secondary-heading"><div><h2>Areas to improve</h2></div></div>
+          {result.weaknesses?.length ? <ul className="assessment-result-list">{result.weaknesses.map((item, index) => <li key={`${item}-${index}`}>{formatTopicSummary(item)}</li>)}</ul> : <p className="assessment-result-empty">No improvement areas identified.</p>}
+        </section>
 
-        <div className="card">
-          <h3>Answer Review</h3>
+        <section className="assessment-result-card assessment-answer-review" id="answer-review">
+          <div className="assessment-result-section-heading"><div><h2>Answer review</h2><p>Your submitted responses and permitted answer feedback.</p></div></div>
           {answers.details?.length ? answers.details.map((answer, index) => (
-            <div className="card mb" style={{ padding: 14 }} key={answer.questionId || index}>
-              <div className="row between" style={{ gap: 12 }}><strong>{index + 1}. {answer.question}</strong><span className={`badge ${answer.isCorrect ? 'green' : 'red'}`}>{answer.isCorrect ? 'Correct' : 'Incorrect'}</span></div>
-              <p style={{ fontSize: 14, margin: '10px 0 0' }}>Your answer: <strong>{answer.studentAnswer || 'Not answered'}</strong></p>
+            <article className={`assessment-answer-item${!answer.studentAnswer ? ' is-unanswered' : answer.isCorrect ? ' is-correct' : ' is-incorrect'}`} key={answer.questionId || index}>
+              <div className="assessment-answer-item-heading"><strong>{index + 1}. {answer.question}</strong><span>{!answer.studentAnswer ? 'Unanswered' : answer.isCorrect ? 'Correct' : 'Incorrect'}</span></div>
+              <p>Your answer: <strong>{answer.studentAnswer || 'Not answered'}</strong></p>
+              <small>Marks awarded: {answer.marksObtained ?? 0}{answer.marks !== undefined ? ` / ${answer.marks}` : ''}</small>
               {!answer.isCorrect && <p style={{ fontSize: 14, margin: '6px 0 0' }}>Correct answer: <strong>{answer.correctAnswer}</strong></p>}
-              {answer.explanation && <p style={{ fontSize: 13, color: 'var(--muted)', margin: '6px 0 0' }}>{answer.explanation}</p>}
-            </div>
-          )) : <p style={{ color: 'var(--muted)', fontSize: 14 }}>No answer details are available for this result.</p>}
-        </div>
+              {answer.explanation && <p className="assessment-answer-explanation">{answer.explanation}</p>}
+            </article>
+          )) : <p className="assessment-result-empty">No answer details are available for this result.</p>}
+        </section>
       </div>
 
-      <div className="mt"><button className="btn" onClick={async () => { await refreshUser(); navigate('/student', { replace: true }) }}>Go to Dashboard</button></div>
-    </>
+      <footer className="assessment-result-actions">
+        <Link className="assessment-result-secondary-button" to="/student/assessments">Back to My Assessments</Link>
+        <a className="assessment-result-primary-button" href="#answer-review">Review Answers</a>
+        <button className="assessment-result-secondary-button" onClick={async () => { await refreshUser(); navigate('/student', { replace: true }) }}>Go to Dashboard</button>
+      </footer>
+    </main>
   )
 }

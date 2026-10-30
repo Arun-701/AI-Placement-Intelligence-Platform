@@ -222,6 +222,54 @@
 .student-app .student-sidebar .logout:hover { background: rgba(126, 43, 60, 0.24); }
 .student-app .student-main { max-width: none; min-width: 0; flex: 1; padding: 24px 28px; background: #f6f8fc; }
 
+.main.onboarding {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  flex: 1;
+  padding: 0;
+}
+
+.student-onboarding-content {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 18px clamp(16px, 2.4vw, 36px);
+}
+
+.student-onboarding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.student-onboarding-header h2 {
+  margin: 0;
+}
+
+.student-onboarding-content:has(.student-profile) {
+  padding: 0;
+}
+
+.student-onboarding-content:has(.exam-shell) {
+  padding: 0;
+}
+
+.student-onboarding-content:has(.student-profile) .student-onboarding-header {
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+@media (max-width: 560px) {
+  .student-onboarding-content:has(.student-profile) .student-onboarding-header {
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+}
+
 @media (max-width: 760px) {
   .app-root:has(.sidebar.admin-sidebar) .sidebar.admin-sidebar {
     width: 72px;

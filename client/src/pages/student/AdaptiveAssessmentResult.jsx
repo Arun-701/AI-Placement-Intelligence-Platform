@@ -1,13 +1,74 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { api } from '../../api'
+import './AssessmentResults.css'
+
+const formatReadiness = (level) => level || 'Not available'
 
 export default function AdaptiveAssessmentResult() {
-  const { id } = useParams(); const navigate = useNavigate(); const [result, setResult] = useState(null); const [error, setError] = useState('')
-  useEffect(() => { api.get(`/adaptive-assessment/${id}/result`).then((response) => response.ok ? setResult(response.data.result) : setError(response.data?.message || 'Unable to load result.')).catch(() => setError('Unable to load result.')) }, [id])
-  if (error) return <div className="alert error">{error}</div>
-  if (!result) return <div className="loading">Loading readiness result...</div>
-  const rows = result.mode === 'overall' ? result.milestoneReadiness : result.topicReadiness
-  const label = result.mode === 'overall' ? 'Milestone' : 'Topic'
-  return <><div className="page-title"><div><h1>{result.mode === 'overall' ? 'Roadmap Readiness' : 'Milestone Readiness'}</h1><div className="subtitle">{result.domain}{result.milestone ? ` · ${result.milestone}` : ''}</div></div></div><div className="grid cols-3 mb"><div className="card kpi-card"><div className="kpi-value">{result.totalQuestions}</div><div className="kpi-label">Questions</div></div><div className="card kpi-card"><div className="kpi-value">{result.correctAnswers}</div><div className="kpi-label">Correct answers</div></div><div className="card kpi-card"><div className="kpi-value">{result.accuracy}%</div><div className="kpi-label">Overall accuracy</div></div></div><div className="card"><h3>{label} readiness</h3><div style={{ overflowX: 'auto' }}><table><thead><tr><th>{label}</th><th>Questions</th><th>Correct</th><th>Accuracy</th><th>Readiness</th></tr></thead><tbody>{rows.map((item) => <tr key={item[label.toLowerCase()]}><td>{item[label.toLowerCase()]}</td><td>{item.questionsAttempted}</td><td>{item.correct}</td><td>{item.accuracy}%</td><td><span className="badge blue">{item.readinessLevel}</span></td></tr>)}</tbody></table></div></div><div className="mt"><button className="btn" onClick={() => navigate('/student/roadmap')}>Back to Roadmap</button></div></>
+  const { id } = useParams()
+  const [result, setResult] = useState(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let active = true
+    api.get(`/adaptive-assessment/${id}/result`).then((response) => {
+      if (!active) return
+      if (response.ok) setResult(response.data.result)
+      else setError(response.data?.message || 'Unable to load adaptive assessment result.')
+    }).catch(() => {
+      if (active) setError('Unable to load adaptive assessment result.')
+    })
+    return () => { active = false }
+  }, [id])
+
+  if (error) return <main className="assessment-result-page"><div className="assessment-result-alert" role="alert">{error}</div><footer className="assessment-result-actions"><Link className="assessment-result-secondary-button" to="/student/roadmap">Back to Roadmap</Link></footer></main>
+  if (!result) return <main className="assessment-result-page"><div className="assessment-result-loading">Loading your result…</div></main>
+
+  const accuracy = Math.min(100, Math.max(0, Number(result.accuracy) || 0))
+  const topicReadiness = Array.isArray(result.topicReadiness) ? result.topicReadiness : []
+  const milestoneReadiness = Array.isArray(result.milestoneReadiness) ? result.milestoneReadiness : []
+  const readinessRows = (items, key) => items.map((item) => (
+    <tr key={item[key]}>
+      <td><div className="topic-name-cell"><strong>{item[key] || 'Unspecified'}</strong><div className="assessment-topic-progress" aria-label={`${item[key]} readiness progress`}><div style={{ width: `${Math.min(100, Math.max(0, Number(item.accuracy) || 0))}%` }} /></div></div></td>
+      <td>{item.correct ?? 0}</td>
+      <td>{item.questionsAttempted ?? 0}</td>
+      <td>{Math.round(Number(item.accuracy) || 0)}%</td>
+      <td>{formatReadiness(item.readinessLevel)}</td>
+    </tr>
+  ))
+
+  return (
+    <main className="assessment-result-page">
+      <nav className="assessment-result-breadcrumb"><Link to="/student/roadmap">Roadmap</Link><span>/</span><span>Adaptive assessment result</span></nav>
+      <header className="assessment-result-header">
+        <div>
+          <span className="assessment-result-eyebrow">Adaptive assessment result</span>
+          <h1>Readiness assessment completed</h1>
+          <p>{result.title || `${result.domain || 'Career'} readiness assessment`}{result.milestone ? ` · ${result.milestone}` : ''}</p>
+        </div>
+        <span className={`assessment-result-status${accuracy >= 60 ? ' is-passed' : ' is-failed'}`}>{formatReadiness(result.readinessLevel)} readiness</span>
+      </header>
+
+      <div className="assessment-result-metrics">
+        <article className="assessment-result-score"><span>Overall accuracy</span><strong>{Math.round(accuracy)}<small>%</small></strong><div><span style={{ width: `${accuracy}%` }} /></div></article>
+        <article><span>Questions</span><strong>{result.totalQuestions ?? 0}</strong></article>
+        <article><span>Correct answers</span><strong>{result.correctAnswers ?? 0}</strong></article>
+        <article><span>Readiness level</span><strong>{formatReadiness(result.readinessLevel)}</strong></article>
+      </div>
+
+      <section className="assessment-result-card">
+        <div className="assessment-result-section-heading"><div><h2>Topic readiness</h2><p>Results are calculated from your submitted answers.</p></div></div>
+        {topicReadiness.length ? <div className="assessment-result-table-wrap"><table className="assessment-result-table"><thead><tr><th>Topic</th><th>Correct</th><th>Questions</th><th>Accuracy</th><th>Readiness</th></tr></thead><tbody>{readinessRows(topicReadiness, 'topic')}</tbody></table></div> : <p className="assessment-result-empty">Topic-level results are not available.</p>}
+      </section>
+
+      <section className="assessment-result-card">
+        <div className="assessment-result-section-heading"><div><h2>Milestone readiness</h2><p>Milestone scores are based on the questions mapped to each roadmap milestone.</p></div></div>
+        {milestoneReadiness.length ? <div className="assessment-result-table-wrap"><table className="assessment-result-table"><thead><tr><th>Milestone</th><th>Correct</th><th>Questions</th><th>Accuracy</th><th>Readiness</th></tr></thead><tbody>{readinessRows(milestoneReadiness, 'milestone')}</tbody></table></div> : <p className="assessment-result-empty">Milestone-level results are not available.</p>}
+      </section>
+
+      <p className="assessment-result-empty">Answer-by-answer review is not provided by this assessment result.</p>
+      <footer className="assessment-result-actions"><Link className="assessment-result-secondary-button" to="/student/roadmap">Back to Roadmap</Link><Link className="assessment-result-primary-button" to="/student/assessments">My Assessments</Link></footer>
+    </main>
+  )
 }

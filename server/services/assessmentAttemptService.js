@@ -72,7 +72,8 @@ const getAssignedAssessments = async (studentId) => {
         isInitialAssessment: true,
         title: { $ne: "Initial Onboarding Assessment" }
     })
-        .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
+        .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment questions")
+        .populate("questions", "_id marks")
         .lean();
 
     if (student.initialAssessmentCompleted) {
@@ -99,7 +100,8 @@ const getAssignedAssessments = async (studentId) => {
             status: "Published",
             isActive: true
         })
-            .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment")
+            .select("_id title description assessmentType totalMarks duration startDate endDate isInitialAssessment questions")
+            .populate("questions", "_id marks")
             .lean();
 
         // 3. Keep the completed Initial Assessment visible in the list even after onboarding completion.
@@ -143,6 +145,9 @@ const getAssignedAssessments = async (studentId) => {
                 ? Boolean(assignment)
                 : (assessment.assignedStudents || []).some((assigned) => String(assigned) === String(studentId));
             const result = reattemptAssignment ? null : latestResult;
+            const activeAttempt = student.currentAttempt?.assessmentId?.toString() === assessment._id.toString()
+                && student.currentAttempt.status === "in-progress"
+                && String(student.currentAttempt.reattemptAssignmentId || "") === String(reattemptAssignment?._id || "");
             const activeRequest = await AssessmentAttendanceRequest.findOne({
                 student: studentId,
                 assessment: assessment._id,
@@ -188,7 +193,8 @@ const getAssignedAssessments = async (studentId) => {
                 canRequestAttendance: !result && !reattemptAssignment && !activeRequest && isExplicitlyAssigned && expiry.withinRequestWindow && retestAvailable,
                 postDeadlineVisibleUntil: expiry.visibilityEndsAt || null,
                 withinPostDeadlineVisibility: expiry.visible,
-                attemptStatus: result ? "Completed" : "Pending",
+                attemptStatus: result ? "Completed" : activeAttempt ? "In Progress" : "Pending",
+                isInProgress: activeAttempt,
                 attempted: !!result,
                 isAssigned: Boolean(reattemptAssignment) || isExplicitlyAssigned,
                 isAvailable: !reattemptAssignment && !isExplicitlyAssigned && !assessment.usesMultiSetAssignment,
@@ -304,8 +310,10 @@ const startAssessment = async (studentId, assessmentId) => {
             },
             questions: questionsForStudentExisting,
             startedAt: startedAtExisting,
-            dueAt: dueAt,
-            timeLimit: durationMinutes
+            dueAt: dueAtExisting || dueAt,
+            timeLimit: durationMinutes,
+            savedAnswers: existingStudent.currentAttempt.answers || [],
+            timeSpent: existingStudent.currentAttempt.timeSpent || 0
         };
     }
 
@@ -334,6 +342,8 @@ const startAssessment = async (studentId, assessmentId) => {
             reattemptAssignmentId: reattemptAssignment?._id || null,
             startedAt,
             dueAt,
+            timeSpent: 0,
+            answers: [],
             status: 'in-progress'
         }
     });
@@ -354,7 +364,9 @@ const startAssessment = async (studentId, assessmentId) => {
         questions: questionsForStudent,
         startedAt,
         dueAt,
-            timeLimit: durationMinutes
+        timeLimit: durationMinutes,
+        savedAnswers: [],
+        timeSpent: 0
     };
 };
 
@@ -376,14 +388,51 @@ const autoSaveAttempt = async (studentId, autoSaveData) => {
         throw new Error(assessmentValidation.message);
     }
 
-    // Store or update auto-save data in a temporary collection/cache
-    // For now, we'll just validate it can be saved
-    // In production, you might store this in Redis or a separate AutoSaveAttempt collection
+    const student = await Student.findById(studentId);
+    if (!student) throw new Error("Student not found");
+    const currentAttempt = student.currentAttempt;
+    const assessment = assessmentValidation.assessment;
+    const reattemptAssignment = await getActiveReattemptAssignment(assessmentId, studentId);
+    if (currentAttempt?.assessmentId?.toString() !== assessmentId.toString() ||
+        currentAttempt.status !== "in-progress" ||
+        String(currentAttempt.reattemptAssignmentId || "") !== String(reattemptAssignment?._id || "")) {
+        throw new Error("No active assessment attempt was found");
+    }
+    if (currentAttempt.dueAt && new Date() > new Date(currentAttempt.dueAt)) {
+        currentAttempt.status = "expired";
+        await student.save();
+        throw new Error("Assessment time has expired");
+    }
+
+    const permittedQuestionIds = (reattemptAssignment
+        ? getQuestionSetIds(assessment, reattemptAssignment.setIndex)
+        : getStudentAssessmentQuestionIds(assessment, studentId)).map((id) => id.toString());
+    const normalizedAnswers = [];
+    const seenQuestionIds = new Set();
+    for (const answer of answers) {
+        const questionId = answer?.question?.toString();
+        if (!questionId || !permittedQuestionIds.includes(questionId) || seenQuestionIds.has(questionId)) {
+            throw new Error("Invalid question in saved answers");
+        }
+        if (typeof answer.selectedAnswer !== "string") {
+            throw new Error("Each saved answer must contain a text response");
+        }
+        seenQuestionIds.add(questionId);
+        normalizedAnswers.push({
+            question: answer.question,
+            selectedAnswer: answer.selectedAnswer,
+            markedForReview: answer.markedForReview === true
+        });
+    }
+
+    currentAttempt.answers = normalizedAnswers;
+    currentAttempt.timeSpent = timeSpent;
+    await student.save();
 
     return {
         saved: true,
         timeSpent,
-        answersCount: answers.length,
+        answersCount: normalizedAnswers.length,
         assessmentId,
         studentId,
         savedAt: new Date()

@@ -299,7 +299,7 @@
 .faculty-table th:nth-child(4) { width: 15%; }
 .faculty-table th:nth-child(5) { width: 10%; }
 .faculty-table th:nth-child(6) { width: 12%; }
-.faculty-table th:nth-child(7) { width: 9%; }
+.faculty-table th:nth-child(7) { width: 190px; }
 
 .faculty-name-cell { display: flex; min-width: 0; align-items: center; gap: 8px; color: #283d5b; }
 .faculty-name-cell strong { min-width: 0; overflow-wrap: anywhere; font-size: 12px; }
@@ -352,9 +352,10 @@
 .faculty-status-badge.rejected { border-color: #f1d3d3; background: #fff0f0; color: #a34d4d; }
 .faculty-status-badge.approved > span { font-size: 8px; }
 
-.faculty-actions-cell { display: flex; align-items: center; gap: 5px; }
-.faculty-approve-button { padding: 5px 8px; border-radius: 7px; font-size: 10px; }
-.faculty-actions-cell .btn.danger { padding: 5px 8px; border-radius: 7px; font-size: 10px; }
+.faculty-actions-cell { display: flex; min-width: 0; flex-direction: row; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+.faculty-actions-cell > button { flex: 0 0 auto; white-space: nowrap; word-break: normal; }
+.faculty-approve-button { min-height: 29px; padding: 5px 8px; border-radius: 7px; font-size: 10px; }
+.faculty-actions-cell .btn.danger { min-height: 29px; padding: 5px 8px; border-radius: 7px; font-size: 10px; }
 
 .faculty-delete-button {
   display: grid;
