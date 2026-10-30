@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
     getMyAssessments,
+    requestToAttend,
     startAssessmentAttempt,
     autoSaveAssessmentAttempt,
     submitAssessmentAttempt,
@@ -20,6 +21,7 @@ const studentOnly = [verifyToken, authorizeRoles("student"), requireProfileCompl
 
 // Get all assigned assessments
 router.get("/my", studentOnly, getMyAssessments);
+router.post("/:id/request-to-attend", studentOnly, requestToAttend);
 
 // Start an assessment
 router.post("/:id/start", studentOnly, startAssessmentAttempt);

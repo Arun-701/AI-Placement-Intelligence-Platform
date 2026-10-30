@@ -1,6 +1,13 @@
 const Student = require("../models/Student");
 const Roadmap = require("../models/Roadmap");
+const AssessmentResult = require("../models/AssessmentResult");
 const { getMissingProfileFields } = require("../validators/studentProfileValidator");
+
+const toOptionalScore = (value) => {
+  if (value === null || value === undefined || value === "" || typeof value === "boolean") return null;
+  const score = Number(value);
+  return Number.isFinite(score) ? score : null;
+};
 
 // Only the visible/profile onboarding fields are required for completion
 const PROFILE_FIELDS = [
@@ -33,13 +40,15 @@ const calculateProfileCompletion = (student) => {
 
 const getStudentProfile = async (studentId) => {
   const student = await Student.findById(studentId)
-    .select("fullName email phone gender dateOfBirth department year section cgpa college skills interests linkedin github leetcode hackerrank codechef resume isVerified isActive assessmentsCompleted profileCompleted initialAssessmentCompleted")
+    .select("fullName email phone gender dateOfBirth department year section cgpa college skills interests linkedin github leetcode hackerrank codechef codeforces resume resumeAnalysis resumeScore lastResumeAnalysisDate placementReadinessScore readinessProfile codingProfile isVerified isActive assessmentsCompleted profileCompleted initialAssessmentCompleted")
     .lean();
   if (!student) {
     throw new Error("Student not found");
   }
 
   const completion = calculateProfileCompletion(student);
+  const storedResumeScore = toOptionalScore(student.resumeScore);
+  const analyzedResumeScore = toOptionalScore(student.resumeAnalysis?.resumeScore ?? student.resumeAnalysis?.overallScore);
   return {
     student: {
       fullName: student.fullName || "",
@@ -58,6 +67,13 @@ const getStudentProfile = async (studentId) => {
       leetcode: student.leetcode || "",
       hackerrank: student.hackerrank || "",
       codechef: student.codechef || "",
+      codeforces: student.codeforces || "",
+      codingProfile: student.codingProfile || { score: 0 },
+      resumeAnalysis: student.resumeAnalysis || null,
+      resumeScore: student.resume ? (storedResumeScore ?? analyzedResumeScore) : null,
+      lastResumeAnalysisDate: student.lastResumeAnalysisDate || null,
+      placementReadinessScore: student.placementReadinessScore ?? null,
+      readinessProfile: student.readinessProfile || null,
       resume: student.resume || "",
       emailVerified: student.isVerified,
       accountActive: student.isActive,
@@ -71,14 +87,51 @@ const getStudentProfile = async (studentId) => {
 
 const getStudentDashboard = async (studentId) => {
   const profile = await getStudentProfile(studentId);
-  const roadmap = await Roadmap.findOne({ student: studentId }).lean();
+  const [roadmap, assessmentsCompleted] = await Promise.all([
+    Roadmap.findOne({ student: studentId }).lean(),
+    AssessmentResult.countDocuments({ student: studentId, completed: true })
+  ]);
+  const totalProblemsSolved = profile.student.codingProfile?.totalProblemsSolved || 0;
+  const codingProfile = profile.student.codingProfile;
+  const countableCodingPlatforms = new Set(["leetcode", "codeforces", "codechef"]);
+  const codingCountFields = ["totalSolved", "easySolved", "mediumSolved", "hardSolved"];
+  const hasVerifiedCodingStats = (codingProfile?.platforms || []).some((platform) =>
+    platform.profileVerified === true &&
+    countableCodingPlatforms.has(String(platform.platform || "").toLowerCase()) &&
+    codingCountFields.some((field) => toOptionalScore(platform[field]) !== null)
+  );
+  const storedCodingScore = toOptionalScore(codingProfile?.score);
+  const codingSkillScore = storedCodingScore !== null &&
+    (storedCodingScore > 0 || hasVerifiedCodingStats)
+    ? storedCodingScore
+    : null;
+  const readinessProfile = profile.student.readinessProfile;
+  const hasCalculatedReadiness = Boolean(readinessProfile?.lastCalculatedAt);
+  const resumeAnalysis = profile.student.resumeAnalysis;
+  const resumeScore = toOptionalScore(resumeAnalysis?.resumeScore);
+  const storedResumeScore = profile.student.resume ? resumeScore : null;
+  const calculatedReadinessScore = hasCalculatedReadiness ? toOptionalScore(readinessProfile.score) : null;
+  const storedReadinessScore = toOptionalScore(profile.student.placementReadinessScore);
+  const placementReadinessScore = calculatedReadinessScore ?? (storedReadinessScore > 0 ? storedReadinessScore : null);
 
   return {
    profileCompletion: profile.student.profileCompletion,
     resumeUploaded: Boolean(profile.student.resume),
     emailVerified: profile.student.emailVerified,
-    codingProfilesConnected: Boolean(profile.student.github || profile.student.leetcode || profile.student.codechef || profile.student.hackerrank),
-    assessmentsCompleted: profile.student.assessmentsCompleted || 0,
+    codingProfilesConnected: Boolean(profile.student.github || profile.student.leetcode || profile.student.codechef || profile.student.hackerrank || profile.student.codeforces),
+    assessmentsCompleted,
+    codingScore: totalProblemsSolved,
+    codingSkillScore,
+    resumeScore: storedResumeScore,
+    placementReadinessScore,
+    readinessSummary: hasCalculatedReadiness
+      ? (readinessProfile.explanation || readinessProfile.level || null)
+      : null,
+    kpiCards: {
+      codingScore: totalProblemsSolved,
+      codingSkillScore,
+      assessmentsCompleted
+    },
     roadmapAvailable: Boolean(roadmap)
   };
 };

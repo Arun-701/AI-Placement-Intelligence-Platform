@@ -27,3 +27,53 @@ Thumbs.db
 
 # Vite
 client/.vite/
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Uploaded/generated files
+server/uploads/
+server/.tmp_*
+
+# Local test PDFs
+*.pdf
+
+# Environment files are private; keep placeholder templates only.
+**/.env
+**/.env.*
+!**/.env.example
+
+# Private keys, certificates, and service credentials
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+**/*credentials*.json
+**/*service-account*.json
+**/*secrets*.json
+
+# Dependencies, caches, and generated output
+**/node_modules/
+**/.venv/
+**/venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.vite/
+**/coverage/
+**/dist/
+**/build/
+*.log
+*.zip
+/uploads/

@@ -1,0 +1,410 @@
+{
+  "domain_classification": {
+    "all_metrics": {
+      "Logistic Regression": {
+        "accuracy": 0.9673202614379085,
+        "precision": 0.9703198374100226,
+        "recall": 0.9673202614379085,
+        "f1": 0.9672152262545808
+      },
+      "SVM": {
+        "accuracy": 0.9771241830065359,
+        "precision": 0.9775105025601428,
+        "recall": 0.9771241830065359,
+        "f1": 0.9770231069931945
+      },
+      "Random Forest": {
+        "accuracy": 0.8856209150326797,
+        "precision": 0.9025722643369702,
+        "recall": 0.8856209150326797,
+        "f1": 0.883775778602757
+      }
+    },
+    "best_model": "SVM",
+    "best_metrics": {
+      "accuracy": 0.9771241830065359,
+      "precision": 0.9775105025601428,
+      "recall": 0.9771241830065359,
+      "f1": 0.9770231069931945
+    }
+  },
+  "topic_classification": {
+    "Aptitude": {
+      "model_name": "SVM",
+      "metrics": {
+        "accuracy": 0.9102564102564102,
+        "precision": 0.9326923076923077,
+        "recall": 0.9102564102564102,
+        "f1": 0.9057387057387057
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 0.9102564102564102,
+          "precision": 0.9369658119658119,
+          "recall": 0.9102564102564102,
+          "f1": 0.9044566544566544
+        },
+        "SVM": {
+          "accuracy": 0.9102564102564102,
+          "precision": 0.9326923076923077,
+          "recall": 0.9102564102564102,
+          "f1": 0.9057387057387057
+        },
+        "Random Forest": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.8985042735042734,
+          "recall": 0.8461538461538461,
+          "f1": 0.8382173382173382
+        }
+      }
+    },
+    "Coding": {
+      "model_name": "SVM",
+      "metrics": {
+        "accuracy": 0.8666666666666667,
+        "precision": 0.9097222222222221,
+        "recall": 0.8666666666666667,
+        "f1": 0.8611904761904762
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.8888888888888888,
+          "recall": 0.8333333333333334,
+          "f1": 0.8316666666666668
+        },
+        "SVM": {
+          "accuracy": 0.8666666666666667,
+          "precision": 0.9097222222222221,
+          "recall": 0.8666666666666667,
+          "f1": 0.8611904761904762
+        },
+        "Random Forest": {
+          "accuracy": 0.8,
+          "precision": 0.8638888888888888,
+          "recall": 0.8,
+          "f1": 0.7902380952380952
+        }
+      }
+    },
+    "Full Stack": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 0.9354838709677419,
+        "precision": 0.9569892473118279,
+        "recall": 0.9354838709677419,
+        "f1": 0.9311827956989247
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 0.9354838709677419,
+          "precision": 0.9569892473118279,
+          "recall": 0.9354838709677419,
+          "f1": 0.9311827956989247
+        },
+        "SVM": {
+          "accuracy": 0.9354838709677419,
+          "precision": 0.9569892473118279,
+          "recall": 0.9354838709677419,
+          "f1": 0.9311827956989247
+        },
+        "Random Forest": {
+          "accuracy": 0.9354838709677419,
+          "precision": 0.9569892473118279,
+          "recall": 0.9354838709677419,
+          "f1": 0.9311827956989247
+        }
+      }
+    },
+    "DBMS": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "SVM": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "Random Forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      }
+    },
+    "Operating Systems": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "SVM": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "Random Forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      }
+    },
+    "Computer Networks": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "SVM": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "Random Forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      }
+    },
+    "Data Structures": {
+      "model_name": "SVM",
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.9607843137254901,
+          "recall": 0.9411764705882353,
+          "f1": 0.9411764705882353
+        },
+        "SVM": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "Random Forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      }
+    },
+    "Compiler Design": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 0.9166666666666666,
+        "precision": 0.9375,
+        "recall": 0.9166666666666666,
+        "f1": 0.9087301587301587
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9375,
+          "recall": 0.9166666666666666,
+          "f1": 0.9087301587301587
+        },
+        "SVM": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9375,
+          "recall": 0.9166666666666666,
+          "f1": 0.9087301587301587
+        },
+        "Random Forest": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9375,
+          "recall": 0.9166666666666666,
+          "f1": 0.9087301587301587
+        }
+      }
+    },
+    "Cloud Computing": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "SVM": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "Random Forest": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.861111111111111,
+          "recall": 0.8333333333333334,
+          "f1": 0.8277777777777778
+        }
+      }
+    },
+    "Machine Learning": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 0.9166666666666666,
+        "precision": 0.9444444444444443,
+        "recall": 0.9166666666666666,
+        "f1": 0.9166666666666666
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9444444444444443,
+          "recall": 0.9166666666666666,
+          "f1": 0.9166666666666666
+        },
+        "SVM": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9444444444444443,
+          "recall": 0.9166666666666666,
+          "f1": 0.9166666666666666
+        },
+        "Random Forest": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9444444444444443,
+          "recall": 0.9166666666666666,
+          "f1": 0.9166666666666666
+        }
+      }
+    },
+    "Artificial Intelligence": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "SVM": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "Random Forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      }
+    },
+    "Software Engineering": {
+      "model_name": "Logistic Regression",
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "SVM": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "Random Forest": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9375,
+          "recall": 0.9166666666666666,
+          "f1": 0.9087301587301587
+        }
+      }
+    },
+    "Computer Architecture": {
+      "model_name": "Random Forest",
+      "metrics": {
+        "accuracy": 0.9166666666666666,
+        "precision": 0.9444444444444443,
+        "recall": 0.9166666666666666,
+        "f1": 0.9111111111111111
+      },
+      "all_metrics": {
+        "Logistic Regression": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9375,
+          "recall": 0.9166666666666666,
+          "f1": 0.9087301587301587
+        },
+        "SVM": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9375,
+          "recall": 0.9166666666666666,
+          "f1": 0.9087301587301587
+        },
+        "Random Forest": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.9444444444444443,
+          "recall": 0.9166666666666666,
+          "f1": 0.9111111111111111
+        }
+      }
+    }
+  }
+}

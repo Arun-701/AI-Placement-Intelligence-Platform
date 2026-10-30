@@ -67,14 +67,45 @@ const computeTotalMarks = (questions) => {
 /**
  * Evaluate all answers and calculate results
  */
-const evaluateAnswers = async (assessmentId, answers) => {
+const evaluateAnswers = async (assessmentId, answers, studentId, attemptContext = {}) => {
     const assessment = await Assessment.findById(assessmentId).populate("questions");
 
     if (!assessment) {
         throw new Error("Assessment not found");
     }
 
-    const totalMarks = assessment.totalMarks > 0 ? assessment.totalMarks : computeTotalMarks(assessment.questions);
+    let questionsForAttempt = assessment.questions;
+    if (attemptContext.reattemptAssignmentId && Number.isInteger(attemptContext.questionSetIndex)) {
+        const questionSet = assessment.questionSets?.[attemptContext.questionSetIndex];
+        const attemptQuestionIds = questionSet?.questions?.length
+            ? questionSet.questions
+            : questionSet?.questionIds || [];
+        const allowedIds = new Set(attemptQuestionIds.map((id) => id.toString()));
+        const submittedIds = (answers || []).map((answer) => answer.question?.toString());
+        if (!allowedIds.size && attemptContext.questionSetIndex === 0 && !assessment.questionSets?.length) {
+            assessment.questions.forEach((question) => allowedIds.add(question._id.toString()));
+        }
+        if (submittedIds.some((id) => !allowedIds.has(id))) throw new Error("Answers contain questions outside the assigned re-attempt set");
+        questionsForAttempt = assessment.questions.filter((question) => allowedIds.has(question._id.toString()));
+        if (submittedIds.length !== allowedIds.size || [...allowedIds].some((id) => !submittedIds.includes(id))) {
+            throw new Error("All questions in the assigned re-attempt set must be answered");
+        }
+    } else if (assessment.usesMultiSetAssignment) {
+        const assignedSet = (assessment.setAssignments || []).find((set) =>
+            (set.assignedStudents || []).some((assigned) => assigned.toString() === studentId.toString())
+        );
+        if (!assignedSet) throw new Error("Student does not have an assigned question set");
+        const allowedIds = new Set((assessment.questionSets?.[assignedSet.setIndex]?.questions || []).map((id) => id.toString()));
+        const submittedIds = (answers || []).map((answer) => answer.question?.toString());
+        if (submittedIds.some((id) => !allowedIds.has(id))) throw new Error("Answers contain questions outside the assigned set");
+        questionsForAttempt = assessment.questions.filter((question) => allowedIds.has(question._id.toString()));
+        if (submittedIds.length !== allowedIds.size || [...allowedIds].some((id) => !submittedIds.includes(id))) {
+            throw new Error("All questions in the assigned set must be answered");
+        }
+    }
+    const totalMarks = (assessment.usesMultiSetAssignment || attemptContext.reattemptAssignmentId)
+        ? computeTotalMarks(questionsForAttempt)
+        : (assessment.totalMarks > 0 ? assessment.totalMarks : computeTotalMarks(assessment.questions));
 
     const evaluatedAnswers = [];
     let totalScore = 0;
@@ -85,7 +116,7 @@ const evaluateAnswers = async (assessmentId, answers) => {
 
     // Create a map for quick question lookup
     const questionMap = {};
-    assessment.questions.forEach((q) => {
+    questionsForAttempt.forEach((q) => {
         questionMap[q._id.toString()] = q;
     });
 
@@ -180,7 +211,7 @@ const evaluateAnswers = async (assessmentId, answers) => {
             correctAnswers: correctCount,
             wrongAnswers: wrongCount,
             skippedAnswers: skippedCount,
-            totalQuestions: assessment.questions.length
+            totalQuestions: questionsForAttempt.length
         },
         topicAnalysis: Object.values(topicScores)
     };
@@ -240,9 +271,9 @@ const generateRecommendations = (evaluationResult, strengths, weaknesses) => {
 /**
  * Create assessment result with evaluation
  */
-const createAssessmentResult = async (studentId, assessmentId, answers, timeTaken = 0) => {
+const createAssessmentResult = async (studentId, assessmentId, answers, timeTaken = 0, attemptContext = {}) => {
     // Evaluate answers
-    const evaluationResult = await evaluateAnswers(assessmentId, answers);
+    const evaluationResult = await evaluateAnswers(assessmentId, answers, studentId, attemptContext);
 
     // Identify strengths and weaknesses
     const { strengths, weaknesses } = identifyStrengthsAndWeaknesses(evaluationResult);
@@ -254,6 +285,9 @@ const createAssessmentResult = async (studentId, assessmentId, answers, timeTake
     const result = new AssessmentResult({
         student: studentId,
         assessment: assessmentId,
+        attemptNumber: await AssessmentResult.countDocuments({ student: studentId, assessment: assessmentId }) + 1,
+        questionSetIndex: attemptContext.questionSetIndex ?? null,
+        reattemptAssignment: attemptContext.reattemptAssignmentId || null,
         score: evaluationResult.score,
         totalMarks: evaluationResult.totalMarks,
         percentage: evaluationResult.percentage,

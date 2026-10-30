@@ -14,6 +14,24 @@ const assessmentResultSchema = new mongoose.Schema(
       required: true,
     },
 
+    attemptNumber: {
+      type: Number,
+      min: 1,
+      default: 1,
+    },
+
+    questionSetIndex: {
+      type: Number,
+      min: 0,
+      default: null,
+    },
+
+    reattemptAssignment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ReattemptAssignment",
+      default: null,
+    },
+
     score: {
       type: Number,
       min: 0,

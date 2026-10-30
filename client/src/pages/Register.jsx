@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 
 export default function Register() {
   const { search } = useLocation()
+  const navigate = useNavigate()
   const defaultRole = new URLSearchParams(search).get('role') || 'student'
   const [role, setRole] = useState(defaultRole)
   const [name, setName] = useState('')
@@ -16,13 +17,14 @@ export default function Register() {
   const [cgpa, setCgpa] = useState('')
   const [info, setInfo] = useState('')
   const [error, setError] = useState('')
+  const [failedRegistration, setFailedRegistration] = useState(null)
   const [busy, setBusy] = useState(false)
-  const navigate = useNavigate()
 
   const submit = async (e) => {
     e.preventDefault()
     setError('')
     setInfo('')
+    setFailedRegistration(null)
     setBusy(true)
     try {
       let endpoint = '/auth/register'
@@ -43,18 +45,21 @@ export default function Register() {
       }
 
       const r = await api.post(endpoint, payload)
-      if (!r.ok) throw new Error(r.data?.message || 'Registration failed')
-      const vToken = r.data?.data?.verificationToken
-      if (vToken) {
-        const v = await api.post('/auth/verify-email', { token: vToken })
-        if (!v.ok) throw new Error(v.data?.message || 'Email verification failed')
-        setInfo('Registered and email verified! You can now sign in.')
-      } else {
-        setInfo('Registered successfully! You can now sign in.')
+      if (!r.ok) {
+        const requestError = new Error(r.data?.message || 'Registration failed')
+        requestError.accountCreated = r.data?.data?.accountCreated === true
+        throw requestError
       }
-      setTimeout(() => navigate('/login'), 1500)
+      setInfo("Account created successfully! We've sent a 6-digit verification code to your email. Enter the code below to verify your account.")
+      navigate(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}&role=${role}`)
     } catch (err) {
       setError(err.message)
+      if (err.accountCreated) {
+        setFailedRegistration({
+          email: email.trim().toLowerCase(),
+          role,
+        })
+      }
     } finally {
       setBusy(false)
     }
@@ -71,6 +76,16 @@ export default function Register() {
           <button type="button" className={role === 'admin' ? 'active' : ''} onClick={() => setRole('admin')}>Admin</button>
         </div>
         {error && <div className="alert error">{error}</div>}
+        {failedRegistration && (
+          <div className="alert error" role="status">
+            Your account was created, but the verification email was not sent.
+            {' '}
+            <Link to={`/verify-email?email=${encodeURIComponent(failedRegistration.email)}&role=${failedRegistration.role}&delivery=failed`}>
+              Continue to email verification
+            </Link>
+            {' '}to retry delivery after the cooldown.
+          </div>
+        )}
         {info && <div className="alert success">{info}</div>}
         <form onSubmit={submit}>
           <div className="form-group">
@@ -119,7 +134,7 @@ export default function Register() {
               </div>
             </>
           )}
-          <button className="btn" style={{ width: '100%' }} disabled={busy}>{busy ? 'Creating...' : 'Register'}</button>
+          <button className="btn" style={{ width: '100%' }} disabled={busy || Boolean(info)}>{busy ? 'Creating...' : 'Register'}</button>
         </form>
         <div className="auth-switch">
           <p>Already have an account? <Link to="/login">Sign in</Link></p>

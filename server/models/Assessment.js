@@ -45,6 +45,17 @@ const assessmentSchema = new mongoose.Schema(
       ref: "Faculty",
     },
 
+    createdByAdmin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+    },
+
+    department: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     totalMarks: {
       type: Number,
       min: 0,
@@ -97,6 +108,61 @@ const assessmentSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+
+    // Question sets for multi-set assignment
+    questionSets: {
+      type: [
+        {
+          setNumber: Number,
+          title: { type: String, trim: true, default: "" },
+          departments: { type: [String], default: [] },
+          startDate: Date,
+          endDate: Date,
+          questions: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "QuestionBank",
+            },
+          ],
+        },
+      ],
+      default: [],
+    },
+
+    // Multi-set assignment support
+    assignmentSets: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "AssignmentSet",
+        },
+      ],
+      default: [],
+    },
+
+    usesMultiSetAssignment: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Set-wise assignment data
+    setAssignments: {
+      type: [
+        {
+          setIndex: Number,
+          departments: [String],
+          startDate: Date,
+          endDate: Date,
+          assignedStudents: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Student",
+            },
+          ],
+        },
+      ],
+      default: [],
     },
   },
   {

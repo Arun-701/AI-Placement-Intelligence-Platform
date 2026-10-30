@@ -151,6 +151,52 @@
             "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
             "url": { "raw": "{{baseUrl}}/api/ai/resume-analysis", "host": ["{{baseUrl}}"], "path": ["api", "ai", "resume-analysis"] }
           }
+        },
+        {
+          "name": "Extract Job Description",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/ai/resume-jd/extract", "host": ["{{baseUrl}}"], "path": ["api", "ai", "resume-jd", "extract"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "jobDescription", "type": "file", "src": "{{jobDescriptionFile}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Analyze Resume Against Job Description",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/ai/analyze-resume-jd", "host": ["{{baseUrl}}"], "path": ["api", "ai", "analyze-resume-jd"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "resume", "type": "file", "src": "{{resumeFile}}" },
+                { "key": "jobDescription", "type": "text", "value": "{{jobDescription}}" },
+                { "key": "jobDescriptionSource", "type": "text", "value": "paste" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Latest Resume/JD Analysis",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/ai/resume-jd-analysis", "host": ["{{baseUrl}}"], "path": ["api", "ai", "resume-jd-analysis"] }
+          }
+        },
+        {
+          "name": "Get Resume/JD Analysis Report",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/ai/resume-jd-analysis/{{analysisId}}", "host": ["{{baseUrl}}"], "path": ["api", "ai", "resume-jd-analysis", "{{analysisId}}"] }
+          }
         }
       ]
     },

@@ -54,7 +54,7 @@ const submitResult = async (req, res) => {
         }
 
         if (assessment.endDate && new Date(assessment.endDate) < new Date()) {
-            return errorResponse(res, { message: "Assessment has expired", status: 400 });
+            return errorResponse(res, { message: "Assessment deadline has expired.", status: 400 });
         }
 
         const student = await Student.findById(req.user.id);

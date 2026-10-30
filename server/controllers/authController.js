@@ -1,8 +1,11 @@
 ﻿const crypto = require("crypto");
 const Student = require("../models/Student");
 const Faculty = require("../models/Faculty");
+const Admin = require("../models/Admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { sendVerificationOtpEmail } = require("../services/emailService");
+const { createBulkNotification } = require("../services/notificationService");
 const { successResponse, errorResponse } = require("../utils/response");
 const { validateFacultyRegistration, validateFacultyLogin } = require("../validators/facultyValidator");
 
@@ -19,8 +22,95 @@ const isStrongPassword = (password) => {
         && /[^A-Za-z0-9]/.test(password);
 };
 
-const createToken = () => crypto.randomBytes(20).toString("hex");
+const createToken = () => crypto.randomBytes(32).toString("hex");
 const hashToken = (token) => crypto.createHash("sha256").update(token).digest("hex");
+const VERIFICATION_OTP_TTL_MS = 10 * 60 * 1000;
+const RESEND_COOLDOWN_MS = 60 * 1000;
+const MAX_OTP_ATTEMPTS = 5;
+const OTP_PATTERN = /^\d{6}$/;
+
+const findAccountByEmail = async (email) => {
+    const [student, faculty, admin] = await Promise.all([
+        Student.findOne({ email }),
+        Faculty.findOne({ email }),
+        Admin.findOne({ email }),
+    ]);
+    return student || faculty || admin;
+};
+
+const clearVerificationOtp = (account, resetAttempts = true) => {
+    account.emailVerificationOtpHash = "";
+    account.emailVerificationOtpExpiresAt = null;
+    if (resetAttempts) account.emailVerificationOtpAttempts = 0;
+};
+
+const issueVerificationOtp = async (account) => {
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    account.emailVerificationOtpHash = hashToken(otp);
+    account.emailVerificationOtpExpiresAt = new Date(Date.now() + VERIFICATION_OTP_TTL_MS);
+    account.emailVerificationOtpAttempts = 0;
+    account.emailVerificationLastSentAt = new Date();
+    await account.save();
+    try {
+        await sendVerificationOtpEmail({ email: account.email, name: account.name, otp });
+    } catch (error) {
+        // Log only safe nodemailer fields to help diagnose delivery issues.
+        try {
+            console.error('Email verification send failed:', {
+                message: error && error.message,
+                code: error && error.code,
+                command: error && error.command,
+                responseCode: error && error.responseCode,
+            });
+        } catch (logErr) {
+            console.error('Email verification send failed (unable to serialize error)');
+        }
+        // Do NOT clear the OTP or modify the account on email send failure.
+        // Rethrow so callers can decide how to respond while the account/OTP remain intact.
+        throw error;
+    }
+};
+
+const getEmailDeliveryErrorMessage = (emailError, accountCreated) => {
+    const certificateErrorCodes = new Set([
+        "CERT_HAS_EXPIRED",
+        "CERT_UNTRUSTED",
+        "ERR_TLS_CERT_ALTNAME_INVALID",
+        "SELF_SIGNED_CERT_IN_CHAIN",
+        "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    ]);
+    const errorCode = emailError?.cause?.code || emailError?.code;
+    const errorMessage = String(emailError?.message || "");
+
+    if (certificateErrorCodes.has(errorCode) || /certificate.*(chain|verify|trusted)|self.signed certificate/i.test(errorMessage)) {
+        return "Email delivery is blocked because the SMTP certificate cannot be verified. Contact your email or network administrator.";
+    }
+    if (errorCode === "EAUTH" || emailError?.responseCode === 535) {
+        return "Email delivery was rejected by the SMTP provider. Check the configured account and app password.";
+    }
+    if (["ECONNECTION", "ECONNREFUSED", "ETIMEDOUT", "ESOCKET"].includes(errorCode)) {
+        return "Unable to connect securely to the email server. Please try again later.";
+    }
+    return accountCreated
+        ? "Account created, but the verification email could not be sent. Please try resending it later."
+        : "Unable to send a verification email right now. Please try again later.";
+};
+
+const emailDeliveryErrorResponse = (res, emailError, accountCreated = false) => {
+    console.error("Email verification delivery failed:", {
+        message: emailError?.message,
+        code: emailError?.code,
+        causeCode: emailError?.cause?.code,
+        command: emailError?.command,
+        responseCode: emailError?.responseCode,
+    });
+    const message = getEmailDeliveryErrorMessage(emailError, accountCreated);
+    return errorResponse(res, {
+        message,
+        status: 503,
+        data: accountCreated ? { accountCreated: true } : null,
+    });
+};
 
 const registerStudent = async (req, res) => {
     try {
@@ -46,46 +136,52 @@ const registerStudent = async (req, res) => {
             return errorResponse(res, { message: "Year must be a whole number between 1 and 8", status: 400 });
         }
 
-        const studentExists = await Student.findOne({ email: email.trim().toLowerCase() });
+        const normalizedEmail = email.trim().toLowerCase();
+        const studentExists = await findAccountByEmail(normalizedEmail);
 
         if (studentExists) {
-            return errorResponse(res, { message: "Student already exists", status: 400 });
+            return errorResponse(res, { message: "Email already registered. Please login or verify your existing account.", status: 409 });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const verificationToken = createToken();
-        console.log("BODY =", JSON.stringify(req.body, null, 2));
-        console.log("GENDER =", req.body.gender);
         const student = await Student.create({
             name: name.trim(),
-            email: email.trim().toLowerCase(),
+            email: normalizedEmail,
             password: hashedPassword,
             department: department.trim(),
             year,
             gender: req.body.gender,
             skills,
             cgpa,
-            verificationToken: hashToken(verificationToken),
             isVerified: false,
+            emailVerificationRequired: true,
             passwordChangedAt: new Date()
         });
 
+        try {
+            await issueVerificationOtp(student);
+        } catch (emailError) {
+            return emailDeliveryErrorResponse(res, emailError, true);
+        }
+
         return successResponse(res, {
             status: 201,
-            message: "Student Registered Successfully. Please verify your email.",
+            message: "Account created successfully. We've sent a 6-digit verification code to your email. Please enter the code to verify your email address.",
             data: {
                 student: {
                     _id: student._id,
                     name: student.name,
                     email: student.email,
                     isVerified: student.isVerified
-                },
-                verificationToken: process.env.NODE_ENV !== "production" ? verificationToken : undefined
+                }
             }
         });
 
     } catch (error) {
         console.error(error);
+        if (error && error.code === 11000) {
+            return errorResponse(res, { message: "Email already registered. Please login or verify your existing account.", status: 409 });
+        }
         return errorResponse(res, { message: error.message, status: 500 });
     }
 };
@@ -118,7 +214,7 @@ const loginStudent = async (req, res) => {
             return errorResponse(res, { message: "Invalid Email or Password", status: 400 });
         }
 
-        if (process.env.REQUIRE_EMAIL_VERIFICATION === "true" && !student.isVerified) {
+        if (student.emailVerificationRequired === true && student.isVerified !== true) {
             return errorResponse(res, { message: "Please verify your email before logging in", status: 403 });
         }
 
@@ -306,25 +402,85 @@ const resetPasswordFaculty = async (req, res) => {
     }
 };
 
-const verifyEmail = async (req, res) => {
+const verifyEmailOtp = async (req, res) => {
     try {
-        const { token } = req.body;
-
-        if (typeof token !== "string" || token.trim() === "") {
-            return errorResponse(res, { message: "Verification token is required", status: 400 });
+        const { email, otp } = req.body;
+        if (!validateEmail(email)) {
+            return errorResponse(res, { message: "Valid email is required", status: 400 });
+        }
+        if (typeof otp !== "string" || !OTP_PATTERN.test(otp)) {
+            return errorResponse(res, { message: "Verification code must be exactly 6 digits.", status: 400 });
         }
 
-        const student = await Student.findOne({ verificationToken: hashToken(token) });
+        const account = await findAccountByEmail(email.trim().toLowerCase());
 
-        if (!student) {
-            return errorResponse(res, { message: "Invalid or expired verification token", status: 400 });
+        if (!account) {
+            return errorResponse(res, { message: "Invalid verification code.", status: 400 });
+        }
+        if (account.emailVerificationRequired !== true || account.isVerified === true) {
+            return errorResponse(res, { message: "Email is already verified. Please login.", status: 400 });
+        }
+        if (!account.emailVerificationOtpHash) {
+            const message = account.emailVerificationOtpAttempts >= MAX_OTP_ATTEMPTS
+                ? "Too many incorrect attempts. Please request a new code."
+                : "Invalid verification code.";
+            return errorResponse(res, { message, status: 400 });
+        }
+        if (!account.emailVerificationOtpExpiresAt || account.emailVerificationOtpExpiresAt <= new Date()) {
+            clearVerificationOtp(account);
+            await account.save();
+            return errorResponse(res, { message: "Verification code has expired. Please request a new code.", status: 400 });
+        }
+        const suppliedHash = Buffer.from(hashToken(otp), "hex");
+        const storedHash = Buffer.from(account.emailVerificationOtpHash, "hex");
+        const matches = suppliedHash.length === storedHash.length && crypto.timingSafeEqual(suppliedHash, storedHash);
+        if (!matches) {
+            account.emailVerificationOtpAttempts += 1;
+            if (account.emailVerificationOtpAttempts >= MAX_OTP_ATTEMPTS) {
+                clearVerificationOtp(account, false);
+                await account.save();
+                return errorResponse(res, { message: "Too many incorrect attempts. Please request a new code.", status: 400 });
+            }
+            await account.save();
+            return errorResponse(res, { message: "Invalid verification code.", status: 400 });
         }
 
-        student.isVerified = true;
-        student.verificationToken = "";
-        await student.save();
+        account.isVerified = true;
+        clearVerificationOtp(account);
+        await account.save();
 
         return successResponse(res, { message: "Email verified successfully" });
+    } catch (error) {
+        return errorResponse(res, { message: error.message, status: 500 });
+    }
+};
+
+const resendVerificationEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!validateEmail(email)) {
+            return errorResponse(res, { message: "Valid email is required", status: 400 });
+        }
+
+        const account = await findAccountByEmail(email.trim().toLowerCase());
+        // Keep unknown-email responses generic to avoid account enumeration.
+        if (!account) {
+            return successResponse(res, { message: "If an unverified account exists, a verification email has been sent." });
+        }
+        if (account.emailVerificationRequired !== true || account.isVerified === true) {
+            return successResponse(res, { message: "Email is already verified. Please login." });
+        }
+        if (account.emailVerificationLastSentAt
+            && Date.now() - new Date(account.emailVerificationLastSentAt).getTime() < RESEND_COOLDOWN_MS) {
+            return errorResponse(res, { message: "Please wait a minute before requesting another verification email.", status: 429 });
+        }
+
+        try {
+            await issueVerificationOtp(account);
+        } catch (emailError) {
+            return emailDeliveryErrorResponse(res, emailError);
+        }
+        return successResponse(res, { message: "A new 6-digit verification code has been sent to your email." });
     } catch (error) {
         return errorResponse(res, { message: error.message, status: 500 });
     }
@@ -389,9 +545,9 @@ const registerFaculty = async (req, res) => {
         }
 
         // Check if faculty already exists
-        const facultyExists = await Faculty.findOne({ email: data.email });
+        const facultyExists = await findAccountByEmail(data.email);
         if (facultyExists) {
-            return errorResponse(res, { message: "Faculty with this email already exists", status: 400 });
+            return errorResponse(res, { message: "Email already registered. Please login or verify your existing account.", status: 409 });
         }
 
         // Hash password
@@ -406,12 +562,35 @@ const registerFaculty = async (req, res) => {
             designation: data.designation,
             role: "faculty",
             isActive: true,
+            isVerified: false,
+            emailVerificationRequired: true,
+            approvalStatus: "PENDING",
             passwordChangedAt: new Date()
         });
 
+        try {
+            await createBulkNotification({
+                recipientType: "admin",
+                title: "New Faculty Registration Request",
+                message: `${faculty.name} from ${faculty.department || "an unspecified department"} submitted a faculty registration request. Admin approval is required.`,
+                type: "Admin Notification",
+                priority: "High",
+                referenceId: faculty._id,
+                referenceModel: "Faculty"
+            });
+        } catch (notificationError) {
+            console.error("Faculty registration notification creation failed", notificationError);
+        }
+
+        try {
+            await issueVerificationOtp(faculty);
+        } catch (emailError) {
+            return emailDeliveryErrorResponse(res, emailError, true);
+        }
+
         return successResponse(res, {
             status: 201,
-            message: "Faculty registered successfully",
+            message: "Account created successfully. We've sent a 6-digit verification code to your email. Please enter the code to verify your email address.",
             data: {
                 faculty: {
                     _id: faculty._id,
@@ -426,6 +605,9 @@ const registerFaculty = async (req, res) => {
 
     } catch (error) {
         console.error(error);
+        if (error && error.code === 11000) {
+            return errorResponse(res, { message: "Email already registered. Please login or verify your existing account.", status: 409 });
+        }
         return errorResponse(res, { message: error.message, status: 500 });
     }
 };
@@ -455,6 +637,14 @@ const loginFaculty = async (req, res) => {
         const isMatch = await bcrypt.compare(data.password, faculty.password);
         if (!isMatch) {
             return errorResponse(res, { message: "Invalid Email or Password", status: 400 });
+        }
+
+        if (faculty.emailVerificationRequired === true && faculty.isVerified !== true) {
+            return errorResponse(res, { message: "Please verify your email before logging in", status: 403 });
+        }
+
+        if (faculty.approvalStatus !== "APPROVED") {
+            return errorResponse(res, { message: "Your account is awaiting Admin approval. You can login after an administrator approves your registration.", status: 403 });
         }
 
         // Generate JWT token
@@ -488,7 +678,8 @@ module.exports = {
     changePassword,
     forgotPassword,
     resetPassword,
-    verifyEmail,
+    verifyEmailOtp,
+    resendVerificationEmail,
     updateAccountStatus,
     uploadResume,
     registerFaculty,

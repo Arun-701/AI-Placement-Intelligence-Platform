@@ -28,7 +28,8 @@ async function request(method, path, body, isForm = false) {
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (body && !isForm) headers['Content-Type'] = 'application/json';
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const requestUrl = `${API_BASE}${path}`
+  const res = await fetch(requestUrl, {
     method,
     headers,
     body: isForm ? body : body ? JSON.stringify(body) : undefined,
@@ -39,6 +40,13 @@ async function request(method, path, body, isForm = false) {
     data = await res.json();
   } catch {
     data = null;
+  }
+
+  if (path === '/faculty/assessments/extract') {
+    console.log('=== API FETCH RESPONSE ===')
+    console.log('URL:', requestUrl)
+    console.log('HTTP status:', res.status)
+    console.log('Response:', data)
   }
 
   if (res.status === 401 && path !== '/auth/login' && path !== '/admin/login') {
@@ -52,6 +60,21 @@ async function request(method, path, body, isForm = false) {
   return { status: res.status, ok: res.ok, data };
 }
 
+async function download(path) {
+  const token = getToken();
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+
+  if (response.status === 401 && typeof window !== 'undefined') {
+    setToken(null);
+    setUser(null);
+    if (!window.location.pathname.includes('/login')) window.location.href = '/login';
+  }
+
+  return { status: response.status, ok: response.ok, response };
+}
+
 export const api = {
   get: (path) => request('GET', path),
   post: (path, body) => request('POST', path, body),
@@ -60,4 +83,5 @@ export const api = {
   del: (path) => request('DELETE', path),
   upload: (path, formData) => request('POST', path, formData, true),
   putUpload: (path, formData) => request('PUT', path, formData, true),
+  download,
 };

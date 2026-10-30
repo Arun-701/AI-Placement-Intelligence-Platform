@@ -13,9 +13,9 @@ const verifyToken = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
 
 router.post("/", verifyToken, authorizeRoles("faculty"), createQuestion);
-router.get("/", verifyToken, authorizeRoles("faculty"), getQuestions);
-router.get("/:id", verifyToken, authorizeRoles("faculty"), getQuestionById);
-router.put("/:id", verifyToken, authorizeRoles("faculty"), updateQuestion);
-router.delete("/:id", verifyToken, authorizeRoles("faculty"), deleteQuestion);
+router.get("/", verifyToken, authorizeRoles("faculty", "admin"), getQuestions);
+router.get("/:id", verifyToken, authorizeRoles("faculty", "admin"), getQuestionById);
+router.put("/:id", verifyToken, authorizeRoles("faculty", "admin"), updateQuestion);
+router.delete("/:id", verifyToken, authorizeRoles("faculty", "admin"), deleteQuestion);
 
 module.exports = router;

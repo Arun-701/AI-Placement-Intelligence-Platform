@@ -5,7 +5,9 @@ const Student = require("../models/Student");
 const Faculty = require("../models/Faculty");
 const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
+const AssessmentAttendanceRequest = require("../models/AssessmentAttendanceRequest");
 const Roadmap = require("../models/Roadmap");
+const { normalizeDepartment } = require("../utils/department");
 
 const round = (value, precision = 2) => {
   const numberValue = Number(value);
@@ -151,6 +153,8 @@ const createFaculty = async (payload) => {
     designation: payload.designation || "",
     facultyId: payload.facultyId || undefined,
     isActive: payload.isActive !== undefined ? payload.isActive : true,
+    isVerified: payload.isVerified !== undefined ? payload.isVerified : true,
+    approvalStatus: payload.approvalStatus || "APPROVED",
     role: "faculty",
     passwordChangedAt: new Date()
   });
@@ -225,15 +229,45 @@ const assignStudentsToFaculty = async (facultyId, studentIds) => {
     throw new Error("No valid student IDs were provided");
   }
 
-  const existingStudents = await Student.find({ _id: { $in: validStudentIds } }).select("_id");
+  const existingStudents = await Student.find({ _id: { $in: validStudentIds } }).select("_id department");
   if (existingStudents.length === 0) {
-    throw new Error("No matching students found for assignment");
+    const error = new Error("No matching students found for assignment");
+    error.status = 400;
+    throw error;
+  }
+  if (existingStudents.length !== validStudentIds.length) {
+    const error = new Error("One or more selected students were not found");
+    error.status = 400;
+    throw error;
+  }
+
+  const departmentsByNormalizedName = new Map();
+  existingStudents.forEach((student) => {
+    const department = String(student.department || "").trim().replace(/\s+/g, " ");
+    const normalizedDepartment = normalizeDepartment(department);
+    if (normalizedDepartment) {
+      const existing = departmentsByNormalizedName.get(normalizedDepartment);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        departmentsByNormalizedName.set(normalizedDepartment, { department, count: 1 });
+      }
+    }
+  });
+  const departments = [...departmentsByNormalizedName.values()]
+    .sort((left, right) => right.count - left.count)
+    .map(({ department }) => department);
+  if (departments.length !== 1) {
+    const error = new Error("Students must all belong to the same department");
+    error.status = 400;
+    throw error;
   }
 
   const assignedSet = new Set((faculty.assignedStudents || []).map((id) => id.toString()));
   existingStudents.forEach((student) => assignedSet.add(student._id.toString()));
 
   faculty.assignedStudents = Array.from(assignedSet);
+  faculty.department = departments[0];
   await faculty.save();
 
   return sanitizeModel(faculty);
@@ -270,7 +304,8 @@ const buildAdminDashboard = async () => {
     activeFaculties,
     totalAssessments,
     totalRoadmaps,
-    totalCompletedAssessments
+    totalCompletedAssessments,
+    studentRequestCount
   ] = await Promise.all([
     Student.countDocuments(),
     Student.countDocuments({ isActive: true }),
@@ -278,7 +313,8 @@ const buildAdminDashboard = async () => {
     Faculty.countDocuments({ isActive: true }),
     Assessment.countDocuments(),
     Roadmap.countDocuments(),
-    AssessmentResult.countDocuments({ completed: true })
+    AssessmentResult.countDocuments({ completed: true }),
+    AssessmentAttendanceRequest.countDocuments({ active: { $ne: false }, status: "Requested" })
   ]);
 
   const averageReadinessResult = await Student.aggregate([
@@ -335,6 +371,7 @@ const buildAdminDashboard = async () => {
   }, {});
 
   return {
+    studentRequestCount,
     studentOverview: {
       totalStudents,
       activeStudents,
@@ -378,15 +415,26 @@ const buildAdminStatistics = async () => {
 
 const buildAdminStudentReport = async () => {
   const students = await Student.find()
-    .select("name email department year placementReadinessScore profileCompleted isActive createdAt")
+    .select("name email department year placementReadinessScore codingProfile assessmentsCompleted profileCompleted isActive createdAt")
     .lean();
+  const resultStats = await AssessmentResult.aggregate([
+    { $match: { completed: true } },
+    { $group: { _id: "$student", assessmentCount: { $sum: 1 }, averageAssessmentScore: { $avg: "$percentage" } } }
+  ]);
+  const statsByStudent = new Map(resultStats.map((item) => [item._id.toString(), item]));
 
   const sortedStudents = students
-    .map((student) => ({
-      ...student,
-      placementReadinessScore: student.placementReadinessScore || 0
-    }))
-    .sort((a, b) => b.placementReadinessScore - a.placementReadinessScore);
+    .map((student) => {
+      const stats = statsByStudent.get(student._id.toString());
+      return {
+        ...student,
+        problemsSolved: student.codingProfile?.totalProblemsSolved || 0,
+        assessmentCount: stats?.assessmentCount || student.assessmentsCompleted || 0,
+        averageAssessmentScore: round(stats?.averageAssessmentScore || 0),
+        placementReadinessScore: student.placementReadinessScore || 0
+      };
+    })
+    .sort((a, b) => (b.placementReadinessScore - a.placementReadinessScore) || (b.averageAssessmentScore - a.averageAssessmentScore) || (b.problemsSolved - a.problemsSolved));
 
   return {
     totalStudents: students.length,

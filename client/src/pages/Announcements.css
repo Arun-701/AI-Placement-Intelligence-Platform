@@ -1,0 +1,180 @@
+.main:has(.student-announcements-page) {
+  max-width: none;
+  min-width: 0;
+  padding: 28px 32px 40px;
+  background: #f5f7fb;
+}
+
+.faculty-announcements-page {
+  width: 100%;
+  max-width: 1344px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 32px 32px 40px;
+  color: #1e2d46;
+}
+
+.faculty-announcements-page .page-title {
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+}
+
+.faculty-announcements-page .page-title h1 {
+  margin: 0;
+  color: #0b1b35;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.2;
+}
+
+.faculty-announcements-page .subtitle {
+  margin: 7px 0 0;
+  color: #475569;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.faculty-announcements-page > .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  align-items: start;
+  gap: 18px;
+}
+
+.faculty-announcements-page > .grid > .card,
+.faculty-announcements-page > .card {
+  min-width: 0;
+  padding: 22px 24px;
+  border: 1px solid #e3e9f1;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(28, 47, 78, .04);
+}
+
+.faculty-announcements-page > .grid > .card h3 {
+  min-width: 0;
+  color: #10213a;
+  font-size: 17px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.faculty-announcements-page > .grid > .card p {
+  margin: 14px 0;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.faculty-announcements-page > .grid > .card small {
+  display: block;
+  margin-top: 14px;
+}
+
+.faculty-announcements-page > .alert {
+  margin: 0;
+}
+
+.student-announcements-page {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  color: #1e2d46;
+}
+
+.student-announcements-header { margin-bottom: 24px; }
+.student-announcements-eyebrow { display: block; margin-bottom: 6px; color: #586b86; font-size: 10px; font-weight: 750; letter-spacing: .12em; }
+.student-announcements-header h1 { margin: 0; color: #0b1b35; font-size: 34px; font-weight: 800; letter-spacing: -.035em; line-height: 1.2; }
+.student-announcements-header p { margin: 7px 0 0; color: #475569; font-size: 16px; font-weight: 550; }
+
+.student-announcements-error { margin: 0 0 16px; padding: 12px 14px; border: 1px solid #f0c4c7; border-radius: 9px; background: #fff5f5; color: #8f2933; font-size: 12px; }
+
+.student-announcements-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; margin-bottom: 22px; }
+.student-announcement-summary-card { display: flex; min-height: 92px; align-items: center; gap: 13px; padding: 17px 19px; border: 1px solid #e3e9f1; border-radius: 11px; background: #fff; box-shadow: 0 3px 12px rgba(28, 47, 78, .035); }
+.student-announcement-summary-icon { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border-radius: 11px; }
+.student-announcement-summary-icon svg { width: 20px; height: 20px; }
+.student-announcement-summary-icon.all { background: #eaf2ff; color: #316bc3; }
+.student-announcement-summary-icon.unread { background: #fff3e4; color: #a65d13; }
+.student-announcement-summary-icon.for-you { background: #efefff; color: #5c58ae; }
+.student-announcement-summary-card > span:last-child { display: grid; gap: 5px; }
+.student-announcement-summary-card small { color: #334155; font-size: 11px; font-weight: 650; }
+.student-announcement-summary-card strong { color: #0b1b35; font-size: 22px; font-weight: 780; line-height: 1; }
+.student-announcement-summary-card em { color: #475569; font-size: 9px; font-style: normal; font-weight: 500; }
+
+.student-announcements-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.student-announcements-search { display: flex; width: min(100%, 350px); min-height: 40px; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid #dfe6ef; border-radius: 8px; background: #fff; color: #62738c; }
+.student-announcements-search:focus-within { border-color: #93b6e9; box-shadow: 0 0 0 3px rgba(58, 119, 203, .1); }
+.student-announcements-search svg { width: 17px; height: 17px; flex: 0 0 17px; }
+.student-announcements-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #10213a; font: inherit; font-size: 14px; }
+.student-announcements-search input::placeholder { color: #64748b; opacity: 1; }
+.student-announcements-filters { display: flex; min-height: 40px; align-items: stretch; gap: 22px; border-bottom: 1px solid #e2e8f0; }
+.student-announcements-filters button { position: relative; display: inline-flex; align-items: center; padding: 0 4px; border: 0; background: transparent; color: #334155; cursor: pointer; font: inherit; font-size: 14px; font-weight: 650; white-space: nowrap; }
+.student-announcements-filters button.active { color: #155eef; font-weight: 700; }
+.student-announcements-filters button.active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; border-radius: 2px 2px 0 0; background: #3479d9; content: ''; }
+
+.student-announcements-list,
+.student-announcements-state { overflow: hidden; border: 1px solid #e3e9f1; border-radius: 11px; background: #fff; box-shadow: 0 3px 12px rgba(28, 47, 78, .035); }
+.student-announcement-card { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: start; gap: 16px; padding: 22px 24px; }
+.student-announcement-card + .student-announcement-card { border-top: 1px solid #edf0f5; }
+.student-announcement-icon { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 10px; background: #eff4fb; color: #61748e; }
+.student-announcement-icon svg { width: 19px; height: 19px; }
+.student-announcement-icon.academic { background: #eaf7f1; color: #28734e; }
+.student-announcement-icon.assessments { background: #eaf3ff; color: #2f66a8; }
+.student-announcement-icon.general { background: #fff3e4; color: #92500f; }
+.student-announcement-content { min-width: 0; }
+.student-announcement-title-row { display: flex; min-width: 0; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.student-announcement-title-row h2 { overflow-wrap: anywhere; margin: 1px 0 0; color: #10213a; font-size: 18px; font-weight: 700; line-height: 1.4; }
+.student-announcement-audience { flex: 0 0 auto; max-width: 40%; padding: 5px 10px; border: 1px solid #dbe8fb; border-radius: 999px; background: #eef5ff; color: #244f83; font-size: 13px; font-weight: 600; line-height: 1.35; text-align: center; overflow-wrap: anywhere; }
+.student-announcement-audience.department { border-color: #e3defb; background: #f2efff; color: #51438a; }
+.student-announcement-content > p { margin: 8px 0 0; color: #334155; font-size: 16px; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.student-announcement-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 13px; color: #475569; font-size: 13px; font-weight: 500; }
+.student-announcement-meta time { color: #475569; font-variant-numeric: tabular-nums; }
+.student-announcement-category { padding: 4px 9px; border-radius: 999px; background: #f0f3f7; color: #334155; font-size: 12px; font-weight: 650; }
+.student-announcement-category.academic { background: #edf7f1; color: #245c41; }
+.student-announcement-category.assessments { background: #edf4ff; color: #244f83; }
+.student-announcement-category.general { background: #fff3e4; color: #81470f; }
+.student-announcements-state { display: grid; min-height: 210px; align-content: center; justify-items: center; padding: 28px; color: #475569; text-align: center; }
+.student-announcements-state h2 { margin: 0; color: #10213a; font-size: 15px; font-weight: 700; }
+.student-announcements-state p { margin: 7px 0 0; font-size: 11px; }
+
+@media (max-width: 900px) {
+  .main:has(.student-announcements-page) { padding: 24px 22px 32px; }
+  .faculty-announcements-page { padding: 28px 22px 32px; }
+  .student-announcements-summary { gap: 10px; }
+  .student-announcement-summary-card { padding: 14px; }
+  .student-announcements-controls { align-items: stretch; flex-direction: column; }
+  .student-announcements-search { width: 100%; }
+  .student-announcements-filters { justify-content: flex-start; gap: 25px; }
+}
+
+@media (max-width: 620px) {
+  .main:has(.student-announcements-page) { padding: 19px 14px 28px; }
+  .faculty-announcements-page { padding: 24px 16px 28px; }
+  .faculty-announcements-page .page-title { margin-bottom: 19px; }
+  .faculty-announcements-page .page-title h1 { font-size: 28px; }
+  .faculty-announcements-page > .grid { grid-template-columns: minmax(0, 1fr); gap: 13px; }
+  .faculty-announcements-page > .grid > .card,
+  .faculty-announcements-page > .card { padding: 18px 17px; }
+  .student-announcements-header { margin-bottom: 18px; }
+  .student-announcements-header h1 { font-size: 32px; }
+  .student-announcements-header p { font-size: 16px; }
+  .student-announcements-summary { grid-template-columns: 1fr; gap: 8px; margin-bottom: 17px; }
+  .student-announcement-summary-card { min-height: 68px; padding: 11px 13px; }
+  .student-announcement-summary-icon { width: 36px; height: 36px; flex-basis: 36px; }
+  .student-announcement-summary-card strong { font-size: 19px; }
+  .student-announcements-filters { gap: 0; justify-content: space-between; overflow-x: auto; }
+  .student-announcements-filters button { padding: 0 8px; font-size: 13px; }
+  .student-announcement-card { grid-template-columns: 35px minmax(0, 1fr); gap: 12px; padding: 18px 14px; }
+  .student-announcement-icon { width: 34px; height: 34px; }
+  .student-announcement-icon svg { width: 17px; height: 17px; }
+  .student-announcement-title-row { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .student-announcement-title-row h2 { font-size: 17px; }
+  .student-announcement-audience { max-width: 100%; }
+  .student-announcement-content > p { font-size: 15px; }
+  .student-announcement-meta { font-size: 13px; }
+  .student-announcement-category { font-size: 12px; }
+}

@@ -1,6 +1,8 @@
 const fs = require("fs").promises;
 const path = require("path");
 const { PDFParse } = require("pdf-parse");
+const mammoth = require("mammoth");
+const WordExtractor = require("word-extractor");
 
 const { generateAIResponse } = require("./geminiService");
 
@@ -152,23 +154,48 @@ const extractTextFromResume = async (resumePath) => {
 
     try {
         const fileBuffer = await fs.readFile(resolvedPath);
-        const header = fileBuffer.slice(0, 4).toString("utf8");
-        if (header !== "%PDF") {
-            throw new Error("Uploaded file is not a valid PDF");
+        const extension = path.extname(resolvedPath).toLowerCase();
+        let extractedText = "";
+
+        if (extension === ".pdf") {
+            if (fileBuffer.slice(0, 4).toString("utf8") !== "%PDF") {
+                throw new Error("Uploaded file is not a valid PDF");
+            }
+
+            const parser = new PDFParse({ data: fileBuffer });
+            try {
+                const pdfData = await parser.getText();
+                extractedText = pdfData?.text?.trim() || "";
+            } finally {
+                await parser.destroy();
+            }
+
+            if (!extractedText) throw new Error("No selectable text found in PDF");
+        } else if (extension === ".docx") {
+            if (fileBuffer.slice(0, 2).toString("utf8") !== "PK") {
+                throw new Error("Uploaded file is not a valid DOCX");
+            }
+            const document = await mammoth.extractRawText({ buffer: fileBuffer });
+            extractedText = document.value?.trim() || "";
+        } else if (extension === ".doc") {
+            const extractor = new WordExtractor();
+            const document = await extractor.extract(resolvedPath);
+            extractedText = document.getBody()?.trim() || "";
+        } else {
+            throw new Error("Unsupported resume format");
         }
 
-        const parser = new PDFParse({ data: fileBuffer });
-        const pdfData = await parser.getText();
-        const extractedText = pdfData?.text?.trim();
-        await parser.destroy();
-
-        if (!extractedText) {
-            throw new Error("No selectable text found in PDF");
-        }
-
+        if (!extractedText) throw new Error("No readable text found in resume file");
         return extractedText;
     } catch (error) {
-        if (error.message === "Unable to extract resume text" || error.message === "No selectable text found in PDF" || error.message === "Uploaded file is not a valid PDF") {
+        if ([
+            "Unable to extract resume text",
+            "No selectable text found in PDF",
+            "Uploaded file is not a valid PDF",
+            "Uploaded file is not a valid DOCX",
+            "No readable text found in resume file",
+            "Unsupported resume format"
+        ].includes(error.message)) {
             throw error;
         }
 
@@ -207,6 +234,12 @@ const normalizeAnalysis = (analysis) => {
     };
 };
 
+const scoreOrNull = (value) => {
+    if (value === null || value === undefined || value === "" || typeof value === "boolean") return null;
+    const score = Number(value);
+    return Number.isFinite(score) ? Math.min(100, Math.max(0, Math.round(score))) : null;
+};
+
 const parseAnalysisResponse = (responseText) => {
     const trimmedText = String(responseText || "").trim();
     const jsonStart = trimmedText.indexOf("{");
@@ -227,8 +260,8 @@ const parseAnalysisResponse = (responseText) => {
 
     // Validate and normalize to the strict schema requested by the product
     const normalized = {
-        overallScore: Number.isFinite(Number(parsed.overallScore)) ? Math.max(0, Math.min(100, Math.round(parsed.overallScore))) : 0,
-        atsScore: Number.isFinite(Number(parsed.atsScore)) ? Math.max(0, Math.min(100, Math.round(parsed.atsScore))) : 0,
+        overallScore: scoreOrNull(parsed.overallScore),
+        atsScore: scoreOrNull(parsed.atsScore ?? parsed.atsAnalysis?.score),
         summary: typeof parsed.summary === 'string' ? parsed.summary.trim() : '',
         detectedSkills: {
             programmingLanguages: Array.isArray(parsed.detectedSkills?.programmingLanguages) ? parsed.detectedSkills.programmingLanguages : [],
@@ -245,12 +278,15 @@ const parseAnalysisResponse = (responseText) => {
         weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses : [],
         missingSkills: Array.isArray(parsed.missingSkills) ? parsed.missingSkills : [],
         atsAnalysis: typeof parsed.atsAnalysis === 'object' && parsed.atsAnalysis !== null ? {
-            score: Number.isFinite(Number(parsed.atsAnalysis.score)) ? Math.max(0, Math.min(100, Math.round(parsed.atsAnalysis.score))) : 0,
-            keywordMatch: Array.isArray(parsed.atsAnalysis.keywordMatch) ? parsed.atsAnalysis.keywordMatch : [],
+            score: scoreOrNull(parsed.atsAnalysis.score),
+            keywords: Array.isArray(parsed.atsAnalysis.keywords) ? parsed.atsAnalysis.keywords : Array.isArray(parsed.atsAnalysis.keywordMatch) ? parsed.atsAnalysis.keywordMatch : [],
+            keywordMatch: Array.isArray(parsed.atsAnalysis.keywordMatch) ? parsed.atsAnalysis.keywordMatch : Array.isArray(parsed.atsAnalysis.keywords) ? parsed.atsAnalysis.keywords : [],
             missingKeywords: Array.isArray(parsed.atsAnalysis.missingKeywords) ? parsed.atsAnalysis.missingKeywords : [],
+            formattingSuggestions: Array.isArray(parsed.atsAnalysis.formattingSuggestions) ? parsed.atsAnalysis.formattingSuggestions : [],
+            contentSuggestions: Array.isArray(parsed.atsAnalysis.contentSuggestions) ? parsed.atsAnalysis.contentSuggestions : [],
             formattingIssues: Array.isArray(parsed.atsAnalysis.formattingIssues) ? parsed.atsAnalysis.formattingIssues : [],
             sectionIssues: Array.isArray(parsed.atsAnalysis.sectionIssues) ? parsed.atsAnalysis.sectionIssues : []
-        } : { score: 0, keywordMatch: [], missingKeywords: [], formattingIssues: [], sectionIssues: [] },
+        } : { score: null, keywords: [], keywordMatch: [], missingKeywords: [], formattingSuggestions: [], contentSuggestions: [], formattingIssues: [], sectionIssues: [] },
         recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : [],
         recommendedRoles: Array.isArray(parsed.recommendedRoles) ? parsed.recommendedRoles : [],
         improvementPlan: Array.isArray(parsed.improvementPlan) ? parsed.improvementPlan : []
@@ -306,7 +342,7 @@ ${extractedText}`;
     try {
         const responseText = await generateAIResponse(prompt);
         const parsed = parseAnalysisResponse(responseText);
-        return { ...parsed, analysisSource: 'ai' };
+        return { ...parsed, resumeScore: parsed.overallScore, analysisSource: 'ai' };
     } catch (error) {
         // Log the AI error and return a conservative fallback that does not pretend to be AI
         console.error('AI analysis failed:', error.message);
@@ -332,7 +368,14 @@ ${extractedText}`;
             education: [],
             projects: [],
             experience: [],
-            atsAnalysis: { score: 0, keywords: [], missingKeywords: [], formattingSuggestions: [], contentSuggestions: [] },
+            atsScore: fallback.atsScore,
+            atsAnalysis: {
+                ...fallback.atsAnalysis,
+                score: fallback.atsScore,
+                keywords: fallback.atsAnalysis.keywordMatch || [],
+                formattingSuggestions: fallback.atsAnalysis.formattingIssues || [],
+                contentSuggestions: []
+            },
             recommendedRoles: [],
             skillGapAnalysis: [],
             recommendations: fallback.recommendations || [],

@@ -1,0 +1,301 @@
+question,domain,topic
+What is intermediate code and why do compilers generate it?,Compiler Design,Code Generation
+Define three-address code and write it for a = b * c + d.,Compiler Design,Code Generation
+"What are quadruples, triples and indirect triples?",Compiler Design,Code Generation
+Compare quadruples and triples with respect to instruction reordering.,Compiler Design,Code Generation
+Translate the expression -(a + b) * (c + d) into three-address code.,Compiler Design,Code Generation
+What is a temporary variable in three-address code and how are temporaries allocated?,Compiler Design,Code Generation
+What is a basic block?,Compiler Design,Code Generation
+State the rules used to partition three-address code into basic blocks.,Compiler Design,Code Generation
+What is a leader in the construction of basic blocks?,Compiler Design,Code Generation
+What is a flow graph and how is it built from basic blocks?,Compiler Design,Code Generation
+What is the DAG representation of a basic block used for?,Compiler Design,Code Generation
+How does a DAG help eliminate common subexpressions inside a block?,Compiler Design,Code Generation
+What is the difference between local optimization and global optimization?,Compiler Design,Code Generation
+List four typical peephole optimizations.,Compiler Design,Code Generation
+What is redundant load and store elimination?,Compiler Design,Code Generation
+Explain algebraic simplification and strength reduction with examples.,Compiler Design,Code Generation
+What is constant folding and where in the compiler is it applied?,Compiler Design,Code Generation
+What is dead code elimination and how is dead code identified within a block?,Compiler Design,Code Generation
+What is register allocation and why does it dominate generated code quality?,Compiler Design,Code Generation
+What is register spilling and when does it happen?,Compiler Design,Code Generation
+Describe graph colouring register allocation at a high level.,Compiler Design,Code Generation
+What is an interference graph and how is it built?,Compiler Design,Code Generation
+What are the register descriptor and address descriptor in a simple code generator?,Compiler Design,Code Generation
+What is the role of the getReg function in a simple code generator?,Compiler Design,Code Generation
+What is instruction selection?,Compiler Design,Code Generation
+How does tree pattern matching help perform instruction selection?,Compiler Design,Code Generation
+Which cost model is used when choosing between alternative instruction sequences?,Compiler Design,Code Generation
+What are addressing modes and how do they affect the size of generated code?,Compiler Design,Code Generation
+Generate target machine code for the three-address code t1 = a + b; t2 = t1 * c.,Compiler Design,Code Generation
+What is the difference between absolute machine code and relocatable machine code?,Compiler Design,Code Generation
+What is an activation record and which fields does it contain?,Compiler Design,Code Generation
+How does the code generator implement parameter passing for a function call?,Compiler Design,Code Generation
+What are the roles of the stack pointer and the frame pointer in generated code?,Compiler Design,Code Generation
+What is backpatching and how is it used while generating jumps?,Compiler Design,Code Generation
+How are boolean expressions translated using short-circuit code?,Compiler Design,Code Generation
+Write three-address code for the statement while (a < b) a = a + 1;,Compiler Design,Code Generation
+Translate an if-else statement into three-address code with explicit labels.,Compiler Design,Code Generation
+How is the array reference a[i][j] translated into three-address code?,Compiler Design,Code Generation
+What is the difference between a label and an address in generated code?,Compiler Design,Code Generation
+What is jump-to-jump elimination in peephole optimization?,Compiler Design,Code Generation
+What is loop invariant code motion?,Compiler Design,Code Generation
+Explain induction variable elimination.,Compiler Design,Code Generation
+What is copy propagation and which later optimizations does it enable?,Compiler Design,Code Generation
+What is global common subexpression elimination?,Compiler Design,Code Generation
+What is static single assignment form and why does it help optimization?,Compiler Design,Code Generation
+What is a phi function in SSA form?,Compiler Design,Code Generation
+How can the order of evaluation be chosen to minimize the number of registers used?,Compiler Design,Code Generation
+What is the Sethi-Ullman algorithm used for?,Compiler Design,Code Generation
+The generated code performs many memory accesses. Which optimization would you apply first?,Compiler Design,Code Generation
+What is instruction scheduling and why is it needed on a pipelined machine?,Compiler Design,Code Generation
+What is the window of a peephole optimizer and why is the pass repeated?,Compiler Design,Code Generation
+How is a switch statement usually translated into target code?,Compiler Design,Code Generation
+What is a jump table and when is it preferred over a chain of comparisons?,Compiler Design,Code Generation
+Which properties of the target machine must the code generator model?,Compiler Design,Code Generation
+Why is code generation considered a machine dependent phase?,Compiler Design,Code Generation
+How does code generation for a register machine differ from code generation for a stack machine?,Compiler Design,Code Generation
+How would you generate code for a virtual machine with a stack-based instruction set?,Compiler Design,Code Generation
+Why does generated code sometimes contain calls into a runtime support library?,Compiler Design,Code Generation
+How does the code generator return a function result to its caller?,Compiler Design,Code Generation
+What are the inputs and the outputs of the code generation phase?,Compiler Design,Code Generation
+What is the role of the parser in a compiler and what input does it consume?,Compiler Design,Parsing
+Compare top-down parsing with bottom-up parsing.,Compiler Design,Parsing
+Explain how a recursive descent parser is structured.,Compiler Design,Parsing
+What is backtracking in a recursive descent parser and why is it undesirable?,Compiler Design,Parsing
+Define a predictive parser.,Compiler Design,Parsing
+"Compute FIRST and FOLLOW sets for E -> T E', E' -> + T E' | epsilon, T -> id.",Compiler Design,Parsing
+How is an LL(1) parsing table constructed from FIRST and FOLLOW sets?,Compiler Design,Parsing
+Which condition must a grammar satisfy so that its LL(1) parsing table has no conflicts?,Compiler Design,Parsing
+Explain why an ambiguous grammar can never be parsed by an LL(1) parser.,Compiler Design,Parsing
+Trace the stack of an LL(1) parser on the input id + id.,Compiler Design,Parsing
+What does a blank entry in an LL(1) parsing table indicate during parsing?,Compiler Design,Parsing
+What is a multiply defined entry in an LL(1) parse table and what does it imply?,Compiler Design,Parsing
+Explain shift-reduce parsing using a stack and an input buffer.,Compiler Design,Parsing
+What is a handle in bottom-up parsing?,Compiler Design,Parsing
+Define handle pruning.,Compiler Design,Parsing
+What is a viable prefix in LR parsing?,Compiler Design,Parsing
+"Explain the four actions of an LR parser: shift, reduce, accept and error.",Compiler Design,Parsing
+What is an LR(0) item and what does the position of the dot indicate?,Compiler Design,Parsing
+How is the canonical collection of LR(0) item sets constructed?,Compiler Design,Parsing
+Define the CLOSURE and GOTO functions used during LR table construction.,Compiler Design,Parsing
+How does an SLR(1) parser decide when a reduction should be performed?,Compiler Design,Parsing
+Why is SLR(1) less powerful than LALR(1)?,Compiler Design,Parsing
+What is the difference between an LR(1) item and an LR(0) item?,Compiler Design,Parsing
+How are LALR(1) states obtained by merging canonical LR(1) states?,Compiler Design,Parsing
+Which kind of conflict can appear after LR(1) states are merged into LALR states?,Compiler Design,Parsing
+What is a shift-reduce conflict? Give a grammar fragment that produces one.,Compiler Design,Parsing
+What is a reduce-reduce conflict and what usually causes it?,Compiler Design,Parsing
+How does yacc resolve a shift-reduce conflict by default?,Compiler Design,Parsing
+Trace the parse of id * id + id using an operator precedence parser.,Compiler Design,Parsing
+What do the precedence relations used in operator precedence parsing mean?,Compiler Design,Parsing
+State the main limitations of operator precedence parsing.,Compiler Design,Parsing
+Describe the structure of an LR parsing table with its ACTION and GOTO parts.,Compiler Design,Parsing
+Construct the LR(0) automaton for the grammar S -> ( S ) | a and count its states.,Compiler Design,Parsing
+Explain panic mode error recovery in an LR parser.,Compiler Design,Parsing
+What is phrase-level error recovery performed by a parser?,Compiler Design,Parsing
+How do error productions help a parser continue after a mistake?,Compiler Design,Parsing
+Compare the order in which LL and LR parsers discover the nodes of the parse tree.,Compiler Design,Parsing
+What do the k values mean in LL(k) and LR(k) parsers?,Compiler Design,Parsing
+Why is every LL(1) grammar also an LR(1) grammar?,Compiler Design,Parsing
+What is the CYK parsing algorithm and what is its time complexity?,Compiler Design,Parsing
+Describe Earley's parsing algorithm at a high level.,Compiler Design,Parsing
+What is a GLR parser and in which situations is it used?,Compiler Design,Parsing
+How does a parser generator such as Bison report conflicts to the developer?,Compiler Design,Parsing
+Why is the grammar augmented with S' -> S before LR table construction?,Compiler Design,Parsing
+How does the parser detect the end of the input during parsing?,Compiler Design,Parsing
+What does the parser stack contain immediately before a reduce move?,Compiler Design,Parsing
+Explain the difference between a deterministic and a nondeterministic parser.,Compiler Design,Parsing
+Why can a top-down parser not handle a left-recursive grammar?,Compiler Design,Parsing
+Why do many production compilers use hand-written recursive descent parsers?,Compiler Design,Parsing
+What is the running time and stack space usage of an LR parser on an input of length n?,Compiler Design,Parsing
+Your parser generator reports a conflict on the dangling else grammar. How can it be told to resolve it?,Compiler Design,Parsing
+How does a parser build an abstract syntax tree while performing reductions?,Compiler Design,Parsing
+What does each entry on an LR parser stack hold?,Compiler Design,Parsing
+Compare table-driven parsing with a recursive descent implementation.,Compiler Design,Parsing
+What is the role of the lookahead symbol in predictive parsing?,Compiler Design,Parsing
+How can a parser support incremental reparsing after a small edit?,Compiler Design,Parsing
+What is an LL(*) parser as used by ANTLR?,Compiler Design,Parsing
+Describe how a parser produces an error message listing the expected tokens.,Compiler Design,Parsing
+Why does an LR parser never need to backtrack?,Compiler Design,Parsing
+"Given a shift-reduce conflict reported by a parser generator, how would you debug and fix it?",Compiler Design,Parsing
+"What is the difference between a token, a pattern and a lexeme?",Compiler Design,Lexical Analysis
+Define a lexical analyzer and state its primary responsibility inside a compiler.,Compiler Design,Lexical Analysis
+Why is the lexical analyzer usually implemented as a phase separate from the parser?,Compiler Design,Lexical Analysis
+Write a regular expression that matches C-style identifiers.,Compiler Design,Lexical Analysis
+How does a scanner apply the longest match rule while reading the input stream?,Compiler Design,Lexical Analysis
+"For the input elseif, why does a typical C scanner return one identifier token instead of two keyword tokens?",Compiler Design,Lexical Analysis
+Explain how a deterministic finite automaton is used to recognize tokens.,Compiler Design,Lexical Analysis
+What is the role of the transition table in a table-driven scanner?,Compiler Design,Lexical Analysis
+Convert the regular expression (a|b)*abb into an NFA using Thompson's construction.,Compiler Design,Lexical Analysis
+Why is subset construction needed when building a scanner from regular expressions?,Compiler Design,Lexical Analysis
+Describe two-buffer input buffering and the purpose of sentinel characters.,Compiler Design,Lexical Analysis
+Which kinds of errors are detected by the lexical analyzer?,Compiler Design,Lexical Analysis
+How does panic mode recovery work at the lexical level?,Compiler Design,Lexical Analysis
+How are keywords distinguished from identifiers during token recognition?,Compiler Design,Lexical Analysis
+Why are comments and whitespace usually not returned as tokens?,Compiler Design,Lexical Analysis
+What attribute value does a scanner typically attach to an identifier token?,Compiler Design,Lexical Analysis
+Explain how a lexical analyzer interacts with the symbol table.,Compiler Design,Lexical Analysis
+Given the input x1 = 3.14e-2; list the tokens a typical C scanner produces.,Compiler Design,Lexical Analysis
+What is the difference between a regular expression and a regular definition?,Compiler Design,Lexical Analysis
+Why is a lexical analyzer unable to recognize balanced parentheses?,Compiler Design,Lexical Analysis
+State the limitations of regular languages in the context of scanning.,Compiler Design,Lexical Analysis
+How does Lex resolve a conflict when two patterns match the same longest string?,Compiler Design,Lexical Analysis
+Describe the general structure of a Lex specification file.,Compiler Design,Lexical Analysis
+What is the lookahead operator in Lex and when is it needed?,Compiler Design,Lexical Analysis
+Explain how the FORTRAN statement DO 5 I = 1.25 illustrates the need for lookahead while scanning.,Compiler Design,Lexical Analysis
+Write a regular expression for unsigned floating point numbers with an optional exponent part.,Compiler Design,Lexical Analysis
+Why is a DFA preferred over an NFA inside a production scanner?,Compiler Design,Lexical Analysis
+Compare the space and time tradeoffs of DFA-based and NFA-based token recognition.,Compiler Design,Lexical Analysis
+What is the purpose of minimizing the DFA produced by a scanner generator?,Compiler Design,Lexical Analysis
+How are string literals containing escape sequences recognized by a scanner?,Compiler Design,Lexical Analysis
+Explain why nested block comments are difficult for a conventional scanner.,Compiler Design,Lexical Analysis
+What is a sentinel and how does it reduce the number of tests performed per input character?,Compiler Design,Lexical Analysis
+Describe what happens when the scanner meets an illegal character such as @ in C source.,Compiler Design,Lexical Analysis
+How does the scanner keep track of the line number used in a lexical error message?,Compiler Design,Lexical Analysis
+Why does the scanner usually strip preprocessor directives or hand them to another module?,Compiler Design,Lexical Analysis
+"In a scanner, what is the difference between the forward pointer and the lexeme begin pointer?",Compiler Design,Lexical Analysis
+Give a regular expression for C-style single line comments.,Compiler Design,Lexical Analysis
+How are multi-character operators such as >= and <<= recognized by the scanner?,Compiler Design,Lexical Analysis
+Explain the maximal munch principle using an example from C.,Compiler Design,Lexical Analysis
+What is a token attribute and why do later phases need it?,Compiler Design,Lexical Analysis
+How would you design a scanner for a language with significant indentation such as Python?,Compiler Design,Lexical Analysis
+Should reserved words be handled by separate patterns or by a keyword table lookup? Justify.,Compiler Design,Lexical Analysis
+What is the time complexity of simulating a DFA on an input of length n?,Compiler Design,Lexical Analysis
+Why does the lexical analyzer return tokens one at a time instead of all at once?,Compiler Design,Lexical Analysis
+Explain the role of the retract operation after a failed longest match attempt.,Compiler Design,Lexical Analysis
+What is a dead state in a scanner DFA and how is it handled at runtime?,Compiler Design,Lexical Analysis
+"For the regular expression a*b+, which of the strings aab, b, ab and a are accepted?",Compiler Design,Lexical Analysis
+Tokenize the input i++ + ++j and give the resulting token stream.,Compiler Design,Lexical Analysis
+Describe how numeric constants are converted into internal values during scanning.,Compiler Design,Lexical Analysis
+Why is the scanner sometimes called a screener when it filters out certain lexemes?,Compiler Design,Lexical Analysis
+What is the effect of skipping DFA minimization on scanner performance?,Compiler Design,Lexical Analysis
+How does a C scanner distinguish the division operator from the beginning of a comment?,Compiler Design,Lexical Analysis
+Construct a finite automaton that accepts identifiers of length at most eight characters.,Compiler Design,Lexical Analysis
+What is the purpose of the yytext and yyleng variables in Lex?,Compiler Design,Lexical Analysis
+How should a scanner treat an unterminated string literal?,Compiler Design,Lexical Analysis
+Explain the difference between compile time token recognition and runtime string matching.,Compiler Design,Lexical Analysis
+Why is it useful to represent each token by a numeric code rather than by a string name?,Compiler Design,Lexical Analysis
+Which data structure would you use for fast keyword lookup in a scanner and why?,Compiler Design,Lexical Analysis
+How are Unicode identifiers handled by a modern lexical analyzer?,Compiler Design,Lexical Analysis
+Your scanner is slow on very large source files. Which implementation changes would you consider?,Compiler Design,Lexical Analysis
+What is the purpose of the semantic analysis phase of a compiler?,Compiler Design,Semantic Analysis
+Give three examples of errors that are detected during semantic analysis.,Compiler Design,Semantic Analysis
+What is a type system?,Compiler Design,Semantic Analysis
+Distinguish static type checking from dynamic type checking.,Compiler Design,Semantic Analysis
+What is type coercion and how is an implicit conversion applied?,Compiler Design,Semantic Analysis
+Explain name equivalence and structural equivalence of types.,Compiler Design,Semantic Analysis
+What is a type expression? Give the type expression for an array of pointers to int.,Compiler Design,Semantic Analysis
+Define type inference and give an example from a functional language.,Compiler Design,Semantic Analysis
+How does a compiler check that the arguments of a call match the declared parameters?,Compiler Design,Semantic Analysis
+What is a symbol table and which information does it store for a variable?,Compiler Design,Semantic Analysis
+How does the symbol table support nested scopes?,Compiler Design,Semantic Analysis
+What is the difference between lexical scoping and dynamic scoping?,Compiler Design,Semantic Analysis
+Which semantic error occurs in int x; x = 'hello'; and how is it detected?,Compiler Design,Semantic Analysis
+What is a use-before-declaration error and how does the compiler detect it?,Compiler Design,Semantic Analysis
+What happens semantically when the same variable is declared twice in one scope?,Compiler Design,Semantic Analysis
+How are types represented in the internal data structures of a compiler?,Compiler Design,Semantic Analysis
+"What is an l-value and an r-value, and which semantic rule involves them?",Compiler Design,Semantic Analysis
+Explain how overload resolution chooses among several candidate functions.,Compiler Design,Semantic Analysis
+State a type checking rule for the binary + operator in a statically typed language.,Compiler Design,Semantic Analysis
+How does the compiler check that every return statement matches the declared return type?,Compiler Design,Semantic Analysis
+What does type compatibility mean in the context of assignment?,Compiler Design,Semantic Analysis
+How are array types and pointer types checked for compatibility in C?,Compiler Design,Semantic Analysis
+Which semantic checks are required for a break statement?,Compiler Design,Semantic Analysis
+How does the compiler verify that a goto refers to a valid label?,Compiler Design,Semantic Analysis
+Give a semantic error that a parser cannot detect and explain why.,Compiler Design,Semantic Analysis
+Explain the concept of a scope tree used during semantic checking.,Compiler Design,Semantic Analysis
+What does hoisting a declaration mean and which semantic issues does it create?,Compiler Design,Semantic Analysis
+How is a field access on a record or struct type-checked?,Compiler Design,Semantic Analysis
+What is a polymorphic function and how is its type checked?,Compiler Design,Semantic Analysis
+Describe unification as used in Hindley-Milner type inference.,Compiler Design,Semantic Analysis
+What is a type variable and when is a fresh one introduced?,Compiler Design,Semantic Analysis
+What is the semantic difference between a declaration and a definition?,Compiler Design,Semantic Analysis
+How is constness enforced by the semantic analyzer?,Compiler Design,Semantic Analysis
+Which semantic check ensures that a function is called with the correct number of arguments?,Compiler Design,Semantic Analysis
+How does the compiler detect that a non-void function may finish without returning a value?,Compiler Design,Semantic Analysis
+What is an environment in the context of semantic analysis?,Compiler Design,Semantic Analysis
+How does the compiler handle a forward reference to a function defined later in the file?,Compiler Design,Semantic Analysis
+How is an implicit conversion between int and float validated and recorded?,Compiler Design,Semantic Analysis
+What is the difference between a widening conversion and a narrowing conversion?,Compiler Design,Semantic Analysis
+How does the compiler decide the type of a conditional expression whose branches differ?,Compiler Design,Semantic Analysis
+How would you implement scope checking for a language that supports closures?,Compiler Design,Semantic Analysis
+Which semantic information is required before the size of a variable can be computed?,Compiler Design,Semantic Analysis
+How are enumerated types checked for valid values?,Compiler Design,Semantic Analysis
+What is meant by the static semantics of a programming language?,Compiler Design,Semantic Analysis
+How does visibility differ from scope?,Compiler Design,Semantic Analysis
+Which semantic checks apply to the case labels of a switch statement?,Compiler Design,Semantic Analysis
+What is name mangling and which semantic information does it encode?,Compiler Design,Semantic Analysis
+How is subtype compatibility checked when a derived object is assigned to a base reference?,Compiler Design,Semantic Analysis
+Which semantic rules govern the use of this inside a method?,Compiler Design,Semantic Analysis
+How does the compiler detect that an array index expression does not have an integer type?,Compiler Design,Semantic Analysis
+Which fields are stored in a symbol table entry for a function?,Compiler Design,Semantic Analysis
+How is scope handled when the same identifier names both a variable and a type?,Compiler Design,Semantic Analysis
+Explain how the semantic analyzer builds and uses an annotated syntax tree.,Compiler Design,Semantic Analysis
+A program compiles but the wrong overload is selected. Which semantic rule is involved?,Compiler Design,Semantic Analysis
+How are type qualifiers such as volatile expressed and checked?,Compiler Design,Semantic Analysis
+What is the difference between a semantic error and a runtime error?,Compiler Design,Semantic Analysis
+What is the kind of a type and why does it matter in a language with generics?,Compiler Design,Semantic Analysis
+How does the analyzer verify that an expression used as a condition has boolean type?,Compiler Design,Semantic Analysis
+Explain why a + b is rejected when a is a struct and the operator is not overloaded.,Compiler Design,Semantic Analysis
+What is definite assignment analysis and which languages require it?,Compiler Design,Semantic Analysis
+Define a context-free grammar and list its four components.,Compiler Design,Syntax Analysis
+How does a context-free grammar differ from a regular grammar in expressive power?,Compiler Design,Syntax Analysis
+When is a grammar said to be ambiguous?,Compiler Design,Syntax Analysis
+Show that the grammar E -> E + E | E * E | id is ambiguous.,Compiler Design,Syntax Analysis
+How do precedence and associativity rules remove ambiguity from an expression grammar?,Compiler Design,Syntax Analysis
+What is left recursion and why is it a problem when designing a grammar for top-down analysis?,Compiler Design,Syntax Analysis
+Eliminate left recursion from the productions A -> A a | b.,Compiler Design,Syntax Analysis
+Explain immediate and indirect left recursion with an example of each.,Compiler Design,Syntax Analysis
+What is left factoring and when should it be applied?,Compiler Design,Syntax Analysis
+Left factor the productions S -> if E then S | if E then S else S.,Compiler Design,Syntax Analysis
+Define a derivation and distinguish a leftmost derivation from a rightmost one.,Compiler Design,Syntax Analysis
+What is a sentential form?,Compiler Design,Syntax Analysis
+Draw the parse tree for id + id * id using an unambiguous expression grammar.,Compiler Design,Syntax Analysis
+What is the difference between a parse tree and an abstract syntax tree?,Compiler Design,Syntax Analysis
+Why do most compilers build an abstract syntax tree rather than keep the full parse tree?,Compiler Design,Syntax Analysis
+What is a syntax-directed definition?,Compiler Design,Syntax Analysis
+Distinguish between synthesized attributes and inherited attributes.,Compiler Design,Syntax Analysis
+What is an S-attributed definition?,Compiler Design,Syntax Analysis
+Define an L-attributed definition and give an example production with its rules.,Compiler Design,Syntax Analysis
+What is a dependency graph in the context of attribute evaluation?,Compiler Design,Syntax Analysis
+Write a syntax-directed translation rule that constructs an AST node for a binary operator.,Compiler Design,Syntax Analysis
+What is the dangling else problem and how is it removed at the grammar level?,Compiler Design,Syntax Analysis
+"Write an unambiguous grammar for arithmetic expressions using +, * and parentheses.",Compiler Design,Syntax Analysis
+What is a useless symbol in a grammar and how is it eliminated?,Compiler Design,Syntax Analysis
+"Define nullable productions, unit productions and epsilon productions.",Compiler Design,Syntax Analysis
+Why can a context-free grammar describe balanced parentheses when a regular expression cannot?,Compiler Design,Syntax Analysis
+What is BNF and how does EBNF extend it?,Compiler Design,Syntax Analysis
+Convert the EBNF rule stmtList -> stmt { ; stmt } into plain BNF.,Compiler Design,Syntax Analysis
+What effect does an ambiguous grammar have on the meaning assigned to a program?,Compiler Design,Syntax Analysis
+Explain the Chomsky hierarchy and state where programming language syntax fits.,Compiler Design,Syntax Analysis
+What is a syntax error? Give three examples from C.,Compiler Design,Syntax Analysis
+How does the shape of a grammar determine operator precedence in a language?,Compiler Design,Syntax Analysis
+What does it mean for two grammars to be equivalent?,Compiler Design,Syntax Analysis
+Is ambiguity a property of a language or of a grammar? Justify your answer.,Compiler Design,Syntax Analysis
+Give an example of an inherently ambiguous context-free language.,Compiler Design,Syntax Analysis
+What role does the start symbol play in a grammar?,Compiler Design,Syntax Analysis
+Write grammar productions for a variable declaration list with an optional initializer.,Compiler Design,Syntax Analysis
+What is the head and what is the body of a production?,Compiler Design,Syntax Analysis
+How does concrete syntax differ from abstract syntax?,Compiler Design,Syntax Analysis
+Explain what a syntax graph or railroad diagram represents.,Compiler Design,Syntax Analysis
+Which two grammar transformations are commonly applied before a grammar is used for top-down analysis?,Compiler Design,Syntax Analysis
+Write a grammar for a nested block structure containing declarations and statements.,Compiler Design,Syntax Analysis
+What is the yield of a derivation tree?,Compiler Design,Syntax Analysis
+Explain how an annotated parse tree is obtained from a syntax-directed definition.,Compiler Design,Syntax Analysis
+Give a syntax-directed translation scheme that converts infix expressions into postfix notation.,Compiler Design,Syntax Analysis
+What is the role of semantic actions embedded inside grammar productions?,Compiler Design,Syntax Analysis
+How would you write a grammar that forces an else to bind to the nearest unmatched if?,Compiler Design,Syntax Analysis
+Explain why the declaration syntax of C is difficult to express cleanly in a grammar.,Compiler Design,Syntax Analysis
+What is a chain production and why might it be removed from a grammar?,Compiler Design,Syntax Analysis
+Define Chomsky Normal Form and give one reason it is useful.,Compiler Design,Syntax Analysis
+State the steps required to convert an arbitrary context-free grammar into Chomsky Normal Form.,Compiler Design,Syntax Analysis
+What is Greibach Normal Form?,Compiler Design,Syntax Analysis
+How is an abstract syntax tree node usually represented in an implementation?,Compiler Design,Syntax Analysis
+Which information is present in an abstract syntax tree but absent from the token stream?,Compiler Design,Syntax Analysis
+Explain how a syntax tree captures the associativity of an operator.,Compiler Design,Syntax Analysis
+Why do compilers separate the description of syntax from the description of semantics?,Compiler Design,Syntax Analysis
+A language allows both a[i] and a(i) for array access. Which grammar problem does this create?,Compiler Design,Syntax Analysis
+What is a nonterminal and how do you decide which syntactic categories a grammar needs?,Compiler Design,Syntax Analysis
+How does adding a new binary operator to a language affect an existing expression grammar?,Compiler Design,Syntax Analysis
+"For the grammar S -> ( S ) S | epsilon, describe the language generated.",Compiler Design,Syntax Analysis

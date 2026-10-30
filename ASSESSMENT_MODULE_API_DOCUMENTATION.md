@@ -83,6 +83,43 @@ Authorization: Bearer <student_token>
 
 ---
 
+### Request to Attend / Re-attempt
+
+Students may request another opportunity only for an explicitly assigned, expired assessment with no completed result or in-progress attempt.
+Uncompleted assessments stay visible through the original deadline plus 24 hours (`endDate <= server time < endDate + 24 hours`); the student assessment API applies this window, and request creation independently rejects requests after it.
+
+**Endpoint**
+```
+POST /api/assessment/:assessmentId/request-to-attend
+Authorization: Bearer <student-token>
+```
+
+The request records the student, assessment, and original assessment/set assignment. Only one active request per student and assessment is allowed. Its status changes from `Requested` to `Assigned` when questions are assigned, then to `Completed` after the new result is saved; it remains active until completion.
+
+Admins use the existing Assessment Results page to filter `Requested` students and select one or more students. The following admin-only endpoints support the Assign Questions flow:
+
+```
+POST /api/admin/assessments/:id/reattempt-options
+Body: { "studentIds": ["<requested-student-id>"] }
+```
+
+Returns only the question set from the selected students' original assignment that remains available for an unattempted re-attempt, along with the eligible set indexes and selected student departments.
+
+```
+POST /api/admin/assessments/:id/assign-reattempt
+Body: {
+  "studentIds": ["<requested-student-id>"],
+  "setIndex": 0,
+  "departments": ["<selected-student-department>"],
+  "startDate": "<future ISO date>",
+  "endDate": "<future ISO date>"
+}
+```
+
+The server revalidates every selected student's active request and original assignment. Re-attempts are stored separately from normal set assignments and results; completing one creates a new result record rather than replacing a prior result.
+
+---
+
 ### 2. Start Assessment
 
 **Endpoint**
@@ -684,7 +721,19 @@ Authorization: Bearer <faculty_token>
    - Check placement readiness
 ```
 
-### 2. Faculty Result Viewing
+### 2. Request to Attend / Re-attempt Workflow
+```
+1. POST /api/assessment/:assessmentId/request-to-attend
+   - Submit a request for an expired, unattempted assigned assessment
+2. POST /api/admin/assessments/:id/reattempt-options
+   - Load eligible remaining questions for selected requested students
+3. POST /api/admin/assessments/:id/assign-reattempt
+   - Assign the selected set only to those students
+4. Student starts and submits through the existing start/submit endpoints
+   - A separate result is saved and the request is completed
+```
+
+### 3. Faculty Result Viewing
 ```
 1. GET /api/faculty/results
    - View all student results
@@ -800,4 +849,3 @@ All endpoints return proper HTTP status codes:
 - Pagination support for large result sets
 - Sortable and filterable results
 - Comprehensive logging for debugging
-

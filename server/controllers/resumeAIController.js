@@ -36,11 +36,15 @@ const analyzeStudentResume = async (req, res) => {
             recommendedActions: readiness.recommendedActions,
             lastCalculatedAt: new Date()
         };
+        const analysisDate = new Date();
+        const analyzedScore = Number(analysis.resumeScore ?? analysis.overallScore);
 
         await Student.findByIdAndUpdate(req.user.id, {
             placementReadinessScore: readiness.score,
             readinessProfile,
-            resumeAnalysis: analysis
+            resumeAnalysis: analysis,
+            resumeScore: Number.isFinite(analyzedScore) ? Math.max(0, Math.min(100, Math.round(analyzedScore))) : null,
+            lastResumeAnalysisDate: analysisDate
         });
 
         try {
@@ -62,6 +66,7 @@ const analyzeStudentResume = async (req, res) => {
             message: "Resume analysis completed successfully",
             data: {
                 ...analysis,
+                lastResumeAnalysisDate: analysisDate,
                 readinessProfile
             }
         });

@@ -1,0 +1,1529 @@
+question,domain,topic
+Convert the following sentence to passive voice: 'The chef is preparing dinner.',Aptitude,Active and Passive Voice
+Change to active voice: 'The letter was written by Anita.',Aptitude,Active and Passive Voice
+Convert the following sentence into passive voice: 'The chef is cooking a delicious meal.',Aptitude,Active and Passive Voice
+Change the following sentence to active voice: 'The letter was written by Rina.',Aptitude,Active and Passive Voice
+Convert into passive voice: 'They are building a new bridge across the river.',Aptitude,Active and Passive Voice
+Change the sentence to active voice: 'The movie was watched by millions of people.',Aptitude,Active and Passive Voice
+Convert the sentence into passive voice: 'The teacher will explain the lesson tomorrow.',Aptitude,Active and Passive Voice
+Convert the sentence into passive voice: 'The workers repaired the road last week.',Aptitude,Active and Passive Voice
+Change the sentence into active voice: 'A new policy has been introduced by the government.',Aptitude,Active and Passive Voice
+Convert the sentence into passive voice: 'She will complete the project by tomorrow.',Aptitude,Active and Passive Voice
+Change the sentence into active voice: 'The cake was baked by my grandmother.',Aptitude,Active and Passive Voice
+Convert the sentence into passive voice: 'The committee is reviewing the proposal.',Aptitude,Active and Passive Voice
+"The average age of 5 members of a family is 25 years. If the age of the youngest member is excluded, the average becomes 28 years. Find the age of the youngest member.",Aptitude,Averages
+Find the average of the first 20 natural numbers.,Aptitude,Averages
+"The average marks of 30 students in a class is 60. If the marks of one student were wrongly recorded as 40 instead of 70, find the correct average.",Aptitude,Averages
+The average weight of 8 people increases by 2 kg when a new person replaces one weighing 65 kg. Find the weight of the new person.,Aptitude,Averages
+The average of 4 consecutive even numbers is 27. Find the largest of these numbers.,Aptitude,Averages
+The average of five consecutive odd numbers is 61. Find the largest of these numbers.,Aptitude,Averages
+"The average weight of 30 students in a class is 45 kg. If the weight of the teacher is included, the average increases by 1 kg. Find the teacher's weight.",Aptitude,Averages
+"The average marks of 40 students in a class is 55. If the marks of one student were wrongly recorded as 45 instead of 85, find the correct average.",Aptitude,Averages
+"The average age of a family of 5 members is 24 years. If the age of the youngest member is 8 years, find the average age of the family at the time of the youngest member's birth.",Aptitude,Averages
+"The average of 10 numbers is 42. If one number is excluded, the average becomes 40. Find the excluded number.",Aptitude,Averages
+"The average score of a cricketer in 12 innings is 48 runs. In the next innings, he scores 100 runs. Find his new average.",Aptitude,Averages
+"A batsman has a certain average of runs for 16 innings. In the 17th innings, he scores 85 runs and thereby increases his average by 3. Find his new average.",Aptitude,Averages
+"Pointing to a photograph, a man says, 'She is the daughter of my grandfather's only son.' How is the woman related to the man?",Aptitude,Blood Relations
+A is the brother of B. B is the sister of C. C is the father of D. How is A related to D?,Aptitude,Blood Relations
+"Introducing a boy, a woman says, 'His mother is the only daughter of my mother.' How is the woman related to the boy?",Aptitude,Blood Relations
+P is the son of Q. Q and R are siblings. S is the mother of R. How is S related to P?,Aptitude,Blood Relations
+"Pointing to a man, a woman said, 'His mother is the only daughter of my mother.' How is the woman related to the man?",Aptitude,Blood Relations
+"A is the brother of B. C is the mother of A. D is the brother of E, and E is the daughter of B. How is D related to C?",Aptitude,Blood Relations
+"Introducing a boy, a girl said, 'He is the son of my mother's only brother.' How is the boy related to the girl?",Aptitude,Blood Relations
+P's father is the only son of Q. How is Q related to P?,Aptitude,Blood Relations
+"If X is the son of Y, and Y is the daughter of Z, how is X related to Z?",Aptitude,Blood Relations
+"Ravi said, 'This girl is the wife of the grandson of my mother.' How is Ravi related to the girl?",Aptitude,Blood Relations
+A woman introduces a man as the son of the brother of her mother. How is the man related to the woman?,Aptitude,Blood Relations
+M is the sister of N. N is the son of P. P is the father of Q. How is M related to Q?,Aptitude,Blood Relations
+"In a certain code, 'RIVER' is written as 'SJWFS'. How is 'MOUNTAIN' written in that code?",Aptitude,Coding-Decoding
+"If 'CAT' is coded as '312' and 'DOG' is coded as '457', how is 'CAB' coded?",Aptitude,Coding-Decoding
+"In a certain language, 'PENCIL' is coded as 'QFODJM'. Decode the pattern and write the code for 'PAPER'.",Aptitude,Coding-Decoding
+"If in a certain code language 'GARDEN' is written as 'HBSEFO', how would 'FLOWER' be written in the same code?",Aptitude,Coding-Decoding
+"If in a certain code, 'CAT' is written as 'DBU', how would 'DOG' be written in the same code?",Aptitude,Coding-Decoding
+"In a certain language, 'PENCIL' is coded as 'QFODJM'. How would 'ERASER' be coded in that language?",Aptitude,Coding-Decoding
+"If 'MOTHER' is coded as 'MTOEHR', how would 'FATHER' be coded following the same pattern?",Aptitude,Coding-Decoding
+"In a code language, if 'GO' is written as '715' and 'SO' is written as '1915', how would 'TO' be written?",Aptitude,Coding-Decoding
+"If A=1, B=2, C=3, and so on, what is the code for the word 'FUN'?",Aptitude,Coding-Decoding
+"In a certain code, 'ROSE' is written as '6821' and 'CHAIR' is written as '73456'. What is the code for 'SEARCH'?",Aptitude,Coding-Decoding
+"If in a certain code 'TABLE' is written as 'UBCMF', how would 'CHAIR' be coded in the same language?",Aptitude,Coding-Decoding
+"In a certain code, numbers are coded as letters such that 1=A, 2=B and so on. What is the code for the number 425?",Aptitude,Coding-Decoding
+In how many ways can a committee of 3 members be chosen from a group of 8 people?,Aptitude,Combinations
+"From a group of 6 men and 4 women, in how many ways can a team of 3 men and 2 women be selected?",Aptitude,Combinations
+How many diagonals can be drawn in a polygon with 10 sides?,Aptitude,Combinations
+"In how many ways can a set of 4 questions be chosen from 6 questions in Part A and 4 questions in Part B, if at least 2 must be from Part A?",Aptitude,Combinations
+In how many ways can a committee of 4 members be chosen from 9 people?,Aptitude,Combinations
+A bag contains 6 red and 4 green balls. In how many ways can 3 balls be chosen such that at least one is green?,Aptitude,Combinations
+How many ways can a cricket team of 11 players be selected from a squad of 15 players?,Aptitude,Combinations
+In how many ways can 3 letters be selected from the word 'NUMBER'?,Aptitude,Combinations
+"From a group of 8 men and 6 women, in how many ways can a team of 5 be selected with exactly 3 men?",Aptitude,Combinations
+In how many ways can a committee of 3 men and 2 women be formed from 6 men and 4 women?,Aptitude,Combinations
+"From a deck of 52 cards, in how many ways can 2 cards of the same suit be chosen?",Aptitude,Combinations
+How many ways can a group of 4 students be selected from a class of 12 students for a quiz competition?,Aptitude,Combinations
+"Find the compound interest on Rs. 10000 for 2 years at 10% per annum, compounded annually.",Aptitude,Compound Interest
+The difference between compound interest and simple interest on a sum for 2 years at 10% per annum is Rs. 50. Find the sum.,Aptitude,Compound Interest
+A sum of Rs. 12000 is invested at 12% per annum compounded half-yearly for one year. Find the amount at the end of the year.,Aptitude,Compound Interest
+"Find the compound interest on Rs. 15000 for 3 years at 10% per annum, compounded annually.",Aptitude,Compound Interest
+"Find the compound interest on Rs. 20000 for 3 years at 5% per annum, compounded annually.",Aptitude,Compound Interest
+The compound interest on a sum for 2 years at 12% per annum is Rs. 2544. Find the sum.,Aptitude,Compound Interest
+A sum of Rs. 8000 becomes Rs. 9261 in 3 years at compound interest. Find the rate of interest per annum.,Aptitude,Compound Interest
+"Find the amount on Rs. 25000 for 1 year at 8% per annum, compounded half-yearly.",Aptitude,Compound Interest
+The difference between compound interest and simple interest on Rs. 6000 for 2 years at 10% per annum is how much?,Aptitude,Compound Interest
+A sum of money invested at compound interest amounts to Rs. 4840 in 2 years and Rs. 5324 in 3 years. Find the rate of interest.,Aptitude,Compound Interest
+"Find the compound interest on Rs. 18000 for 2 years at 15% per annum, compounded annually.",Aptitude,Compound Interest
+"A bar graph shows the sales of a company for five years. If the sales in 2020 were 200 units and increased by 10% every subsequent year, find the sales in 2022.",Aptitude,Data Interpretation
+"A pie chart divides a company's expenditure among rent, salaries, utilities and miscellaneous costs. If salaries occupy 120 degrees of the chart, what percentage of total expenditure does it represent?",Aptitude,Data Interpretation
+"The table below shows the marks obtained by five students in two subjects. Based on the given data, calculate the average marks in Subject A.",Aptitude,Data Interpretation
+"A line graph shows the monthly revenue of a startup over six months. Based on the trend shown, in which month was the revenue growth rate the highest?",Aptitude,Data Interpretation
+"A pie chart shows the monthly expenditure of a family across 5 categories. If the total expenditure is Rs. 40000 and food accounts for 30%, find the amount spent on food.",Aptitude,Data Interpretation
+"A bar graph shows the sales of a company for 6 months. If the sales in January were 200 units and increased by 10% every subsequent month, find the sales in March.",Aptitude,Data Interpretation
+"The following table shows the marks obtained by a student in 5 subjects out of 100 each. If the total marks obtained were 410, find the average percentage scored.",Aptitude,Data Interpretation
+"A line graph shows the population of a city over 5 years, growing from 2 lakh to 3.5 lakh. Find the average annual growth in population.",Aptitude,Data Interpretation
+"In a survey, 60% of respondents preferred tea, 25% preferred coffee, and the rest preferred juice. If 500 people were surveyed, find the number who preferred juice.",Aptitude,Data Interpretation
+"A pie chart shows a company's expenditure across departments. If R&D accounts for 20% of a total budget of Rs. 25 lakh, find the amount spent on R&D.",Aptitude,Data Interpretation
+"A table shows the annual production of 4 factories over 3 years. If Factory A produced 12000 units in year 1 and production grew by 8% each year, find the production in year 3.",Aptitude,Data Interpretation
+"A bar graph shows monthly rainfall in a city. If June recorded 180 mm and July recorded 25% more than June, find the rainfall in July.",Aptitude,Data Interpretation
+Question: What is the age of Ravi? Statement I: Ravi is 5 years older than his sister. Statement II: Ravi's sister is 20 years old. Are both statements together sufficient to answer the question?,Aptitude,Data Sufficiency
+Question: Is x greater than y? Statement I: x + 5 > y + 3. Statement II: x - y = 4. Determine if either statement alone is sufficient.,Aptitude,Data Sufficiency
+Question: What is the value of a two-digit number? Statement I: The sum of its digits is 9. Statement II: The number is a multiple of 9. Determine whether the statements together are sufficient.,Aptitude,Data Sufficiency
+What is the age of Ravi? Statement I: Ravi is 5 years younger than his brother. Statement II: Ravi's brother is 20 years old. Is the data in the two statements together sufficient to answer the question?,Aptitude,Data Sufficiency
+Is x greater than y? Statement I: x + y = 10. Statement II: x - y = 4. Determine if the statements together are sufficient to answer the question.,Aptitude,Data Sufficiency
+What is the length of a rectangle? Statement I: The perimeter of the rectangle is 40 cm. Statement II: The breadth of the rectangle is 8 cm. Are the statements sufficient to find the length?,Aptitude,Data Sufficiency
+How many students are there in a class? Statement I: The number of boys is twice the number of girls. Statement II: There are 15 girls in the class. Determine sufficiency.,Aptitude,Data Sufficiency
+What is the cost price of an item? Statement I: The item was sold at a profit of 20%. Statement II: The selling price of the item is Rs. 600. Determine if the statements are sufficient.,Aptitude,Data Sufficiency
+What is the value of x? Statement I: x^2 = 49. Statement II: x is a positive number. Are the statements sufficient?,Aptitude,Data Sufficiency
+"Is triangle ABC a right triangle? Statement I: One angle of the triangle is 90 degrees. Statement II: The sides are 3, 4 and 5 units. Determine sufficiency.",Aptitude,Data Sufficiency
+What is the speed of a train? Statement I: The train covers 300 km in some hours. Statement II: The train takes 5 hours to cover the distance. Determine sufficiency.,Aptitude,Data Sufficiency
+How many workers are needed to complete a task in 6 days? Statement I: 10 workers can complete the task in 12 days. Statement II: All workers work at the same rate. Determine sufficiency.,Aptitude,Data Sufficiency
+"A man walks 5 km towards north, then turns right and walks 3 km, then turns right again and walks 5 km. How far is he from his starting point?",Aptitude,Direction Sense
+"Starting from her house, a girl walks 10 m south, then turns left and walks 10 m, then turns left again and walks 10 m. In which direction is she now from her starting point?",Aptitude,Direction Sense
+"A person walks 4 km east, then 3 km north. What is the shortest distance from his starting point?",Aptitude,Direction Sense
+"A man starts from point X, walks 6 km north, then 8 km east to reach point Y. Find the shortest distance between X and Y.",Aptitude,Direction Sense
+"Starting from her house, a girl walks 10 m south, then 6 m east, then 10 m north. How far and in which direction is she from her starting point?",Aptitude,Direction Sense
+"A person starts walking towards east, turns left, then left again, and finally turns right. In which direction is he now facing?",Aptitude,Direction Sense
+"Ramesh walks 8 km north, then turns east and walks 6 km. How far is he from his starting position?",Aptitude,Direction Sense
+"A man walks 4 km east, then 3 km south, then 4 km west. How far is he from his starting point and in which direction?",Aptitude,Direction Sense
+"Facing south, a man turns 90 degrees clockwise, then 180 degrees anticlockwise. In which direction is he facing now?",Aptitude,Direction Sense
+"A man starts from his house and walks 6 km west, then 8 km north. How far is he from his starting point?",Aptitude,Direction Sense
+"A cyclist rides 12 km south, then turns left and rides 5 km. In which direction is he now from his starting point?",Aptitude,Direction Sense
+"Facing north, a person turns 45 degrees clockwise and then another 90 degrees clockwise. In which direction is he now facing?",Aptitude,Direction Sense
+Identify the grammatical error in the sentence: 'Each of the students have submitted their assignment.',Aptitude,Error Spotting
+Find the error in the sentence: 'She is one of the best player in the team.',Aptitude,Error Spotting
+Identify the error in the sentence: 'Neither the manager nor the employees was present at the meeting.',Aptitude,Error Spotting
+Identify the error in the sentence: 'Each of the players have their own equipment.',Aptitude,Error Spotting
+Find the grammatical mistake in the sentence: 'She is one of the best player in the team.',Aptitude,Error Spotting
+Spot the error in the sentence: 'Neither the manager nor the employees was informed about the meeting.',Aptitude,Error Spotting
+Identify the incorrect part of the sentence: 'He has been working here since five years.',Aptitude,Error Spotting
+Find the error: 'The number of students in the class have increased this year.',Aptitude,Error Spotting
+Identify the error in the sentence: 'She along with her friends were going to the market.',Aptitude,Error Spotting
+Find the grammatical mistake: 'He is taller than any boy in his class.',Aptitude,Error Spotting
+Spot the error in the sentence: 'I have completed my homework already before he arrived.',Aptitude,Error Spotting
+Identify the incorrect part of the sentence: 'One of my friend is a doctor.',Aptitude,Error Spotting
+Choose the correct form of the verb: 'Neither of the boys ___ (has/have) completed the assignment.',Aptitude,Grammar
+Identify the correct sentence: (a) He don't like tea. (b) He doesn't like tea.,Aptitude,Grammar
+Fill in the blank with the correct preposition: 'She is good ___ mathematics.',Aptitude,Grammar
+"Choose the correctly punctuated sentence: (a) Lets eat, Grandma. (b) Let's eat, Grandma.",Aptitude,Grammar
+Choose the correct form of the verb: 'Neither of the students ___ (has/have) completed the assignment.',Aptitude,Grammar
+Identify the correct sentence: 'She don't like coffee.' or 'She doesn't like coffee.',Aptitude,Grammar
+Fill in the blank with the correct preposition: 'He is good ___ mathematics.',Aptitude,Grammar
+Choose the correctly punctuated sentence from the given options.,Aptitude,Grammar
+Identify the part of speech of the underlined word in the sentence: 'She sings beautifully.',Aptitude,Grammar
+Correct the grammatical error in the sentence: 'Each of the boys have submitted their project.',Aptitude,Grammar
+Choose the correct article to fill the blank: '___ sun rises in the east.',Aptitude,Grammar
+Explain the meaning of the idiom 'to bite the bullet' and use it in a sentence.,Aptitude,Idioms and Phrases
+Choose the correct meaning of the phrase 'once in a blue moon'.,Aptitude,Idioms and Phrases
+Choose the correct meaning of the idiom 'Break the ice'.,Aptitude,Idioms and Phrases
+Explain the meaning of the phrase 'Once in a blue moon'.,Aptitude,Idioms and Phrases
+Choose the meaning closest to the idiom 'Bite the bullet'.,Aptitude,Idioms and Phrases
+What does the idiom 'Spill the beans' mean?,Aptitude,Idioms and Phrases
+Select the correct meaning of the phrase 'Under the weather'.,Aptitude,Idioms and Phrases
+Choose the correct meaning of the idiom 'A blessing in disguise'.,Aptitude,Idioms and Phrases
+Explain the meaning of the phrase 'Hit the nail on the head'.,Aptitude,Idioms and Phrases
+What does the idiom 'Cut corners' mean?,Aptitude,Idioms and Phrases
+Choose the meaning closest to the phrase 'Burn the midnight oil'.,Aptitude,Idioms and Phrases
+Select the correct meaning of the idiom 'Let the cat out of the bag'.,Aptitude,Idioms and Phrases
+"Find the next term in the letter series: A, C, F, J, O, ...",Aptitude,Letter Series
+"Complete the series: Z, Y, X, W, ...",Aptitude,Letter Series
+"Find the missing letters: AB, DE, GH, JK, ...",Aptitude,Letter Series
+"Find the next letter in the series: B, D, F, H, ?",Aptitude,Letter Series
+"Find the missing letters in the series: AZ, BY, CX, ?",Aptitude,Letter Series
+"Complete the series: J, F, M, A, M, ?",Aptitude,Letter Series
+"Find the next term: A, C, F, J, O, ?",Aptitude,Letter Series
+"Find the odd one out: BDF, MOQ, RTV, WYB",Aptitude,Letter Series
+"Find the missing letters: CEG, ?, KMO, QSU",Aptitude,Letter Series
+"Find the next term in the series: Z, X, V, T, ?",Aptitude,Letter Series
+"Complete the series: AB, DE, GH, JK, ?",Aptitude,Letter Series
+"Find the missing letters in the series: FGH, KLM, PQR, ?",Aptitude,Letter Series
+"If all engineers are hardworking and some hardworking people are creative, can we logically conclude that some engineers are creative?",Aptitude,Logical Deduction
+"Given that no A is B, and all B are C, what can be concluded about the relationship between A and C?",Aptitude,Logical Deduction
+"If all squares are rectangles and all rectangles are quadrilaterals, what can be logically deduced about the relationship between squares and quadrilaterals?",Aptitude,Logical Deduction
+"If all mangoes are fruits and some fruits are sweet, can we conclude that some mangoes are sweet?",Aptitude,Logical Deduction
+"Given that all engineers are graduates and some graduates are unemployed, can we conclude that some engineers are unemployed?",Aptitude,Logical Deduction
+"If it is true that 'all birds can fly' and 'a penguin is a bird', identify the logical flaw in concluding that a penguin can fly.",Aptitude,Logical Deduction
+"From the statements 'No fish are mammals' and 'All whales are mammals', deduce the relationship between fish and whales.",Aptitude,Logical Deduction
+"If 'some doctors are teachers' and 'all teachers are educated', can we logically conclude that some doctors are educated?",Aptitude,Logical Deduction
+"If 'all pilots are trained professionals' and 'some trained professionals are pilots', what can be deduced about the relationship between the two groups?",Aptitude,Logical Deduction
+"From the statements 'No reptiles are mammals' and 'All snakes are reptiles', what can be concluded about snakes and mammals?",Aptitude,Logical Deduction
+"If 'some teachers are researchers' and 'all researchers are published authors', can it be concluded that some teachers are published authors?",Aptitude,Logical Deduction
+"Given 'all athletes are disciplined' and 'John is disciplined', can we conclude that John is an athlete? Explain the logical error, if any.",Aptitude,Logical Deduction
+In what ratio must two varieties of tea priced at Rs. 60/kg and Rs. 80/kg be mixed so that the mixture costs Rs. 65/kg?,Aptitude,Mixtures and Alligations
+A container has 40 litres of milk. 4 litres are withdrawn and replaced with water; this process is repeated twice more. Find the final quantity of milk in the container.,Aptitude,Mixtures and Alligations
+How many litres of water must be added to 30 litres of a solution containing 40% acid to reduce the concentration to 25%?,Aptitude,Mixtures and Alligations
+A vessel contains milk and water in the ratio 5:2. How much water should be added to 28 litres of this mixture so that the ratio becomes 5:4?,Aptitude,Mixtures and Alligations
+In what ratio must a shopkeeper mix tea worth Rs. 60 per kg with tea worth Rs. 90 per kg so that the mixture costs Rs. 70 per kg?,Aptitude,Mixtures and Alligations
+A vessel contains 40 litres of a mixture of milk and water in the ratio 3:1. How much water should be added to make the ratio 3:2?,Aptitude,Mixtures and Alligations
+How many kilograms of rice costing Rs. 42 per kg should be mixed with 25 kg of rice costing Rs. 30 per kg to get a mixture worth Rs. 36 per kg?,Aptitude,Mixtures and Alligations
+"A container has a mixture of alcohol and water in the ratio 5:3. If 8 litres of water is added, the ratio becomes 5:4. Find the initial quantity of the mixture.",Aptitude,Mixtures and Alligations
+"In what proportion must water be mixed with milk costing Rs. 20 per litre so that the mixture, worth Rs. 16 per litre, has no profit or loss when sold at the same price?",Aptitude,Mixtures and Alligations
+A mixture of 60 litres of milk and water contains 20% water. How much more water should be added to make the water content 25% of the new mixture?,Aptitude,Mixtures and Alligations
+How many kilograms of wheat costing Rs. 50 per kg must be mixed with 40 kg of wheat costing Rs. 34 per kg so that the mixture may be worth Rs. 40 per kg?,Aptitude,Mixtures and Alligations
+"A jar contains a mixture of two liquids A and B in the ratio 4:1. When 10 litres of the mixture is taken out and replaced with liquid B, the ratio becomes 2:3. Find the initial quantity of liquid A.",Aptitude,Mixtures and Alligations
+"Find the next number in the series: 3, 6, 12, 24, 48, ...",Aptitude,Number Series
+"Find the missing number in the series: 2, 5, 10, 17, 26, ?",Aptitude,Number Series
+"Identify the odd one out in the series: 4, 9, 16, 25, 30, 36.",Aptitude,Number Series
+"Find the next term: 1, 4, 9, 16, 25, ...",Aptitude,Number Series
+"Find the next number in the series: 1, 1, 2, 3, 5, 8, ...",Aptitude,Number Series
+"Find the missing number in the series: 3, 9, 27, 81, ?",Aptitude,Number Series
+"Find the next term in the series: 1, 4, 9, 16, 25, ?",Aptitude,Number Series
+"Find the wrong number in the series: 2, 5, 10, 17, 26, 36",Aptitude,Number Series
+"Find the next number in the series: 7, 14, 28, 56, ?",Aptitude,Number Series
+"Find the missing term: 5, 11, 19, 29, 41, ?",Aptitude,Number Series
+"Complete the series: 1, 1, 2, 3, 5, 8, 13, ?",Aptitude,Number Series
+"Find the next number in the pattern: 100, 90, 81, 73, ?",Aptitude,Number Series
+"Find the wrong term in the series: 6, 12, 21, 33, 48, 66",Aptitude,Number Series
+"Find the missing number: 4, 9, 16, 25, 36, ?",Aptitude,Number Series
+"Find the next term: 2, 6, 12, 20, 30, ?",Aptitude,Number Series
+A student scored 68 out of 80 marks in an exam. What percentage of marks did the student get?,Aptitude,Percentage
+The price of a laptop is increased by 15% and then decreased by 10%. Find the net percentage change in price.,Aptitude,Percentage
+"In an election between two candidates, the winner got 55% of the total votes and won by 900 votes. Find the total number of votes polled.",Aptitude,Percentage
+"If 40% of a number is 72, find the number.",Aptitude,Percentage
+A number is first increased by 20% and then decreased by 20%. Find the net percentage change in the number.,Aptitude,Percentage
+"In an examination, a candidate secured 342 marks out of 600. What percentage of marks did the candidate obtain?",Aptitude,Percentage
+A number when increased by 25% becomes 150. Find the original number.,Aptitude,Percentage
+"Out of a total of 850 students in a school, 40% are girls. Find the number of boys.",Aptitude,Percentage
+The population of a town increased from 25000 to 27500 in one year. Find the percentage increase in population.,Aptitude,Percentage
+A man spends 72% of his income and saves Rs. 2800. Find his total income.,Aptitude,Percentage
+"If the price of sugar falls by 20%, by what percentage should consumption increase so that expenditure remains unchanged?",Aptitude,Percentage
+"In an election, a candidate who gets 40% of the total votes is defeated by 15000 votes. Find the total number of votes polled.",Aptitude,Percentage
+A student has to secure 35% marks to pass an exam. He gets 130 marks and fails by 30 marks. Find the maximum marks.,Aptitude,Percentage
+Two numbers are respectively 20% and 50% more than a third number. Find the ratio of the two numbers.,Aptitude,Percentage
+A container has 60 litres of milk. 10% of it is replaced by water. Find the percentage of milk left after two such operations.,Aptitude,Percentage
+In how many ways can the letters of the word 'TABLE' be arranged?,Aptitude,Permutations
+"How many 4-digit numbers can be formed using the digits 1, 2, 3, 4, 5 without repetition?",Aptitude,Permutations
+In how many ways can 5 different books be arranged on a shelf?,Aptitude,Permutations
+How many ways are there to arrange the letters of the word 'STATISTICS'?,Aptitude,Permutations
+In how many ways can the letters of the word 'MANGO' be arranged?,Aptitude,Permutations
+In how many ways can 5 people be seated in a row?,Aptitude,Permutations
+Find the number of ways in which the letters of the word 'APPLE' can be arranged.,Aptitude,Permutations
+How many different arrangements can be made using all the letters of the word 'STATISTICS'?,Aptitude,Permutations
+In how many ways can 3 boys and 2 girls be seated in a row such that no two girls sit together?,Aptitude,Permutations
+In how many ways can the letters of the word 'ORANGE' be arranged so that the vowels always come together?,Aptitude,Permutations
+How many different 3-letter words can be formed from the letters of the word 'COMPUTER' without repetition?,Aptitude,Permutations
+In how many ways can 6 books be arranged on a shelf if 2 particular books must always be together?,Aptitude,Permutations
+A die is thrown once. What is the probability of getting a number greater than 4?,Aptitude,Probability
+Two coins are tossed simultaneously. Find the probability of getting exactly one head.,Aptitude,Probability
+"A bag contains 5 red balls and 7 blue balls. If one ball is drawn at random, find the probability that it is red.",Aptitude,Probability
+"From a well shuffled deck of 52 cards, one card is drawn. Find the probability that it is a king.",Aptitude,Probability
+Two dice are thrown together. Find the probability that the sum of the numbers on them is 7.,Aptitude,Probability
+"A bag contains 5 red and 7 blue balls. If one ball is drawn at random, find the probability that it is red.",Aptitude,Probability
+Two dice are thrown together. Find the probability of getting a sum of 8.,Aptitude,Probability
+A card is drawn at random from a well-shuffled deck of 52 cards. Find the probability that it is a king.,Aptitude,Probability
+A bag contains 4 white and 6 black balls. Two balls are drawn at random. Find the probability that both are black.,Aptitude,Probability
+Three coins are tossed simultaneously. Find the probability of getting exactly two heads.,Aptitude,Probability
+"A box contains 3 defective and 7 non-defective bulbs. If two bulbs are drawn at random, find the probability that both are non-defective.",Aptitude,Probability
+Find the probability of getting a number greater than 4 when a single die is rolled.,Aptitude,Probability
+A train 150 metres long crosses a pole in 15 seconds. Find the speed of the train in km/hr.,Aptitude,Problems on Trains
+Two trains of length 120 m and 180 m are moving in opposite directions at speeds of 54 km/hr and 36 km/hr. Find the time they take to cross each other.,Aptitude,Problems on Trains
+A train running at 72 km/hr crosses a platform 250 metres long in 30 seconds. Find the length of the train.,Aptitude,Problems on Trains
+A train crosses a man standing on a platform in 10 seconds and crosses the 200-metre-long platform itself in 25 seconds. Find the length and speed of the train.,Aptitude,Problems on Trains
+A train 150 m long is running at a speed of 90 km/hr. Find the time it takes to cross a pole.,Aptitude,Problems on Trains
+A train 240 m long crosses a platform 260 m long in 25 seconds. Find the speed of the train in km/hr.,Aptitude,Problems on Trains
+Two trains of length 120 m and 180 m are moving in opposite directions at speeds of 60 km/hr and 40 km/hr respectively. Find the time they take to cross each other.,Aptitude,Problems on Trains
+A train running at 54 km/hr crosses a man standing on the platform in 20 seconds. Find the length of the train.,Aptitude,Problems on Trains
+Two trains start from stations 300 km apart and move towards each other at speeds of 50 km/hr and 40 km/hr. Find the distance covered by the faster train when they meet.,Aptitude,Problems on Trains
+A train travelling at 72 km/hr crosses another train of equal length travelling at 54 km/hr in the same direction in 60 seconds. Find the length of each train.,Aptitude,Problems on Trains
+"A train 200 m long crosses another train of length 150 m, running in the same direction, in 30 seconds. If the speed of the second train is 36 km/hr, find the speed of the first train.",Aptitude,Problems on Trains
+A train running at a uniform speed crosses a bridge 250 m long in 20 seconds and a platform 150 m long in 15 seconds. Find the length and speed of the train.,Aptitude,Problems on Trains
+A shopkeeper buys an article for Rs. 450 and sells it for Rs. 540. Find the profit percentage.,Aptitude,Profit and Loss
+"By selling a chair for Rs. 720, a trader incurs a loss of 10%. Find the cost price of the chair.",Aptitude,Profit and Loss
+A dealer marks his goods 25% above cost price but allows a 10% discount. Find his actual profit percentage.,Aptitude,Profit and Loss
+"Two articles are sold at the same price, one at a profit of 20% and the other at a loss of 20%. Find the overall profit or loss percentage.",Aptitude,Profit and Loss
+"A trader allows a discount of 10% on the marked price of an item and still makes a profit of 20%. If the cost price is Rs. 500, find the marked price.",Aptitude,Profit and Loss
+A retailer buys a radio for Rs. 225 and sells it for Rs. 300. Find his profit percentage.,Aptitude,Profit and Loss
+"By selling a watch for Rs. 1140, a shopkeeper loses 5%. At what price should he sell it to gain 5%?",Aptitude,Profit and Loss
+A man purchased 120 oranges for Rs. 600 and sold them at a rate of Rs. 6 per orange. Find his profit or loss percentage.,Aptitude,Profit and Loss
+A shopkeeper marks his goods 40% above the cost price and offers a discount of 15%. Find his profit percentage.,Aptitude,Profit and Loss
+"If the cost price of 12 pens is equal to the selling price of 10 pens, find the profit percentage.",Aptitude,Profit and Loss
+"A trader sells an article at a loss of 12%. Had he sold it for Rs. 88 more, he would have gained 8%. Find the cost price.",Aptitude,Profit and Loss
+"A shopkeeper allows a discount of 20% on the marked price and still makes a profit of 12%. If the article costs Rs. 400, find the marked price.",Aptitude,Profit and Loss
+"A man sold two watches for Rs. 1000 each, one at a profit of 10% and the other at a loss of 10%. Find his overall profit or loss.",Aptitude,Profit and Loss
+The cost price of an article is 80% of its selling price. Find the profit percentage.,Aptitude,Profit and Loss
+"A wholesaler sells goods to a retailer at a profit of 10%, and the retailer sells them to a customer at a profit of 15%. If the customer pays Rs. 253, find the original cost price.",Aptitude,Profit and Loss
+"Divide Rs. 1250 among A, B and C in the ratio 2:3:5.",Aptitude,Ratio and Proportion
+"If the ratio of boys to girls in a class is 4:5 and there are 36 students in total, find the number of girls.",Aptitude,Ratio and Proportion
+"Two numbers are in the ratio 3:4. If their sum is 84, find the two numbers.",Aptitude,Ratio and Proportion
+"If a:b = 2:3 and b:c = 4:5, find a:b:c.",Aptitude,Ratio and Proportion
+"A sum of money is divided among P, Q and R such that P gets twice as much as Q and Q gets thrice as much as R. If the total is Rs. 4200, find R's share.",Aptitude,Ratio and Proportion
+"Two numbers are in the ratio 5:7. If their sum is 372, find the two numbers.",Aptitude,Ratio and Proportion
+"The ratio of the ages of two brothers is 3:5. After 8 years, the ratio becomes 4:5. Find their present ages.",Aptitude,Ratio and Proportion
+"A sum of Rs. 2340 is divided among A, B and C such that A gets twice as much as B and B gets thrice as much as C. Find the share of each.",Aptitude,Ratio and Proportion
+"Find the fourth proportional to 4, 9 and 12.",Aptitude,Ratio and Proportion
+"The ratio of income of two persons is 9:7 and the ratio of their expenditure is 4:3. If each saves Rs. 2000, find their incomes.",Aptitude,Ratio and Proportion
+"If A:B = 3:4 and B:C = 6:7, find A:B:C.",Aptitude,Ratio and Proportion
+"A bag contains coins in the ratio 2:3:5 for Rs. 1, Rs. 2 and Rs. 5 coins respectively. If the total amount is Rs. 720, find the number of Rs. 5 coins.",Aptitude,Ratio and Proportion
+"Divide Rs. 3600 among P, Q and R in the ratio 1/2 : 1/3 : 1/4.",Aptitude,Ratio and Proportion
+"Read the given passage on renewable energy and answer: According to the passage, what is the main advantage of solar power over fossil fuels?",Aptitude,Reading Comprehension
+"Based on the given passage about urban migration, identify the primary reason the author cites for people moving to cities.",Aptitude,Reading Comprehension
+Read the given passage on climate change and answer: What solution does the author propose to reduce carbon emissions?,Aptitude,Reading Comprehension
+Read the given passage about renewable energy sources and answer: What is identified as the main advantage of solar power according to the passage?,Aptitude,Reading Comprehension
+"Based on the passage discussing urbanization, what does the author suggest as the primary cause of increasing traffic congestion in cities?",Aptitude,Reading Comprehension
+"According to the passage on climate change, what long-term effect does the author predict for coastal regions?",Aptitude,Reading Comprehension
+Read the passage about the history of the internet and answer: which invention does the author credit as the foundation of modern networking?,Aptitude,Reading Comprehension
+"Based on the given passage about employee productivity, what factor does the author identify as most significant in improving workplace efficiency?",Aptitude,Reading Comprehension
+"Based on the passage discussing remote work trends, what benefit does the author highlight most prominently?",Aptitude,Reading Comprehension
+"According to the passage on artificial intelligence in healthcare, what limitation does the author mention regarding AI diagnosis?",Aptitude,Reading Comprehension
+Read the passage about global trade and answer: what factor does the author cite as driving the shift in trade patterns?,Aptitude,Reading Comprehension
+"Based on the passage about water conservation, what solution does the author propose for reducing household water usage?",Aptitude,Reading Comprehension
+"Six friends A, B, C, D, E and F are sitting in a row facing north. B is to the immediate right of A, and D is at one of the ends. Determine a possible arrangement satisfying these conditions.",Aptitude,Seating Arrangement
+"Five people are seated around a circular table facing the centre. P sits opposite Q, and R sits to the immediate left of P. Determine the position of S if S sits between Q and R.",Aptitude,Seating Arrangement
+"In a row of 8 people, X is 3rd from the left and Y is 4th from the right. If there are 2 people between X and Y, find the total number of people in the row.",Aptitude,Seating Arrangement
+"Eight people sit around a circular table. If M sits second to the right of N, and there are two people between N and O on the other side, describe a valid seating arrangement.",Aptitude,Seating Arrangement
+"Six people A, B, C, D, E and F are sitting in a row facing north. B is immediately to the right of A, and D is at one of the ends. If C sits between D and E, describe one possible arrangement.",Aptitude,Seating Arrangement
+"Five friends P, Q, R, S and T are sitting around a circular table facing the centre. If Q sits second to the right of P and S sits opposite T, find the position of R relative to P.",Aptitude,Seating Arrangement
+"In a row of 8 students, if X is 3rd from the left and Y is 5th from the right, and there are 12 students in total between them, find the total number of students in the row.",Aptitude,Seating Arrangement
+"Four people A, B, C and D are sitting in a row. A is not at either end, and C is to the immediate left of A. If B is at one end, determine the possible positions of D.",Aptitude,Seating Arrangement
+"Eight people sit around a circular table facing the centre. If M sits third to the left of N and P sits immediately to the right of N, find the position of P relative to M.",Aptitude,Seating Arrangement
+"Seven friends sit in a row facing north. If G is exactly in the middle and there are three people on each side, describe the possible arrangement given that F is second from the left end.",Aptitude,Seating Arrangement
+"In a circular arrangement of 6 people facing the centre, if K sits opposite L and M sits between K and N, find the position of N relative to L.",Aptitude,Seating Arrangement
+"In a row of 10 people, if A is 4th from the left and there are 3 people between A and B, find B's position from the right if the row has 10 people total.",Aptitude,Seating Arrangement
+"Complete the sentence appropriately: 'Despite the heavy rain, the team decided to ___ the match.'",Aptitude,Sentence Completion
+Fill in the blank to complete the sentence logically: 'The manager was so ___ that no one dared to question his decision.',Aptitude,Sentence Completion
+"Complete the sentence: 'Despite the heavy rain, the match ___ as scheduled.'",Aptitude,Sentence Completion
+Fill in the blank to complete the sentence logically: 'The company decided to expand its operations because ___.',Aptitude,Sentence Completion
+Complete the sentence with the most appropriate word: 'Her presentation was so ___ that the audience remained engaged throughout.',Aptitude,Sentence Completion
+Choose the best word to complete the sentence: 'The manager was ___ about the new policy and refused to make any exceptions.',Aptitude,Sentence Completion
+"Complete the sentence logically: 'Although he studied hard, he ___ the exam.'",Aptitude,Sentence Completion
+Complete the sentence appropriately: 'The company launched the new product early because ___.',Aptitude,Sentence Completion
+"Fill in the blank with the most suitable phrase: 'Even though the traffic was heavy, they ___ on time.'",Aptitude,Sentence Completion
+Choose the best word to complete the sentence: 'The lecture was so ___ that many students lost interest.',Aptitude,Sentence Completion
+"Complete the sentence: 'Had she known about the traffic, she ___ earlier.'",Aptitude,Sentence Completion
+Fill in the blank appropriately: 'The manager insisted that everyone ___ present at the meeting.',Aptitude,Sentence Completion
+Improve the underlined part of the sentence: 'He is one of the student who scored full marks.',Aptitude,Sentence Improvement
+"Choose the best way to rewrite the sentence: 'Being a rainy day, we cancelled the picnic.'",Aptitude,Sentence Improvement
+Improve the following sentence by choosing the best replacement for the underlined part: 'He is one of the most talented player in the team.',Aptitude,Sentence Improvement
+"Identify the best way to rewrite the sentence: 'Being a rainy day, we cancelled the picnic.'",Aptitude,Sentence Improvement
+Choose the best alternative to improve the sentence: 'The reason he failed is because he did not prepare well.',Aptitude,Sentence Improvement
+Improve the sentence: 'She is more taller than her sister.',Aptitude,Sentence Improvement
+Select the correct improvement for the sentence: 'He said that he is going to the market.',Aptitude,Sentence Improvement
+Improve the sentence: 'The reason for his absence was due to illness.',Aptitude,Sentence Improvement
+"Choose the best way to rewrite the sentence: 'Walking down the street, the bus was seen by him.'",Aptitude,Sentence Improvement
+Select the correct improvement for the sentence: 'Not only he is intelligent but also hardworking.',Aptitude,Sentence Improvement
+Improve the underlined portion of the sentence: 'The number of accidents have increased this year.',Aptitude,Sentence Improvement
+Choose the best replacement for the underlined phrase: 'He is suffering from fever since two days.',Aptitude,Sentence Improvement
+Find the simple interest on Rs. 8000 at 9% per annum for 3 years.,Aptitude,Simple Interest
+In how many years will a sum of money double itself at a simple interest rate of 8% per annum?,Aptitude,Simple Interest
+A sum of Rs. 5000 amounts to Rs. 6200 in 4 years at simple interest. Find the rate of interest per annum.,Aptitude,Simple Interest
+Find the principal amount that yields a simple interest of Rs. 1200 in 3 years at an interest rate of 8% per annum.,Aptitude,Simple Interest
+Find the simple interest on Rs. 12500 at 6% per annum for 4 years.,Aptitude,Simple Interest
+A sum of money triples itself in 20 years at simple interest. Find the rate of interest per annum.,Aptitude,Simple Interest
+At what rate of simple interest will a sum become double in 12 years?,Aptitude,Simple Interest
+A sum of Rs. 7500 amounts to Rs. 9150 in 3 years at simple interest. Find the annual rate of interest.,Aptitude,Simple Interest
+Find the principal that earns a simple interest of Rs. 900 in 5 years at 6% per annum.,Aptitude,Simple Interest
+A sum of Rs. 4000 is lent at simple interest for 2 years at 5% per annum and Rs. 6000 at 8% for the same period. Find the total interest earned.,Aptitude,Simple Interest
+The simple interest on a sum for 3 years at 10% per annum is Rs. 1500 less than the sum. Find the sum.,Aptitude,Simple Interest
+A man invests Rs. 15000 at simple interest for 2.5 years and receives Rs. 3750 as interest. Find the rate of interest.,Aptitude,Simple Interest
+Statement: 'The company has decided to work from home permanently.' Assumption: Employees prefer working from home. Is this assumption implicit in the statement?,Aptitude,Statement and Assumptions
+Statement: 'Please switch off the lights when leaving the room.' Assumption: People sometimes forget to switch off lights. Evaluate whether this assumption is implicit.,Aptitude,Statement and Assumptions
+Statement: 'The library will remain closed on public holidays.' Assumption: Some visitors may be unaware of public holidays. Determine whether this assumption is implicit in the statement.,Aptitude,Statement and Assumptions
+Statement: 'The government has announced free medical checkups for senior citizens.' Assumption: Senior citizens will avail this facility. Is the assumption implicit in the statement?,Aptitude,Statement and Assumptions
+Statement: 'Please switch off the lights when not in use to save electricity.' Assumption: People are currently leaving lights on unnecessarily. Is this assumption valid?,Aptitude,Statement and Assumptions
+Statement: 'The company has introduced a new training program for employees.' Assumption: Employees need training to improve their skills. Is this assumption implicit?,Aptitude,Statement and Assumptions
+Statement: 'Visitors are requested to maintain silence in the library.' Assumption: Some visitors may talk loudly in the library. Is this assumption implicit in the statement?,Aptitude,Statement and Assumptions
+Statement: 'The school has made wearing helmets compulsory for students riding bicycles.' Assumption: Some students were not wearing helmets earlier. Is this assumption valid?,Aptitude,Statement and Assumptions
+Statement: 'Customers are advised to keep their purchase receipts for future reference.' Assumption: Some customers may need to return or exchange products later. Is this assumption implicit?,Aptitude,Statement and Assumptions
+Statement: 'The airline has increased the baggage allowance for economy class passengers.' Assumption: Passengers previously found the baggage allowance insufficient. Is this assumption valid?,Aptitude,Statement and Assumptions
+Statement: 'All employees must complete the online security training by the end of the month.' Assumption: Some employees have not yet completed the training. Is this assumption implicit?,Aptitude,Statement and Assumptions
+Statement: 'The park authority has installed additional dustbins around the premises.' Assumption: Littering was a problem in the park earlier. Is this assumption valid?,Aptitude,Statement and Assumptions
+All pens are pencils. Some pencils are erasers. Does it follow that some pens are erasers?,Aptitude,Syllogism
+Statement: All cats are animals. No animal is a plant. Conclusion: No cat is a plant. Is this conclusion valid?,Aptitude,Syllogism
+All roses are flowers. Some flowers fade quickly. Can we conclude that some roses fade quickly?,Aptitude,Syllogism
+Statement: Some doctors are teachers. All teachers are readers. Conclusion: Some doctors are readers. Is this conclusion logically valid?,Aptitude,Syllogism
+Statement: All cats are dogs. All dogs are cows. Conclusion: All cats are cows. Is this conclusion valid?,Aptitude,Syllogism
+Statement: Some books are pens. All pens are chairs. Conclusion: Some books are chairs. Is this conclusion valid?,Aptitude,Syllogism
+Statement: No mango is an apple. All apples are fruits. Conclusion: No mango is a fruit. Is this conclusion valid?,Aptitude,Syllogism
+Statement: All students are hardworking. Some hardworking people are rich. Conclusion: Some students are rich. Is this conclusion valid?,Aptitude,Syllogism
+Statement: All squares are rectangles. All rectangles are quadrilaterals. Conclusion: All squares are quadrilaterals. Is this conclusion valid?,Aptitude,Syllogism
+Statement: All doctors are scientists. Some scientists are professors. Conclusion: Some doctors are professors. Is this conclusion valid?,Aptitude,Syllogism
+Statement: No teachers are lazy. Some lazy people are students. Conclusion: No teachers are students. Is this conclusion valid?,Aptitude,Syllogism
+Statement: All laptops are electronic devices. Some electronic devices are expensive. Conclusion: Some laptops are expensive. Is this conclusion valid?,Aptitude,Syllogism
+A car travels 240 km in 4 hours. Find its average speed.,Aptitude,Time and Distance
+Two trains start from stations 300 km apart and travel towards each other at speeds of 60 km/hr and 40 km/hr. After how much time will they meet?,Aptitude,Time and Distance
+"A man walks at a speed of 5 km/hr and covers a certain distance in 3 hours. If he had walked at 6 km/hr, how much earlier would he have reached his destination?",Aptitude,Time and Distance
+A boat travels 30 km downstream in 2 hours and returns upstream in 3 hours. Find the speed of the boat in still water.,Aptitude,Time and Distance
+A train travels 360 km in 4 hours. Find its speed in km/hr.,Aptitude,Time and Distance
+A car covers a distance of 450 km at a speed of 75 km/hr. Find the time taken to cover the distance.,Aptitude,Time and Distance
+"Two towns are 300 km apart. A car starts from one town at 60 km/hr and another car starts from the second town at 40 km/hr, both moving towards each other. Find the time after which they will meet.",Aptitude,Time and Distance
+"A man walks at a speed of 5 km/hr and reaches his office 10 minutes late. If he walks at 6 km/hr, he reaches 5 minutes early. Find the distance to his office.",Aptitude,Time and Distance
+A boat travels 30 km downstream in 2 hours and 30 km upstream in 5 hours. Find the speed of the boat in still water and the speed of the stream.,Aptitude,Time and Distance
+A person covers a certain distance at 40 km/hr and returns at 60 km/hr. Find his average speed for the whole journey.,Aptitude,Time and Distance
+A cyclist covers a distance of 96 km in 6 hours partly on foot at 4 km/hr and partly on bicycle at 16 km/hr. Find the distance covered on foot.,Aptitude,Time and Distance
+A can complete a piece of work in 12 days and B can complete the same work in 18 days. In how many days will they finish it together?,Aptitude,Time and Work
+"A, B and C can complete a task in 10, 15 and 20 days respectively. How long will they take to complete it working together?",Aptitude,Time and Work
+"A alone can finish a job in 20 days. After working for 5 days, he is joined by B who finishes the remaining work in 10 days. In how many days can B alone finish the whole job?",Aptitude,Time and Work
+12 workers can complete a wall in 15 days. How many workers are needed to complete the same wall in 10 days?,Aptitude,Time and Work
+A can complete a piece of work in 12 days and B can complete it in 18 days. In how many days will they finish it together?,Aptitude,Time and Work
+"A and B together can do a job in 10 days, while A alone can do it in 15 days. In how many days can B alone complete the job?",Aptitude,Time and Work
+24 men can complete a work in 15 days. How many men are needed to complete the same work in 9 days?,Aptitude,Time and Work
+A can do a piece of work in 20 days. He works for 4 days and then B finishes the remaining work in 24 days. In how many days can B alone finish the whole work?,Aptitude,Time and Work
+"A, B and C can complete a task in 10, 15 and 30 days respectively. If they work together, in how many days will the task be completed?",Aptitude,Time and Work
+"A pipe can fill a tank in 6 hours and another pipe can empty it in 9 hours. If both pipes are opened together, in how long will the tank be filled?",Aptitude,Time and Work
+"12 women can complete a piece of work in 8 days, while 8 men can complete the same work in 6 days. Find the ratio of work done by one man to one woman.",Aptitude,Time and Work
+A can finish a work in 18 days and B is 50% more efficient than A. In how many days can B alone finish the work?,Aptitude,Time and Work
+Choose the word that is most nearly opposite in meaning to 'Benevolent'.,Aptitude,Vocabulary
+Select the synonym of the word 'Meticulous'.,Aptitude,Vocabulary
+Choose the correct meaning of the word 'Ephemeral'.,Aptitude,Vocabulary
+Choose the word that best completes the analogy: 'Doctor is to Hospital as Teacher is to ___.',Aptitude,Vocabulary
+Choose the word most similar in meaning to 'Meticulous'.,Aptitude,Vocabulary
+Find the antonym of the word 'Benevolent'.,Aptitude,Vocabulary
+Choose the correct synonym for the word 'Ephemeral'.,Aptitude,Vocabulary
+Select the word that is opposite in meaning to 'Obsolete'.,Aptitude,Vocabulary
+Choose the meaning closest to the word 'Ubiquitous'.,Aptitude,Vocabulary
+Find the synonym of the word 'Candid'.,Aptitude,Vocabulary
+Select the antonym of the word 'Frugal'.,Aptitude,Vocabulary
+Write a program to check whether two given strings are anagrams of each other.,Coding,Anagrams
+Write a program to group a list of strings into sets of anagrams.,Coding,Anagrams
+Explain an efficient approach to check if two strings are anagrams without sorting them.,Coding,Anagrams
+Explain how sorting can be used to check if two strings are anagrams.,Coding,Anagrams
+Write a program to find all anagrams of a given pattern in a string.,Coding,Anagrams
+Write a program to check whether a string can be rearranged into another string using character counts.,Coding,Anagrams
+"Write a program to check whether one string can be formed by rearranging the characters of another, allowing repeated characters.",Coding,Anagrams
+Write a program to find the minimum number of character deletions needed to make two strings anagrams of each other.,Coding,Anagrams
+Explain how a frequency count array can be used to detect anagrams efficiently.,Coding,Anagrams
+Write a program to find all substrings of a string that are anagrams of a given pattern.,Coding,Anagrams
+Write a program to check if a given string is an anagram of a palindrome.,Coding,Anagrams
+Explain the difference between an anagram and a permutation of a string.,Coding,Anagrams
+Write a program to rotate an array to the left by k positions.,Coding,Array Rotation
+Write a program to rotate an array to the right by k positions using an auxiliary array.,Coding,Array Rotation
+Explain an in-place algorithm to rotate an array using the reversal technique.,Coding,Array Rotation
+Write a program to rotate an array to the right by k positions using extra space.,Coding,Array Rotation
+Explain how the reversal algorithm can be used to rotate an array in-place.,Coding,Array Rotation
+Write a program to check if one array is a rotated version of another array.,Coding,Array Rotation
+Write a program to find the minimum element in a rotated sorted array.,Coding,Array Rotation
+Write a program to rotate an array using the block swap algorithm.,Coding,Array Rotation
+Explain the time complexity of rotating an array using the juggling algorithm.,Coding,Array Rotation
+Write a program to left rotate an array by one position multiple times.,Coding,Array Rotation
+Explain how rotation of an array differs from simply reversing it.,Coding,Array Rotation
+Write a program to find whether an array rotation results in the original sorted array.,Coding,Array Rotation
+Write a program to find the maximum element in an array.,Coding,Arrays
+Write a function to compute the sum of all elements in an array.,Coding,Arrays
+Write a program to find the second largest element in an array without sorting it.,Coding,Arrays
+"Given an array of integers, write a program to reverse the array in place.",Coding,Arrays
+Write a program to find the missing number in an array containing n-1 distinct integers from 1 to n.,Coding,Arrays
+Write a program to find the second largest element in an array.,Coding,Arrays
+Write a program to find the sum of all elements in an array.,Coding,Arrays
+Write a program to remove duplicate elements from an array.,Coding,Arrays
+Write a program to find the missing number in an array containing numbers from 1 to n.,Coding,Arrays
+Write a program to merge two sorted arrays into a single sorted array.,Coding,Arrays
+Write a program to find the maximum subarray sum in an array of integers.,Coding,Arrays
+Write a program to move all zeros in an array to the end while maintaining the order of other elements.,Coding,Arrays
+Write a program to check whether a given number is prime.,Coding,Basic Algorithms
+Write a program to find the greatest common divisor (GCD) of two numbers using the Euclidean algorithm.,Coding,Basic Algorithms
+Write a program to check whether a given number is an Armstrong number.,Coding,Basic Algorithms
+Write a program to convert a decimal number to its binary representation.,Coding,Basic Algorithms
+Explain the time and space complexity of an algorithm with an example.,Coding,Basic Algorithms
+Write an algorithm to find the greatest common divisor of two numbers using the Euclidean method.,Coding,Basic Algorithms
+Explain the divide and conquer approach to algorithm design with an example.,Coding,Basic Algorithms
+Write an algorithm to check whether a given number is a perfect number.,Coding,Basic Algorithms
+Explain the difference between a greedy algorithm and a dynamic programming approach.,Coding,Basic Algorithms
+Explain how the sieve of Eratosthenes algorithm is used to find all prime numbers up to n.,Coding,Basic Algorithms
+Write an algorithm to check whether a given year is a leap year.,Coding,Basic Algorithms
+Explain the concept of memoization and how it improves algorithm efficiency.,Coding,Basic Algorithms
+What will be the output of the following C program that uses a for loop to print numbers from 1 to 5?,Coding,C Programming
+Explain the difference between '==' and '=' operators in C with an example.,Coding,C Programming
+Write a C program to swap two numbers without using a temporary variable.,Coding,C Programming
+Explain the purpose of the 'static' keyword in C.,Coding,C Programming
+Write a C program to swap two numbers without using a third variable.,Coding,C Programming
+Explain the difference between call by value and call by reference in C.,Coding,C Programming
+Write a C program to find the largest of three numbers using conditional statements.,Coding,C Programming
+Explain the use of structures in C with an example.,Coding,C Programming
+Write a C program to check whether a given number is prime.,Coding,C Programming
+Explain the difference between malloc() and calloc() in C.,Coding,C Programming
+Write a C program to implement a simple calculator using switch-case statements.,Coding,C Programming
+"Explain the concept of storage classes in C, including 'auto', 'static', 'extern' and 'register'.",Coding,C Programming
+Explain the difference between function overloading and function overriding in C++.,Coding,C++
+Write a C++ program to demonstrate the use of a constructor and destructor in a class.,Coding,C++
+What is the output of a C++ program that uses a virtual function to demonstrate runtime polymorphism?,Coding,C++
+Explain the purpose of the 'this' pointer in C++.,Coding,C++
+Explain the concept of constructors and destructors in C++.,Coding,C++
+Write a C++ program to demonstrate function overloading.,Coding,C++
+Explain the difference between a structure and a class in C++.,Coding,C++
+Write a C++ program to implement a simple class with a member function.,Coding,C++
+Explain the concept of virtual functions in C++ with an example.,Coding,C++
+What is the difference between references and pointers in C++?,Coding,C++
+Write a C++ program to demonstrate operator overloading for the '+' operator on a custom class.,Coding,C++
+Explain the concept of templates in C++ and how they enable generic programming.,Coding,C++
+Explain the difference between call by value and call by reference with an example.,Coding,Functions
+Write a function that takes two integers and returns their sum without using global variables.,Coding,Functions
+Explain what a recursive function is and how it differs from an iterative function.,Coding,Functions
+Write a function to check whether a given year is a leap year.,Coding,Functions
+Explain the difference between a function definition and a function declaration.,Coding,Functions
+Write a program that uses a function to check whether a number is even or odd.,Coding,Functions
+Explain the concept of recursion within functions with a simple example.,Coding,Functions
+Write a program using a function with default parameter values.,Coding,Functions
+Explain the difference between pass by value and pass by reference in functions.,Coding,Functions
+Explain the concept of function overloading and where it is supported.,Coding,Functions
+Write a program using a recursive function to compute the sum of digits of a number.,Coding,Functions
+Explain the concept of a lambda function or anonymous function with an example.,Coding,Functions
+Write a program to count the frequency of each element in an array using a hash map.,Coding,Hashing
+Write a function to check whether an array contains any duplicate elements using hashing.,Coding,Hashing
+Explain how collisions are handled in a hash table.,Coding,Hashing
+Write a program to find two numbers in an array that add up to a given target using a hash map.,Coding,Hashing
+Explain the concept of hashing and how a hash function works.,Coding,Hashing
+What is a collision in hashing and how can it be resolved?,Coding,Hashing
+Write a program to find whether an array contains any duplicate elements using hashing.,Coding,Hashing
+Explain the difference between chaining and open addressing for collision resolution.,Coding,Hashing
+Write a program to find the frequency of each element in an array using a hash map.,Coding,Hashing
+"Write a program to find two numbers in an array that add up to a given target sum, using hashing.",Coding,Hashing
+Write a program to implement a hash table with separate chaining for collision handling.,Coding,Hashing
+Explain how a hash map is used to solve the problem of finding the longest consecutive sequence in an array.,Coding,Hashing
+Explain the difference between an abstract class and an interface in Java.,Coding,Java
+"Write a Java program to demonstrate exception handling using try, catch and finally blocks.",Coding,Java
+What is the output of a Java program that demonstrates method overloading?,Coding,Java
+Explain the concept of garbage collection in Java.,Coding,Java
+Explain the concept of method overriding in Java with an example.,Coding,Java
+Write a Java program to demonstrate the use of interfaces.,Coding,Java
+Write a Java program to implement exception handling using try-catch blocks.,Coding,Java
+What is the difference between '==' and '.equals()' when comparing strings in Java?,Coding,Java
+Write a Java program to demonstrate multiple inheritance using interfaces.,Coding,Java
+Explain the concept of the 'final' keyword in Java.,Coding,Java
+Write a Java program to implement a simple linked list using a class.,Coding,Java
+Explain the difference between checked and unchecked exceptions in Java.,Coding,Java
+Write a program to insert a node at the end of a singly linked list.,Coding,Linked Lists
+Write a program to reverse a singly linked list.,Coding,Linked Lists
+Write a function to detect a cycle in a linked list.,Coding,Linked Lists
+Write a program to find the middle element of a linked list in a single traversal.,Coding,Linked Lists
+Write a program to detect a loop in a linked list.,Coding,Linked Lists
+Write a program to find the middle element of a linked list.,Coding,Linked Lists
+Explain the difference between a singly linked list and a circular linked list.,Coding,Linked Lists
+Write a program to delete a node from a linked list given only a pointer to that node.,Coding,Linked Lists
+Write a program to merge two sorted linked lists into one sorted linked list.,Coding,Linked Lists
+Write a program to find the length of a linked list.,Coding,Linked Lists
+Write a program to remove duplicate elements from an unsorted linked list.,Coding,Linked Lists
+Explain how to convert a singly linked list into a doubly linked list.,Coding,Linked Lists
+Predict the output of a program that uses a nested for loop to print a pattern of stars.,Coding,Loops
+Explain the difference between a 'while' loop and a 'do-while' loop with an example.,Coding,Loops
+Write a program to print all even numbers between 1 and 50 using a loop.,Coding,Loops
+Explain when a 'break' statement and a 'continue' statement should be used inside a loop.,Coding,Loops
+Write a program using a for loop to print the first n Fibonacci numbers.,Coding,Loops
+Explain the difference between a while loop and a do-while loop with an example.,Coding,Loops
+Write a program to print all prime numbers between 1 and 100 using nested loops.,Coding,Loops
+Explain the use of the 'break' and 'continue' statements in loops with examples.,Coding,Loops
+Write a program using a loop to reverse the digits of a number.,Coding,Loops
+Write a program using nested loops to print a pyramid pattern of stars.,Coding,Loops
+Explain the difference between a counter-controlled loop and a condition-controlled loop.,Coding,Loops
+Write a program using a for loop to calculate the sum of the first n natural numbers.,Coding,Loops
+Write a program to add two matrices of the same dimensions.,Coding,Matrix
+Write a program to transpose a given matrix.,Coding,Matrix
+Write a program to multiply two matrices.,Coding,Matrix
+Write a program to check whether a given matrix is symmetric.,Coding,Matrix
+Write a program to rotate a matrix by 90 degrees clockwise.,Coding,Matrix
+Write a program to find the sum of the diagonal elements of a square matrix.,Coding,Matrix
+Write a program to check whether two matrices are equal.,Coding,Matrix
+Write a program to find the largest element in each row of a matrix.,Coding,Matrix
+Write a program to search for an element in a row-wise and column-wise sorted matrix.,Coding,Matrix
+Explain how a sparse matrix differs from a dense matrix and why it matters for storage.,Coding,Matrix
+Write a program to print the boundary elements of a matrix.,Coding,Matrix
+Write a program to find the sum of each column in a 2D matrix.,Coding,Matrix
+Explain the four main pillars of object-oriented programming with examples.,Coding,OOP
+Write a program to demonstrate inheritance between a base class and a derived class.,Coding,OOP
+Explain the difference between compile-time polymorphism and runtime polymorphism.,Coding,OOP
+Explain the concept of encapsulation with a real-world example.,Coding,OOP
+Explain the four main principles of object-oriented programming.,Coding,OOP
+What is the difference between encapsulation and abstraction in OOP?,Coding,OOP
+Explain the concept of polymorphism with a real-world example.,Coding,OOP
+What is inheritance in OOP and what are its different types?,Coding,OOP
+Explain the difference between method overloading and method overriding.,Coding,OOP
+Explain the concept of abstraction in OOP with a real-world example.,Coding,OOP
+"What is a constructor, and how does it differ from a regular method?",Coding,OOP
+Explain the concept of dynamic binding in object-oriented programming.,Coding,OOP
+Write a program to check whether a given string is a palindrome.,Coding,Palindrome
+Write a program to check whether a given number is a palindrome.,Coding,Palindrome
+Write a program to find the longest palindromic substring in a given string.,Coding,Palindrome
+"Write a program to check whether a given string is a palindrome, ignoring case and spaces.",Coding,Palindrome
+Write a program to check if a linked list is a palindrome.,Coding,Palindrome
+Explain an efficient approach to check whether a string can be rearranged to form a palindrome.,Coding,Palindrome
+"Write a program to check whether a given sentence is a palindrome, ignoring punctuation and spaces.",Coding,Palindrome
+Write a program to count the number of palindromic substrings in a given string.,Coding,Palindrome
+Explain an approach to check whether a number is a palindrome without converting it to a string.,Coding,Palindrome
+Write a program to find the shortest palindrome that can be formed by adding characters to the front of a string.,Coding,Palindrome
+Write a program to check whether a given array is a palindrome.,Coding,Palindrome
+Explain how dynamic programming can be used to find the longest palindromic subsequence.,Coding,Palindrome
+Explain the concept of pointers in C with a simple example.,Coding,Pointers
+Write a program to demonstrate pointer arithmetic on an integer array.,Coding,Pointers
+Explain the difference between a null pointer and a dangling pointer.,Coding,Pointers
+Write a program to swap two numbers using pointers.,Coding,Pointers
+Explain the concept of a pointer with a simple example in C.,Coding,Pointers
+Explain the concept of double pointers with an example.,Coding,Pointers
+Write a program to demonstrate the use of a function pointer in C.,Coding,Pointers
+Explain the concept of pointer to a pointer with an example.,Coding,Pointers
+Write a program to dynamically allocate memory for an array using pointers.,Coding,Pointers
+Explain the relationship between arrays and pointers in C.,Coding,Pointers
+Write a program to implement a linked list using pointers and structures.,Coding,Pointers
+Explain the risks of using uninitialized pointers in a program.,Coding,Pointers
+Write pseudocode to find the largest of three numbers.,Coding,Pseudocode
+Write pseudocode for a bubble sort algorithm.,Coding,Pseudocode
+Write pseudocode to check whether a number is prime.,Coding,Pseudocode
+Write pseudocode to reverse a given string.,Coding,Pseudocode
+Write pseudocode to find the maximum element in an array.,Coding,Pseudocode
+Write pseudocode to implement a bubble sort algorithm.,Coding,Pseudocode
+Write pseudocode to reverse the elements of an array.,Coding,Pseudocode
+Write pseudocode to calculate the factorial of a number using iteration.,Coding,Pseudocode
+Write pseudocode to search for an element in a linked list.,Coding,Pseudocode
+Write pseudocode to implement a binary search algorithm.,Coding,Pseudocode
+Write pseudocode to merge two sorted arrays into a single sorted array.,Coding,Pseudocode
+Write pseudocode for a linear search algorithm on an unsorted array.,Coding,Pseudocode
+Write a Python program to find the factorial of a number using recursion.,Coding,Python
+Explain the difference between a list and a tuple in Python.,Coding,Python
+Write a Python program to count the occurrences of each word in a sentence using a dictionary.,Coding,Python
+Explain the purpose of list comprehensions in Python with an example.,Coding,Python
+Write a Python program to check whether a given number is an Armstrong number.,Coding,Python
+Write a Python program to demonstrate the use of list comprehensions.,Coding,Python
+Explain the concept of decorators in Python with an example.,Coding,Python
+Write a Python program to read a file and count the number of words in it.,Coding,Python
+Explain the difference between deep copy and shallow copy in Python.,Coding,Python
+Explain the difference between a shallow copy and deep copy with a code example in Python.,Coding,Python
+Write a Python program to implement a stack using a list.,Coding,Python
+Explain the use of *args and **kwargs in Python functions.,Coding,Python
+Write a program to implement a queue using an array.,Coding,Queue
+Write a program to implement a circular queue.,Coding,Queue
+Explain how a queue can be implemented using two stacks.,Coding,Queue
+Write a function to check if a queue is empty before performing a dequeue operation.,Coding,Queue
+Explain the First-In-First-Out (FIFO) principle used in a queue with an example.,Coding,Queue
+Explain the difference between a simple queue and a circular queue.,Coding,Queue
+Write a program to implement a queue using two stacks.,Coding,Queue
+What is a priority queue and how does it differ from a normal queue?,Coding,Queue
+Write a program to implement a deque (double-ended queue).,Coding,Queue
+Write a program to reverse the elements of a queue.,Coding,Queue
+Explain how a circular queue avoids the wastage of space seen in a linear queue.,Coding,Queue
+Write a program to generate binary numbers from 1 to n using a queue.,Coding,Queue
+Write a recursive function to compute the factorial of a number.,Coding,Recursion
+Write a recursive function to generate the nth Fibonacci number.,Coding,Recursion
+Write a recursive program to find the sum of digits of a number.,Coding,Recursion
+Explain the concept of base case and recursive case with an example program.,Coding,Recursion
+Write a recursive function to compute the greatest common divisor of two numbers.,Coding,Recursion
+Write a recursive program to compute the factorial of a number.,Coding,Recursion
+Write a recursive function to find the nth Fibonacci number.,Coding,Recursion
+Explain the concept of base case and recursive case with an example.,Coding,Recursion
+Write a recursive program to compute the greatest common divisor of two numbers.,Coding,Recursion
+Write a recursive function to reverse a string.,Coding,Recursion
+Explain the difference between recursion and iteration with an example.,Coding,Recursion
+Write a program to implement binary search on a sorted array.,Coding,Searching
+Write a function that performs linear search to find the index of a target element in an array.,Coding,Searching
+Explain the time complexity difference between linear search and binary search.,Coding,Searching
+Write a program to find the first and last occurrence of a target element in a sorted array.,Coding,Searching
+Write a program to search for a target value in a rotated sorted array.,Coding,Searching
+Explain the working of linear search with an example.,Coding,Searching
+What is the time complexity of binary search and why is it more efficient than linear search?,Coding,Searching
+Write a program to find the first and last occurrence of an element in a sorted array.,Coding,Searching
+Explain how interpolation search differs from binary search.,Coding,Searching
+Write a program to search for an element in a rotated sorted array.,Coding,Searching
+Write a program to implement exponential search on a sorted array.,Coding,Searching
+Explain how a jump search algorithm reduces the number of comparisons compared to linear search.,Coding,Searching
+Write a program to find the maximum sum of a subarray of size k using the sliding window technique.,Coding,Sliding Window
+Explain how the sliding window technique reduces the time complexity of finding the longest substring without repeating characters.,Coding,Sliding Window
+Write a program to find the smallest subarray with a sum greater than or equal to a given value using sliding window.,Coding,Sliding Window
+Explain how the sliding window technique optimizes the time complexity of subarray problems.,Coding,Sliding Window
+Write a program to find the length of the longest substring without repeating characters using sliding window.,Coding,Sliding Window
+Write a program to find the smallest subarray with a sum greater than or equal to a given value.,Coding,Sliding Window
+Explain the difference between a fixed-size and variable-size sliding window with examples.,Coding,Sliding Window
+Write a program to find all subarrays of a given size k that have a sum equal to a target value.,Coding,Sliding Window
+Explain how the sliding window technique can be applied to find the longest substring with at most k distinct characters.,Coding,Sliding Window
+Write a program to find the maximum of all subarrays of size k using a deque-based sliding window.,Coding,Sliding Window
+Explain the difference between the sliding window technique and the brute-force approach for subarray problems.,Coding,Sliding Window
+Write a program to count the number of substrings with exactly k distinct characters using sliding window.,Coding,Sliding Window
+Write a program to implement bubble sort on an array of integers.,Coding,Sorting
+Write a program to implement quicksort and explain its average time complexity.,Coding,Sorting
+Write a program to sort an array of strings alphabetically.,Coding,Sorting
+Explain the difference between merge sort and selection sort in terms of stability and time complexity.,Coding,Sorting
+"Write a program to sort an array containing only 0s, 1s and 2s in a single pass.",Coding,Sorting
+Explain the working of bubble sort with an example.,Coding,Sorting
+Write a program to implement quicksort on an array.,Coding,Sorting
+Compare the time complexities of merge sort and insertion sort.,Coding,Sorting
+Write a program to implement selection sort on an array of integers.,Coding,Sorting
+Explain how merge sort uses the divide and conquer approach.,Coding,Sorting
+"Write a program to sort an array of 0s, 1s and 2s without using extra space.",Coding,Sorting
+Write a program to implement a stack using an array.,Coding,Stack
+Write a program to check whether a given string of parentheses is balanced using a stack.,Coding,Stack
+Write a function to evaluate a postfix expression using a stack.,Coding,Stack
+Explain the difference between push and pop operations with their time complexity in a stack.,Coding,Stack
+Explain the Last-In-First-Out (LIFO) principle used in a stack with an example.,Coding,Stack
+Write a program to check for balanced parentheses in an expression using a stack.,Coding,Stack
+Explain how a stack can be used to evaluate a postfix expression.,Coding,Stack
+Write a program to implement a stack using two queues.,Coding,Stack
+What are the applications of a stack in real-world programming?,Coding,Stack
+Write a program to sort a stack using another stack.,Coding,Stack
+Write a program to reverse a stack using recursion.,Coding,Stack
+Explain how a stack can be used to implement undo functionality in an application.,Coding,Stack
+Write a program to count the number of vowels in a given string.,Coding,Strings
+Write a function to reverse a string without using built-in reverse functions.,Coding,Strings
+Write a program to check whether two strings are equal ignoring case.,Coding,Strings
+Write a program to remove all duplicate characters from a string.,Coding,Strings
+Write a program to find the first non-repeating character in a given string.,Coding,Strings
+Write a program to check whether a given string contains only digits.,Coding,Strings
+Write a program to count the number of vowels and consonants in a string.,Coding,Strings
+Write a program to find the first non-repeating character in a string.,Coding,Strings
+Write a program to check if two strings are rotations of each other.,Coding,Strings
+Write a program to remove all whitespace from a given string.,Coding,Strings
+Write a program to convert a string to uppercase without using built-in functions.,Coding,Strings
+Write a program to find the longest common prefix among an array of strings.,Coding,Strings
+Write a program to find a pair of elements in a sorted array that sum to a given target using the two-pointer technique.,Coding,Two Pointers
+Explain how the two-pointer technique can be used to remove duplicates from a sorted array in place.,Coding,Two Pointers
+Write a program to check whether a string is a palindrome using two pointers moving from both ends.,Coding,Two Pointers
+Explain how the two-pointer technique can be used to remove duplicates from a sorted array.,Coding,Two Pointers
+Write a program to check if a string is a palindrome using two pointers.,Coding,Two Pointers
+Write a program to find the container with the maximum amount of water using the two-pointer approach.,Coding,Two Pointers
+Explain how two pointers can be used to merge two sorted arrays in-place.,Coding,Two Pointers
+Write a program to find the number of triplets in an array that sum to zero using the two-pointer technique.,Coding,Two Pointers
+Explain how the two-pointer technique is used to detect a cycle in a linked list.,Coding,Two Pointers
+Write a program to sort an array of squares of a sorted array using two pointers.,Coding,Two Pointers
+Explain the time complexity advantage of using two pointers over a nested loop for pair-sum problems.,Coding,Two Pointers
+Write a program to trap rainwater between bars using the two-pointer approach.,Coding,Two Pointers
+Explain how AJAX allows a web page to update content without a full page reload.,Full Stack,AJAX
+What is the role of the XMLHttpRequest object in AJAX-based communication?,Full Stack,AJAX
+Explain the difference between AJAX requests made using the Fetch API and jQuery's ajax() method.,Full Stack,AJAX
+Explain how AJAX enables asynchronous communication between client and server.,Full Stack,AJAX
+What is the role of the XMLHttpRequest object in AJAX?,Full Stack,AJAX
+Explain the difference between AJAX and a traditional page reload.,Full Stack,AJAX
+What are the common HTTP methods used in AJAX requests?,Full Stack,AJAX
+Explain how the Fetch API can be used to make AJAX requests in modern JavaScript.,Full Stack,AJAX
+Explain the readyState property of the XMLHttpRequest object and its possible values.,Full Stack,AJAX
+What is the difference between synchronous and asynchronous AJAX requests?,Full Stack,AJAX
+Explain how error handling is implemented in an AJAX request.,Full Stack,AJAX
+"What is JSONP, and why was it used before CORS became widely supported?",Full Stack,AJAX
+Explain the difference between authentication and authorization.,Full Stack,Authentication
+"What is JSON Web Token (JWT), and how is it used for authenticating API requests?",Full Stack,Authentication
+Explain the concept of session-based authentication versus token-based authentication.,Full Stack,Authentication
+What is JSON Web Token (JWT) and how is it used for authentication?,Full Stack,Authentication
+Explain the concept of session-based authentication.,Full Stack,Authentication
+What is OAuth and how does it enable third-party authentication?,Full Stack,Authentication
+Explain the purpose of password hashing in authentication systems.,Full Stack,Authentication
+What is two-factor authentication and why is it used?,Full Stack,Authentication
+Explain the concept of refresh tokens in token-based authentication.,Full Stack,Authentication
+"What is single sign-on (SSO), and how does it benefit users across multiple applications?",Full Stack,Authentication
+Explain the concept of role-based access control in an authentication system.,Full Stack,Authentication
+What is the purpose of HTTPS in securing authentication credentials during transmission?,Full Stack,Authentication
+Explain the 12-column grid system used in Bootstrap.,Full Stack,Bootstrap
+What is the purpose of Bootstrap's utility classes for spacing and alignment?,Full Stack,Bootstrap
+Explain how Bootstrap components such as navbars and modals help in responsive design.,Full Stack,Bootstrap
+Explain the grid system in Bootstrap and how columns are structured.,Full Stack,Bootstrap
+What is the difference between container and container-fluid classes in Bootstrap?,Full Stack,Bootstrap
+Explain how to create a responsive navigation bar using Bootstrap.,Full Stack,Bootstrap
+What are Bootstrap utility classes and how are they used?,Full Stack,Bootstrap
+Explain the purpose of Bootstrap's breakpoint classes for responsive design.,Full Stack,Bootstrap
+How do you customize the default theme colors in Bootstrap?,Full Stack,Bootstrap
+Explain the difference between Bootstrap's default grid and its offset classes.,Full Stack,Bootstrap
+"What are Bootstrap modals, and how are they used to display dialog boxes?",Full Stack,Bootstrap
+Explain how Bootstrap cards are used to display content in a structured format.,Full Stack,Bootstrap
+Explain the CSS box model and its components.,Full Stack,CSS
+What is the difference between 'position: relative' and 'position: absolute' in CSS?,Full Stack,CSS
+Explain the concept of Flexbox and how it helps in aligning elements.,Full Stack,CSS
+What is the difference between CSS Grid and Flexbox?,Full Stack,CSS
+"Explain the difference between 'em', 'rem' and 'px' units in CSS.",Full Stack,CSS
+Explain the CSS box model with its components.,Full Stack,CSS
+Explain the concept of specificity in CSS.,Full Stack,CSS
+What is the difference between Flexbox and CSS Grid layout?,Full Stack,CSS
+Explain how media queries are used to create responsive designs.,Full Stack,CSS
+What is the difference between 'em' and 'rem' units in CSS?,Full Stack,CSS
+Explain the difference between CSS pseudo-classes and pseudo-elements.,Full Stack,CSS
+Explain the purpose of routing in an Express.js application.,Full Stack,Express.js
+"What is middleware in Express.js, and how is it used to process requests?",Full Stack,Express.js
+Write a simple Express.js route handler that returns a JSON response for a GET request.,Full Stack,Express.js
+What is middleware in Express.js and how is it used?,Full Stack,Express.js
+Explain how to handle errors in an Express.js application.,Full Stack,Express.js
+What is the difference between 'app.get()' and 'app.post()' in Express.js?,Full Stack,Express.js
+Explain how to serve static files using Express.js.,Full Stack,Express.js
+How do you set up and use route parameters in Express.js?,Full Stack,Express.js
+Explain the purpose of the 'next()' function in Express.js middleware.,Full Stack,Express.js
+What is the difference between application-level and router-level middleware in Express.js?,Full Stack,Express.js
+Explain how to connect an Express.js application to a MongoDB database.,Full Stack,Express.js
+What is the purpose of the 'body-parser' middleware in an Express.js application?,Full Stack,Express.js
+Explain the purpose of semantic HTML tags with examples.,Full Stack,HTML
+What is the difference between the 'id' and 'class' attributes in HTML?,Full Stack,HTML
+Explain the difference between block-level and inline elements in HTML.,Full Stack,HTML
+Write the HTML code to create a simple form with a text input and a submit button.,Full Stack,HTML
+Explain the difference between block-level and inline elements in HTML with examples.,Full Stack,HTML
+What is the purpose of the 'alt' attribute in an image tag?,Full Stack,HTML
+Explain the difference between HTML tags 'div' and 'span'.,Full Stack,HTML
+What is semantic HTML and why is it important?,Full Stack,HTML
+Explain the purpose of the 'form' element and its common attributes.,Full Stack,HTML
+What is the difference between 'id' and 'class' attributes in HTML?,Full Stack,HTML
+"Explain the use of the 'table' tag along with 'tr', 'td' and 'th' elements.",Full Stack,HTML
+"Explain the difference between 'var', 'let' and 'const' in JavaScript.",Full Stack,JavaScript
+What is a closure in JavaScript? Explain with an example.,Full Stack,JavaScript
+Explain the difference between synchronous and asynchronous code execution in JavaScript.,Full Stack,JavaScript
+What is the output of a JavaScript program that demonstrates hoisting of variables?,Full Stack,JavaScript
+Explain the concept of event bubbling and event capturing in JavaScript.,Full Stack,JavaScript
+What is the difference between '==' and '===' operators in JavaScript?,Full Stack,JavaScript
+Explain how promises work in JavaScript with an example.,Full Stack,JavaScript
+What is the purpose of the 'this' keyword in JavaScript?,Full Stack,JavaScript
+Explain the concept of hoisting in JavaScript.,Full Stack,JavaScript
+What is the difference between a shallow copy and a deep copy of an object in JavaScript?,Full Stack,JavaScript
+Explain how the spread and rest operators work in JavaScript.,Full Stack,JavaScript
+What is the purpose of the 'async' and 'await' keywords in JavaScript?,Full Stack,JavaScript
+Explain the difference between a relational database and MongoDB's document-based model.,Full Stack,MongoDB
+"What is the purpose of an index in MongoDB, and how does it improve query performance?",Full Stack,MongoDB
+Explain the difference between 'find()' and 'findOne()' in MongoDB.,Full Stack,MongoDB
+Write a MongoDB query to find all documents in a collection where the age field is greater than 25.,Full Stack,MongoDB
+Explain the difference between MongoDB and a traditional relational database.,Full Stack,MongoDB
+What is a document in MongoDB and how is it structured?,Full Stack,MongoDB
+Explain the purpose of indexing in MongoDB.,Full Stack,MongoDB
+What is the difference between 'find()' and 'findOne()' in MongoDB?,Full Stack,MongoDB
+Explain how aggregation pipelines work in MongoDB.,Full Stack,MongoDB
+What is the purpose of the '_id' field in a MongoDB document?,Full Stack,MongoDB
+Explain the difference between embedded documents and references when modeling relationships in MongoDB.,Full Stack,MongoDB
+What is the purpose of the 'updateOne()' and 'updateMany()' methods in MongoDB?,Full Stack,MongoDB
+"Explain the event-driven, non-blocking architecture of Node.js.",Full Stack,Node.js
+What is the purpose of the 'package.json' file in a Node.js project?,Full Stack,Node.js
+Explain the difference between synchronous and asynchronous file reading in Node.js.,Full Stack,Node.js
+What is middleware in the context of a Node.js application?,Full Stack,Node.js
+Explain the event-driven architecture of Node.js.,Full Stack,Node.js
+Explain the difference between synchronous and asynchronous functions in Node.js.,Full Stack,Node.js
+What is npm and what role does it play in Node.js development?,Full Stack,Node.js
+Explain how modules are exported and imported in Node.js.,Full Stack,Node.js
+Explain the purpose of the Node.js event loop.,Full Stack,Node.js
+What is the difference between 'require' and 'import' in a Node.js application?,Full Stack,Node.js
+Explain how Node.js handles file operations asynchronously.,Full Stack,Node.js
+What is the purpose of environment variables in a Node.js application?,Full Stack,Node.js
+Explain the key principles of a RESTful API.,Full Stack,REST API
+"What is the difference between the HTTP methods GET, POST, PUT and DELETE in the context of REST APIs?",Full Stack,REST API
+"Explain the meaning of HTTP status codes 200, 404 and 500 in an API response.",Full Stack,REST API
+What is the difference between a REST API and a SOAP-based web service?,Full Stack,REST API
+Explain the concept of API rate limiting and why it is used.,Full Stack,REST API
+Explain the key principles of a RESTful architecture.,Full Stack,REST API
+What is the difference between PUT and PATCH methods in a REST API?,Full Stack,REST API
+Explain the purpose of status codes in a REST API response.,Full Stack,REST API
+What is statelessness in the context of REST APIs?,Full Stack,REST API
+Explain the difference between REST and SOAP web services.,Full Stack,REST API
+What is the purpose of API versioning in RESTful services?,Full Stack,REST API
+Explain the lifecycle of a React functional component using hooks.,Full Stack,React
+What is the difference between state and props in React?,Full Stack,React
+Explain how the useEffect hook works in React with an example.,Full Stack,React
+What is the virtual DOM in React and why is it used?,Full Stack,React
+Explain the purpose of keys when rendering a list of elements in React.,Full Stack,React
+Explain the difference between functional components and class components in React.,Full Stack,React
+What is the virtual DOM in React and how does it improve performance?,Full Stack,React
+Explain the concept of props and state in React with an example.,Full Stack,React
+What are React hooks? Explain the use of useState and useEffect.,Full Stack,React
+Explain the concept of component lifecycle methods in React.,Full Stack,React
+What is the purpose of keys when rendering lists in React?,Full Stack,React
+Explain how conditional rendering works in React.,Full Stack,React
+Explain the difference between client-side rendering and server-side rendering.,Full Stack,Web Development
+What is the role of a web browser's DOM in rendering a web page?,Full Stack,Web Development
+Explain the concept of responsive web design and why it is important.,Full Stack,Web Development
+What is the difference between a static website and a dynamic website?,Full Stack,Web Development
+Explain the difference between frontend and backend development.,Full Stack,Web Development
+What is the role of a web server in web development?,Full Stack,Web Development
+Explain the concept of responsive web design.,Full Stack,Web Development
+Explain the purpose of version control systems like Git in web development.,Full Stack,Web Development
+What is the client-server model in web development?,Full Stack,Web Development
+Explain the concept of progressive web applications (PWAs).,Full Stack,Web Development
+What is the difference between server-side rendering and client-side rendering?,Full Stack,Web Development
+Explain the role of a content delivery network (CDN) in web development.,Full Stack,Web Development
+Explain the purpose of the jQuery '$(document).ready()' function.,Full Stack,jQuery
+Write jQuery code to hide an element with a given class when a button is clicked.,Full Stack,jQuery
+Explain the difference between '.html()' and '.text()' methods in jQuery.,Full Stack,jQuery
+Explain the purpose of the jQuery library and its advantages over plain JavaScript.,Full Stack,jQuery
+What is the difference between '$(document).ready()' and window.onload in jQuery?,Full Stack,jQuery
+Explain how event handling works in jQuery with an example.,Full Stack,jQuery
+What is the purpose of jQuery selectors? Give examples.,Full Stack,jQuery
+Explain how AJAX calls are made using jQuery.,Full Stack,jQuery
+Explain the purpose of the '.each()' method in jQuery.,Full Stack,jQuery
+What is the difference between '.on()' and '.click()' for event handling in jQuery?,Full Stack,jQuery
+Explain how DOM manipulation is performed using jQuery methods such as '.append()' and '.remove()'.,Full Stack,jQuery
+"What is chaining in jQuery, and how does it simplify code?",Full Stack,jQuery
+Explain the purpose of normalization in database design.,DBMS,Database Normalization
+What is the difference between First Normal Form (1NF) and Second Normal Form (2NF)?,DBMS,Database Normalization
+Explain Third Normal Form (3NF) with an example.,DBMS,Database Normalization
+What problems can arise in a database that is not properly normalized?,DBMS,Database Normalization
+Explain Boyce-Codd Normal Form (BCNF) and how it differs from Third Normal Form (3NF).,DBMS,Database Normalization
+Explain the concept of the First Normal Form (1NF) with an example.,DBMS,Database Normalization
+What is the difference between Second Normal Form (2NF) and Third Normal Form (3NF)?,DBMS,Database Normalization
+Explain Boyce-Codd Normal Form (BCNF) and how it differs from 3NF.,DBMS,Database Normalization
+What problems does normalization solve in a relational database?,DBMS,Database Normalization
+Explain the concept of functional dependency and its role in normalization.,DBMS,Database Normalization
+What is denormalization and when is it used in database design?,DBMS,Database Normalization
+Explain the components of an Entity-Relationship (ER) diagram.,DBMS,ER Model
+What is the difference between a strong entity and a weak entity in an ER model?,DBMS,ER Model
+Explain the difference between a one-to-many relationship and a many-to-many relationship in an ER diagram.,DBMS,ER Model
+What is the purpose of a composite attribute in an ER model?,DBMS,ER Model
+Explain the difference between an entity and an entity set in the ER model.,DBMS,ER Model
+What is the difference between a weak entity and a strong entity in the ER model?,DBMS,ER Model
+"Explain the different types of relationships (one-to-one, one-to-many, many-to-many) in the ER model.",DBMS,ER Model
+What is the purpose of an ER diagram in database design?,DBMS,ER Model
+Explain the concept of attributes and their types in the ER model.,DBMS,ER Model
+How is the ER model converted into relational tables?,DBMS,ER Model
+Explain the concept of a partial key and identifying relationship in the ER model for weak entities.,DBMS,ER Model
+Explain how indexing improves the performance of database queries.,DBMS,Indexing
+What is the difference between a clustered index and a non-clustered index?,DBMS,Indexing
+What are the trade-offs of creating too many indexes on a database table?,DBMS,Indexing
+Explain the concept of a B-tree index and why it is commonly used in databases.,DBMS,Indexing
+What are the trade-offs of using too many indexes on a table?,DBMS,Indexing
+Explain the difference between a unique index and a composite index.,DBMS,Indexing
+Explain how a hash index differs from a B-tree index.,DBMS,Indexing
+"What is a covering index, and how does it improve query performance?",DBMS,Indexing
+Explain the trade-off between read performance and write performance when adding indexes.,DBMS,Indexing
+"What is a full-text index, and when would you use one?",DBMS,Indexing
+Explain how a bitmap index differs from a B-tree index and when it is preferred.,DBMS,Indexing
+What is the impact of indexing on INSERT and UPDATE operations in a database table?,DBMS,Indexing
+Explain the difference between an INNER JOIN and a LEFT OUTER JOIN in SQL.,DBMS,Joins
+"Write an SQL query using a JOIN to combine data from two related tables, 'Orders' and 'Customers'.",DBMS,Joins
+Explain the difference between a self join and a cross join.,DBMS,Joins
+Explain the difference between INNER JOIN and OUTER JOIN with an example.,DBMS,Joins
+What is the difference between LEFT JOIN and RIGHT JOIN in SQL?,DBMS,Joins
+Explain the concept of a self join with an example.,DBMS,Joins
+What is a cross join and when would you use it?,DBMS,Joins
+Explain the difference between a natural join and an equi join.,DBMS,Joins
+Explain the difference between a full outer join and a left outer join.,DBMS,Joins
+What is the difference between a theta join and an equi join?,DBMS,Joins
+Explain how joins can affect query performance on large tables.,DBMS,Joins
+Write an SQL query to combine data from two tables using an INNER JOIN.,DBMS,Joins
+Explain the difference between a primary key and a foreign key.,DBMS,Keys
+"What is a candidate key, and how does it differ from a primary key?",DBMS,Keys
+Explain the concept of a composite key with an example.,DBMS,Keys
+What is a candidate key and how does it differ from a primary key?,DBMS,Keys
+What is a super key in a relational database?,DBMS,Keys
+Explain the purpose of a unique key and how it differs from a primary key.,DBMS,Keys
+Explain the difference between a natural key and a surrogate key.,DBMS,Keys
+"What is a foreign key constraint, and what happens when it is violated?",DBMS,Keys
+Explain the concept of a partial key in a weak entity.,DBMS,Keys
+What is the purpose of an alternate key in a relational table?,DBMS,Keys
+Explain the difference between a primary key and a unique key in terms of null value handling.,DBMS,Keys
+"What is a compound key, and how does it differ from a composite key?",DBMS,Keys
+Write an SQL query to find the second highest salary from an 'Employees' table.,DBMS,SQL Queries
+"Write an SQL query to list all employees whose department is 'Sales', ordered by salary in descending order.",DBMS,SQL Queries
+Explain the difference between the 'WHERE' clause and the 'HAVING' clause in SQL.,DBMS,SQL Queries
+Write an SQL query to count the number of employees in each department.,DBMS,SQL Queries
+Write an SQL query to find the second highest salary from an Employee table.,DBMS,SQL Queries
+Write an SQL query to display all employees who joined in the last 6 months.,DBMS,SQL Queries
+Write an SQL query using GROUP BY to find the total sales for each product category.,DBMS,SQL Queries
+Write an SQL query to find duplicate records in a table.,DBMS,SQL Queries
+Write an SQL query to fetch the top 3 highest-paid employees in each department.,DBMS,SQL Queries
+Write an SQL query to update the salary of employees in a specific department by 10%.,DBMS,SQL Queries
+Write an SQL query to count the number of employees in each department using GROUP BY.,DBMS,SQL Queries
+Write an SQL query to find employees who do not have any assigned manager.,DBMS,SQL Queries
+Explain the ACID properties of a database transaction.,DBMS,Transactions
+What is the difference between the COMMIT and ROLLBACK statements in a transaction?,DBMS,Transactions
+Explain the concept of a deadlock in the context of database transactions.,DBMS,Transactions
+What is the difference between COMMIT and ROLLBACK in a transaction?,DBMS,Transactions
+Explain the concept of concurrency control in database transactions.,DBMS,Transactions
+"What is a deadlock in the context of database transactions, and how can it be avoided?",DBMS,Transactions
+Explain the difference between optimistic and pessimistic concurrency control.,DBMS,Transactions
+Explain the different isolation levels defined by the SQL standard.,DBMS,Transactions
+"What is a dirty read, and which isolation level prevents it?",DBMS,Transactions
+Explain the concept of a schedule in transaction management and what makes it serializable.,DBMS,Transactions
+"What is two-phase locking, and how does it ensure consistency in transactions?",DBMS,Transactions
+Explain the difference between a shared lock and an exclusive lock.,DBMS,Transactions
+What is a deadlock in an operating system?,Operating Systems,Deadlock
+Explain the four necessary conditions for a deadlock to occur.,Operating Systems,Deadlock
+Explain the difference between deadlock prevention and deadlock avoidance.,Operating Systems,Deadlock
+What is the difference between deadlock prevention and deadlock avoidance?,Operating Systems,Deadlock
+Explain the Banker's algorithm for deadlock avoidance.,Operating Systems,Deadlock
+What is a resource allocation graph and how is it used to detect deadlocks?,Operating Systems,Deadlock
+Explain the concept of deadlock recovery and the methods used to resolve it.,Operating Systems,Deadlock
+Explain the difference between deadlock avoidance and deadlock detection.,Operating Systems,Deadlock
+What is a safe state in the context of deadlock avoidance?,Operating Systems,Deadlock
+Explain how circular wait can be prevented to avoid deadlocks.,Operating Systems,Deadlock
+What is the difference between deadlock and starvation?,Operating Systems,Deadlock
+Explain how the wait-for graph is used to detect deadlocks.,Operating Systems,Deadlock
+Explain the purpose of a file allocation table in a file system.,Operating Systems,File Systems
+What is the difference between sequential access and direct access in a file system?,Operating Systems,File Systems
+Explain the different file allocation methods used in operating systems.,Operating Systems,File Systems
+What is the difference between sequential access and direct access in file systems?,Operating Systems,File Systems
+Explain the concept of a file descriptor.,Operating Systems,File Systems
+What is the purpose of a file allocation table (FAT) in a file system?,Operating Systems,File Systems
+Explain the difference between a hard link and a symbolic link.,Operating Systems,File Systems
+Explain the difference between contiguous and linked file allocation methods.,Operating Systems,File Systems
+What is the role of an inode in a Unix-based file system?,Operating Systems,File Systems
+Explain the concept of file permissions in an operating system.,Operating Systems,File Systems
+"What is journaling in a file system, and why is it used?",Operating Systems,File Systems
+Explain the difference between a flat file system and a hierarchical file system.,Operating Systems,File Systems
+Explain the difference between contiguous and non-contiguous memory allocation.,Operating Systems,Memory Management
+"What is fragmentation in memory management, and what is the difference between internal and external fragmentation?",Operating Systems,Memory Management
+Explain the concept of dynamic memory allocation in an operating system.,Operating Systems,Memory Management
+Explain the concept of virtual memory and why it is used.,Operating Systems,Memory Management
+"What is the difference between the First Fit, Best Fit and Worst Fit memory allocation strategies?",Operating Systems,Memory Management
+Explain the concept of segmentation in memory management.,Operating Systems,Memory Management
+Explain the concept of dynamic memory allocation and its advantages.,Operating Systems,Memory Management
+What is the difference between static and dynamic linking in memory management?,Operating Systems,Memory Management
+Explain the concept of memory compaction and why it is used.,Operating Systems,Memory Management
+"What is swapping, and how does it relate to memory management?",Operating Systems,Memory Management
+Explain the difference between logical memory and physical memory.,Operating Systems,Memory Management
+"What is thrashing, and what causes it in a memory management system?",Operating Systems,Memory Management
+Explain the concept of paging in memory management.,Operating Systems,Paging
+"What is a page fault, and how is it handled by the operating system?",Operating Systems,Paging
+Explain the difference between paging and segmentation.,Operating Systems,Paging
+What is a page fault and how is it handled by the operating system?,Operating Systems,Paging
+Explain the difference between logical address and physical address in paging.,Operating Systems,Paging
+What is the purpose of a page table in a paging system?,Operating Systems,Paging
+Explain the Least Recently Used (LRU) page replacement algorithm.,Operating Systems,Paging
+Explain the concept of multilevel paging and why it is used for large address spaces.,Operating Systems,Paging
+What is the difference between paging and segmentation?,Operating Systems,Paging
+Explain the role of the translation lookaside buffer (TLB) in paging.,Operating Systems,Paging
+"What is demand paging, and how does it reduce memory usage?",Operating Systems,Paging
+Explain the concept of a page replacement algorithm and name two common examples.,Operating Systems,Paging
+Explain the difference between preemptive and non-preemptive scheduling.,Operating Systems,Process Scheduling
+Explain how the Round Robin scheduling algorithm works with an example.,Operating Systems,Process Scheduling
+What is the difference between the Shortest Job First (SJF) and First Come First Served (FCFS) scheduling algorithms?,Operating Systems,Process Scheduling
+Compare the First-Come-First-Served (FCFS) and Shortest Job First (SJF) scheduling algorithms.,Operating Systems,Process Scheduling
+Explain how Round Robin scheduling works with an example.,Operating Systems,Process Scheduling
+"What is priority scheduling and what problem, known as starvation, can it cause?",Operating Systems,Process Scheduling
+Explain the concept of context switching in process scheduling.,Operating Systems,Process Scheduling
+Explain the concept of the Shortest Remaining Time First (SRTF) scheduling algorithm.,Operating Systems,Process Scheduling
+"What is multilevel queue scheduling, and how does it categorize processes?",Operating Systems,Process Scheduling
+Explain the concept of turnaround time and waiting time in process scheduling.,Operating Systems,Process Scheduling
+What is the difference between long-term and short-term schedulers?,Operating Systems,Process Scheduling
+Explain how multilevel feedback queue scheduling adapts to process behavior.,Operating Systems,Process Scheduling
+Explain the purpose of a semaphore in process synchronization.,Operating Systems,Semaphores
+What is the difference between a binary semaphore and a counting semaphore?,Operating Systems,Semaphores
+Explain how semaphores can be used to solve the producer-consumer problem.,Operating Systems,Semaphores
+Explain the difference between a binary semaphore and a counting semaphore.,Operating Systems,Semaphores
+How does a semaphore help solve the producer-consumer problem?,Operating Systems,Semaphores
+Explain the concept of the wait() and signal() operations on a semaphore.,Operating Systems,Semaphores
+What is a mutex and how does it differ from a semaphore?,Operating Systems,Semaphores
+Explain how semaphores can be used to solve the dining philosophers problem.,Operating Systems,Semaphores
+Explain how semaphores can lead to priority inversion.,Operating Systems,Semaphores
+What is the difference between busy waiting and blocking in semaphore implementation.,Operating Systems,Semaphores
+Explain how a counting semaphore can be used to manage a pool of limited resources.,Operating Systems,Semaphores
+"What is the readers-writers problem, and how can semaphores be used to solve it?",Operating Systems,Semaphores
+Explain the difference between a process and a thread.,Operating Systems,Threads
+What are the benefits of using multithreading in an application?,Operating Systems,Threads
+Explain the difference between user-level threads and kernel-level threads.,Operating Systems,Threads
+What is the difference between user-level threads and kernel-level threads?,Operating Systems,Threads
+Explain the concept of multithreading and its advantages.,Operating Systems,Threads
+What is the difference between concurrency and parallelism in multithreaded programs?,Operating Systems,Threads
+Explain the concept of thread synchronization and why it is needed.,Operating Systems,Threads
+Explain the many-to-one threading model and its limitations.,Operating Systems,Threads
+What is the difference between the one-to-one and many-to-many threading models?,Operating Systems,Threads
+Explain the concept of a thread pool and why it is used.,Operating Systems,Threads
+"What is a race condition, and how can it occur in multithreaded programs?",Operating Systems,Threads
+Explain the difference between a daemon thread and a user thread.,Operating Systems,Threads
+Explain the purpose of the Domain Name System (DNS) in networking.,Computer Networks,DNS
+What is the difference between a recursive DNS query and an iterative DNS query?,Computer Networks,DNS
+Explain the role of a DNS resolver when a user types a website address in a browser.,Computer Networks,DNS
+Explain the role of a DNS resolver in the domain name resolution process.,Computer Networks,DNS
+What is the purpose of an MX record in DNS?,Computer Networks,DNS
+Explain the concept of DNS caching and why it is used.,Computer Networks,DNS
+Explain the hierarchical structure of the DNS namespace.,Computer Networks,DNS
+What is the difference between an A record and a CNAME record in DNS?,Computer Networks,DNS
+Explain the role of a root DNS server in domain name resolution.,Computer Networks,DNS
+What is the purpose of Time to Live (TTL) in a DNS record?,Computer Networks,DNS
+Explain the concept of reverse DNS lookup.,Computer Networks,DNS
+"What is DNS spoofing, and why is it considered a security threat?",Computer Networks,DNS
+Explain the difference between HTTP and HTTPS.,Computer Networks,HTTP
+What is the purpose of HTTP headers in a request and response?,Computer Networks,HTTP
+Explain the difference between a stateless protocol like HTTP and a stateful connection.,Computer Networks,HTTP
+What is the difference between the GET and POST methods in HTTP?,Computer Networks,HTTP
+Explain the purpose of HTTP status codes with examples.,Computer Networks,HTTP
+"What is a persistent HTTP connection, and how does it improve performance?",Computer Networks,HTTP
+Explain the concept of HTTP cookies and their use.,Computer Networks,HTTP
+Explain the difference between HTTP/1.1 and HTTP/2.,Computer Networks,HTTP
+What is the purpose of HTTP request headers such as 'Content-Type' and 'Authorization'?,Computer Networks,HTTP
+Explain the concept of HTTP caching and how it improves web performance.,Computer Networks,HTTP
+"What is a stateless protocol, and why is HTTP considered stateless?",Computer Networks,HTTP
+Explain the difference between HTTP 4xx and 5xx status codes.,Computer Networks,HTTP
+Explain the purpose of a firewall in network security.,Computer Networks,Network Security
+What is the difference between symmetric and asymmetric encryption in securing network communication?,Computer Networks,Network Security
+Explain the difference between symmetric and asymmetric encryption.,Computer Networks,Network Security
+What is a firewall and how does it help secure a network?,Computer Networks,Network Security
+Explain the concept of a Denial of Service (DoS) attack.,Computer Networks,Network Security
+What is the purpose of a digital certificate in network security?,Computer Networks,Network Security
+"Explain the difference between a virus, a worm and a Trojan horse.",Computer Networks,Network Security
+Explain the concept of a Virtual Private Network (VPN) and how it secures data transmission.,Computer Networks,Network Security
+What is the difference between an Intrusion Detection System (IDS) and an Intrusion Prevention System (IPS)?,Computer Networks,Network Security
+Explain the concept of phishing and how it can be prevented.,Computer Networks,Network Security
+"What is a man-in-the-middle attack, and how can it be mitigated?",Computer Networks,Network Security
+Explain the purpose of Secure Sockets Layer (SSL) and Transport Layer Security (TLS) in network security.,Computer Networks,Network Security
+Explain the seven layers of the OSI model with their functions.,Computer Networks,OSI Model
+What is the difference between the Transport layer and the Network layer of the OSI model?,Computer Networks,OSI Model
+Explain the role of the Data Link layer in the OSI model.,Computer Networks,OSI Model
+Explain the functions of each of the seven layers of the OSI model.,Computer Networks,OSI Model
+What is the difference between the Session layer and the Presentation layer in the OSI model?,Computer Networks,OSI Model
+How does the OSI model differ from the TCP/IP model?,Computer Networks,OSI Model
+Explain the function of the Transport layer in the OSI model.,Computer Networks,OSI Model
+Explain how data encapsulation occurs as it passes through the layers of the OSI model.,Computer Networks,OSI Model
+What protocols operate at the Network layer of the OSI model?,Computer Networks,OSI Model
+Explain the difference between the Physical layer and the Data Link layer.,Computer Networks,OSI Model
+What is the purpose of the Application layer in the OSI model?,Computer Networks,OSI Model
+Explain how the OSI model helps in troubleshooting network issues.,Computer Networks,OSI Model
+Explain the difference between static routing and dynamic routing.,Computer Networks,Routing
+What is the purpose of a routing table in a network router?,Computer Networks,Routing
+Explain how the Distance Vector routing algorithm determines the shortest path.,Computer Networks,Routing
+What is the difference between distance vector routing and link state routing?,Computer Networks,Routing
+Explain how the Routing Information Protocol (RIP) works.,Computer Networks,Routing
+What is the purpose of a routing table in a router?,Computer Networks,Routing
+Explain the concept of the shortest path algorithm used in routing protocols.,Computer Networks,Routing
+Explain the difference between interior gateway protocols and exterior gateway protocols.,Computer Networks,Routing
+"What is the Border Gateway Protocol (BGP), and where is it used?",Computer Networks,Routing
+Explain the concept of a default route in a routing table.,Computer Networks,Routing
+"What is the difference between unicast, multicast and broadcast routing?",Computer Networks,Routing
+Explain how the Open Shortest Path First (OSPF) protocol determines the best path.,Computer Networks,Routing
+Explain the purpose of subnetting in an IP network.,Computer Networks,Subnetting
+"Given the IP address 192.168.1.0/24, determine the number of usable host addresses in that subnet.",Computer Networks,Subnetting
+What is the difference between a subnet mask and a default gateway?,Computer Networks,Subnetting
+Explain the purpose of subnetting in a network.,Computer Networks,Subnetting
+"Given an IP address of 192.168.1.0/24, calculate the number of usable host addresses.",Computer Networks,Subnetting
+Explain the difference between a subnet mask and a default gateway.,Computer Networks,Subnetting
+How do you calculate the number of subnets from a given subnet mask?,Computer Networks,Subnetting
+Explain the concept of CIDR (Classless Inter-Domain Routing).,Computer Networks,Subnetting
+Explain how Variable Length Subnet Masking (VLSM) allows more efficient use of IP addresses.,Computer Networks,Subnetting
+"Given a network address of 172.16.0.0/16, explain how you would divide it into 4 equal subnets.",Computer Networks,Subnetting
+Explain the difference between a network address and a broadcast address within a subnet.,Computer Networks,Subnetting
+What is the purpose of a subnet mask in identifying the network and host portions of an IP address?,Computer Networks,Subnetting
+Explain the difference between the TCP and UDP protocols.,Computer Networks,TCP/IP
+What is the three-way handshake process used in TCP connection establishment?,Computer Networks,TCP/IP
+Explain the layers of the TCP/IP model and how they map to the OSI model.,Computer Networks,TCP/IP
+Explain the difference between TCP and UDP protocols.,Computer Networks,TCP/IP
+What is the three-way handshake process in TCP?,Computer Networks,TCP/IP
+Explain the layers of the TCP/IP protocol suite.,Computer Networks,TCP/IP
+What is the purpose of flow control and congestion control in TCP?,Computer Networks,TCP/IP
+Explain the concept of port numbers in the TCP/IP model.,Computer Networks,TCP/IP
+Explain the purpose of the sliding window mechanism in TCP.,Computer Networks,TCP/IP
+What is the difference between TCP's connection-oriented approach and UDP's connectionless approach?,Computer Networks,TCP/IP
+Explain the concept of sequence numbers and acknowledgment numbers in TCP.,Computer Networks,TCP/IP
+What is the purpose of the TCP retransmission timeout mechanism?,Computer Networks,TCP/IP
+Explain the concept of a balance factor in an AVL tree.,Data Structures,AVL Trees
+"What is the purpose of rotations in an AVL tree, and when are they performed?",Data Structures,AVL Trees
+Explain the difference between a left rotation and a right rotation in an AVL tree.,Data Structures,AVL Trees
+Explain the concept of the balance factor in an AVL tree.,Data Structures,AVL Trees
+What are the different types of rotations used to balance an AVL tree?,Data Structures,AVL Trees
+Explain how a left-right rotation is performed in an AVL tree.,Data Structures,AVL Trees
+What is the maximum height of an AVL tree with n nodes?,Data Structures,AVL Trees
+Explain why AVL trees provide better worst-case search performance than unbalanced BSTs.,Data Structures,AVL Trees
+Explain how an AVL tree performs a right-right rotation to restore balance.,Data Structures,AVL Trees
+What is the difference between an AVL tree and a Red-Black tree?,Data Structures,AVL Trees
+Explain why AVL trees may require more rotations than Red-Black trees during insertion.,Data Structures,AVL Trees
+Write a program outline to insert a node into an AVL tree while maintaining balance.,Data Structures,AVL Trees
+Write a program to insert a node into a binary search tree.,Data Structures,Binary Search Trees
+Explain how deletion is performed in a binary search tree when the node has two children.,Data Structures,Binary Search Trees
+"Explain the time complexity of search, insertion and deletion operations in a balanced binary search tree.",Data Structures,Binary Search Trees
+Explain how deletion of a node with two children is handled in a binary search tree.,Data Structures,Binary Search Trees
+Write a program to search for an element in a binary search tree.,Data Structures,Binary Search Trees
+"Explain the time complexity of search, insert and delete operations in a balanced BST.",Data Structures,Binary Search Trees
+Write a program to find the minimum and maximum values in a binary search tree.,Data Structures,Binary Search Trees
+Write a program to find the height of a binary search tree.,Data Structures,Binary Search Trees
+Explain how in-order traversal of a binary search tree produces a sorted sequence.,Data Structures,Binary Search Trees
+Write a program to find the lowest common ancestor of two nodes in a binary search tree.,Data Structures,Binary Search Trees
+Explain what happens to the performance of a binary search tree when it becomes skewed.,Data Structures,Binary Search Trees
+Explain the difference between a singly linked list and a doubly linked list.,Data Structures,Doubly Linked List
+Write a program to insert a node at a given position in a doubly linked list.,Data Structures,Doubly Linked List
+Write a program to insert a node at the beginning of a doubly linked list.,Data Structures,Doubly Linked List
+Write a program to reverse a doubly linked list.,Data Structures,Doubly Linked List
+Explain the advantages of a doubly linked list over a singly linked list.,Data Structures,Doubly Linked List
+Write a program to delete a given node from a doubly linked list.,Data Structures,Doubly Linked List
+Write a program to insert a node at the end of a doubly linked list.,Data Structures,Doubly Linked List
+Explain how traversal in both directions is achieved in a doubly linked list.,Data Structures,Doubly Linked List
+Write a program to convert a doubly linked list into a binary search tree.,Data Structures,Doubly Linked List
+What are the memory overhead trade-offs of a doubly linked list compared to a singly linked list?,Data Structures,Doubly Linked List
+Write a program to find the middle node of a doubly linked list.,Data Structures,Doubly Linked List
+Explain how a doubly linked list is used to implement a browser's forward and backward navigation.,Data Structures,Doubly Linked List
+Explain the difference between Breadth-First Search (BFS) and Depth-First Search (DFS) in graph traversal.,Data Structures,Graphs
+What is the difference between a directed graph and an undirected graph?,Data Structures,Graphs
+Explain how Dijkstra's algorithm finds the shortest path in a weighted graph.,Data Structures,Graphs
+Explain the difference between a directed graph and an undirected graph.,Data Structures,Graphs
+Write a program to implement Breadth-First Search (BFS) traversal of a graph.,Data Structures,Graphs
+Explain the difference between BFS and DFS traversal of a graph.,Data Structures,Graphs
+Write a program to detect a cycle in an undirected graph.,Data Structures,Graphs
+Explain the concept of a minimum spanning tree with an example algorithm.,Data Structures,Graphs
+Write a program to implement Depth-First Search (DFS) traversal of a graph.,Data Structures,Graphs
+Explain Dijkstra's algorithm for finding the shortest path in a weighted graph.,Data Structures,Graphs
+What is the difference between an adjacency matrix and an adjacency list representation of a graph?,Data Structures,Graphs
+Explain the concept of topological sorting in a directed acyclic graph.,Data Structures,Graphs
+Explain the difference between a min-heap and a max-heap.,Data Structures,Heaps
+Write a program to build a max-heap from a given array of integers.,Data Structures,Heaps
+Explain how a heap is used to implement a priority queue.,Data Structures,Heaps
+Write a program to insert an element into a max-heap.,Data Structures,Heaps
+Explain how heapify operation works in a binary heap.,Data Structures,Heaps
+Write a program to implement heap sort using a heap data structure.,Data Structures,Heaps
+Write a program to delete the root element from a min-heap.,Data Structures,Heaps
+Explain how a heap can be used to find the kth largest element in an array.,Data Structures,Heaps
+What is the time complexity of building a heap from an unsorted array?,Data Structures,Heaps
+Explain the difference between a binary heap and a Fibonacci heap.,Data Structures,Heaps
+Write a program to merge two binary max-heaps into one.,Data Structures,Heaps
+Explain the concept of a d-ary heap and how it generalizes a binary heap.,Data Structures,Heaps
+Explain the difference between a binary tree and a binary search tree.,Data Structures,Trees
+Write a program to perform an in-order traversal of a binary tree.,Data Structures,Trees
+"Explain the difference between pre-order, in-order and post-order tree traversal.",Data Structures,Trees
+Write a program to find the height of a binary tree.,Data Structures,Trees
+"Explain the difference between preorder, inorder and postorder tree traversal.",Data Structures,Trees
+Write a program to count the number of leaf nodes in a binary tree.,Data Structures,Trees
+Explain the concept of a balanced binary tree and why balance matters.,Data Structures,Trees
+Explain the difference between a complete binary tree and a full binary tree.,Data Structures,Trees
+Write a program to check whether two binary trees are identical.,Data Structures,Trees
+Explain the concept of a binary tree's diameter and how it can be computed.,Data Structures,Trees
+Write a program to convert a binary tree into its mirror image.,Data Structures,Trees
+Explain the level-order traversal of a binary tree with an example.,Data Structures,Trees
+Explain the structure of a Trie and how it is used for efficient string searching.,Data Structures,Trie
+Write a program to insert a word into a Trie data structure.,Data Structures,Trie
+Explain how a Trie can be used to implement autocomplete functionality.,Data Structures,Trie
+Explain the structure of a trie data structure with an example.,Data Structures,Trie
+Write a program to insert a word into a trie.,Data Structures,Trie
+Explain how a trie is used to implement autocomplete functionality.,Data Structures,Trie
+Write a program to search for a word in a trie.,Data Structures,Trie
+Explain the space and time complexity of operations on a trie.,Data Structures,Trie
+Explain how a trie can be used to check if a given prefix exists among a set of strings.,Data Structures,Trie
+Write a program to delete a word from a trie.,Data Structures,Trie
+Explain the memory trade-offs of using a trie compared to a hash set for string storage.,Data Structures,Trie
+How can a trie be used to implement a spell checker?,Data Structures,Trie
+Explain the purpose of the code generation phase in a compiler.,Compiler Design,Code Generation
+What is the difference between intermediate code and target code in a compiler?,Compiler Design,Code Generation
+Explain how code optimization improves the efficiency of generated code.,Compiler Design,Code Generation
+Explain the role of the code generation phase in a compiler.,Compiler Design,Code Generation
+"What is intermediate code, and why is it used before generating target code?",Compiler Design,Code Generation
+Explain the concept of three-address code with an example.,Compiler Design,Code Generation
+"What is register allocation, and why is it important in code generation?",Compiler Design,Code Generation
+Explain the difference between code generation and code optimization.,Compiler Design,Code Generation
+Explain the difference between a target-independent and target-dependent code optimizer.,Compiler Design,Code Generation
+"What is peephole optimization, and how does it improve generated code?",Compiler Design,Code Generation
+Explain the concept of a control flow graph and its use in code generation.,Compiler Design,Code Generation
+What is the difference between direct code generation and code generation via an intermediate representation?,Compiler Design,Code Generation
+Explain the role of a lexical analyzer in the compilation process.,Compiler Design,Lexical Analysis
+"What is a token, and how is it identified during lexical analysis?",Compiler Design,Lexical Analysis
+"Explain the difference between a lexeme, a token and a pattern.",Compiler Design,Lexical Analysis
+Explain the role of the lexical analyzer in the compilation process.,Compiler Design,Lexical Analysis
+"What is a token in lexical analysis, and how does it differ from a lexeme?",Compiler Design,Lexical Analysis
+Explain how regular expressions are used to define tokens in lexical analysis.,Compiler Design,Lexical Analysis
+What is the role of a symbol table during lexical analysis?,Compiler Design,Lexical Analysis
+Explain the concept of a finite automaton and its use in building a lexical analyzer.,Compiler Design,Lexical Analysis
+What errors can be detected during the lexical analysis phase?,Compiler Design,Lexical Analysis
+Explain the role of a Deterministic Finite Automaton (DFA) in lexical analysis.,Compiler Design,Lexical Analysis
+What is the difference between a lexical analyzer and a parser?,Compiler Design,Lexical Analysis
+Explain the difference between top-down parsing and bottom-up parsing.,Compiler Design,Parsing
+What is the purpose of a parse tree in the compilation process?,Compiler Design,Parsing
+Explain the concept of left recursion and why it must be eliminated in top-down parsing.,Compiler Design,Parsing
+What is the difference between an LL parser and an LR parser?,Compiler Design,Parsing
+Explain the concept of left recursion and how it can be eliminated from a grammar.,Compiler Design,Parsing
+What is a parse tree and how does it represent the syntactic structure of an expression?,Compiler Design,Parsing
+Explain the concept of ambiguity in context-free grammars with an example.,Compiler Design,Parsing
+What is the difference between recursive descent parsing and predictive parsing?,Compiler Design,Parsing
+Explain how an LR(0) parser constructs a parsing table.,Compiler Design,Parsing
+"What is the difference between SLR, CLR and LALR parsers?",Compiler Design,Parsing
+Explain how a shift-reduce parser resolves conflicts during parsing.,Compiler Design,Parsing
+What is the purpose of a parse stack in bottom-up parsing?,Compiler Design,Parsing
+Explain the purpose of semantic analysis in a compiler.,Compiler Design,Semantic Analysis
+"What is type checking, and why is it performed during semantic analysis?",Compiler Design,Semantic Analysis
+Explain the role of a symbol table during semantic analysis.,Compiler Design,Semantic Analysis
+Explain the role of semantic analysis in the compilation process.,Compiler Design,Semantic Analysis
+Explain the concept of a syntax-directed definition used in semantic analysis.,Compiler Design,Semantic Analysis
+"What is scope resolution, and how is it handled during semantic analysis?",Compiler Design,Semantic Analysis
+Explain how semantic analysis detects errors such as undeclared variables.,Compiler Design,Semantic Analysis
+Explain the concept of type coercion during semantic analysis.,Compiler Design,Semantic Analysis
+What is the role of an annotated parse tree in semantic analysis?,Compiler Design,Semantic Analysis
+Explain how semantic analysis handles function overloading resolution.,Compiler Design,Semantic Analysis
+What is the difference between static semantic checking and dynamic semantic checking?,Compiler Design,Semantic Analysis
+Explain the role of syntax analysis in a compiler and its relationship to context-free grammars.,Compiler Design,Syntax Analysis
+What is the difference between syntax analysis and semantic analysis?,Compiler Design,Syntax Analysis
+Explain how a syntax error is detected and reported during compilation.,Compiler Design,Syntax Analysis
+Explain the role of syntax analysis in the compilation process.,Compiler Design,Syntax Analysis
+What is a context-free grammar and how is it used in syntax analysis?,Compiler Design,Syntax Analysis
+Explain the difference between syntax errors and semantic errors with examples.,Compiler Design,Syntax Analysis
+What is the purpose of syntax-directed translation?,Compiler Design,Syntax Analysis
+Explain how a syntax analyzer reports and recovers from errors.,Compiler Design,Syntax Analysis
+Explain the concept of an abstract syntax tree and how it differs from a parse tree.,Compiler Design,Syntax Analysis
+What is the role of grammar productions in syntax analysis?,Compiler Design,Syntax Analysis
+Explain how error recovery strategies work during syntax analysis.,Compiler Design,Syntax Analysis
+"Explain the difference between a public cloud, a private cloud and a hybrid cloud.",Cloud Computing,Cloud Deployment Models
+What are the advantages and disadvantages of using a public cloud deployment model?,Cloud Computing,Cloud Deployment Models
+Explain the concept of a community cloud with an example use case.,Cloud Computing,Cloud Deployment Models
+"Explain the difference between public cloud, private cloud and hybrid cloud deployment models.",Cloud Computing,Cloud Deployment Models
+"What is a community cloud, and when is it typically used?",Cloud Computing,Cloud Deployment Models
+Explain the advantages and disadvantages of using a public cloud deployment model.,Cloud Computing,Cloud Deployment Models
+What factors should an organization consider when choosing between a private and public cloud?,Cloud Computing,Cloud Deployment Models
+Explain how a hybrid cloud model combines the benefits of public and private clouds.,Cloud Computing,Cloud Deployment Models
+Explain the concept of multi-cloud strategy and its benefits for organizations.,Cloud Computing,Cloud Deployment Models
+What are the security considerations unique to a private cloud deployment?,Cloud Computing,Cloud Deployment Models
+Explain how a hybrid cloud handles data that must remain on-premises for compliance reasons.,Cloud Computing,Cloud Deployment Models
+"What is a virtual private cloud (VPC), and how does it fit into cloud deployment models?",Cloud Computing,Cloud Deployment Models
+"Explain the difference between block storage, file storage and object storage in the cloud.",Cloud Computing,Cloud Storage
+What are the benefits of using cloud storage over traditional on-premises storage?,Cloud Computing,Cloud Storage
+Explain the concept of data redundancy in cloud storage systems.,Cloud Computing,Cloud Storage
+"Explain the difference between block storage, file storage and object storage in cloud computing.",Cloud Computing,Cloud Storage
+"What is data replication in cloud storage, and why is it important?",Cloud Computing,Cloud Storage
+Explain the concept of storage tiering in cloud storage systems.,Cloud Computing,Cloud Storage
+What is the role of redundancy in ensuring durability of cloud storage?,Cloud Computing,Cloud Storage
+Explain the difference between cold storage and hot storage in cloud environments.,Cloud Computing,Cloud Storage
+Explain how erasure coding is used to ensure durability in cloud storage systems.,Cloud Computing,Cloud Storage
+What is the difference between cloud storage and network-attached storage (NAS)?,Cloud Computing,Cloud Storage
+Explain the concept of eventual consistency in distributed cloud storage systems.,Cloud Computing,Cloud Storage
+What is the role of a Content Delivery Network (CDN) in accelerating access to cloud-stored content?,Cloud Computing,Cloud Storage
+Explain the difference between virtual machines and containers.,Cloud Computing,Containerization
+What is the purpose of a container orchestration tool such as Kubernetes?,Cloud Computing,Containerization
+Explain how Docker containers help in achieving consistency across development and production environments.,Cloud Computing,Containerization
+Explain the concept of containerization and how it differs from virtualization.,Cloud Computing,Containerization
+"What is Docker, and what role does it play in containerization?",Cloud Computing,Containerization
+Explain the purpose of a container orchestration tool such as Kubernetes.,Cloud Computing,Containerization
+What are the benefits of using containers for deploying microservices?,Cloud Computing,Containerization
+Explain the concept of a container image and how it differs from a running container.,Cloud Computing,Containerization
+Explain the concept of a container registry and its role in deployment pipelines.,Cloud Computing,Containerization
+What is the difference between a Docker image and a Docker container?,Cloud Computing,Containerization
+Explain how container networking allows communication between containers.,Cloud Computing,Containerization
+What is the purpose of a Dockerfile in building a container image?,Cloud Computing,Containerization
+Explain the purpose of load balancing in a cloud computing environment.,Cloud Computing,Load Balancing
+What is the difference between round-robin load balancing and least-connections load balancing?,Cloud Computing,Load Balancing
+Explain how load balancing improves the availability of a web application.,Cloud Computing,Load Balancing
+Explain the purpose of load balancing in a cloud environment.,Cloud Computing,Load Balancing
+What is the difference between round-robin and least-connections load balancing algorithms?,Cloud Computing,Load Balancing
+Explain the role of a load balancer in ensuring high availability of applications.,Cloud Computing,Load Balancing
+What is the difference between horizontal scaling and vertical scaling in relation to load balancing?,Cloud Computing,Load Balancing
+Explain how health checks are used by a load balancer to route traffic.,Cloud Computing,Load Balancing
+Explain how a load balancer distinguishes between session-persistent and session-independent traffic.,Cloud Computing,Load Balancing
+What is the difference between DNS-based load balancing and hardware load balancing?,Cloud Computing,Load Balancing
+Explain the concept of session persistence (sticky sessions) in load balancing.,Cloud Computing,Load Balancing
+"What is a Layer 4 load balancer, and how does it differ from a Layer 7 load balancer?",Cloud Computing,Load Balancing
+Explain the concept of virtualization and its role in cloud computing.,Cloud Computing,Virtualization
+What is the difference between a Type 1 hypervisor and a Type 2 hypervisor?,Cloud Computing,Virtualization
+Explain how virtualization allows multiple operating systems to run on a single physical machine.,Cloud Computing,Virtualization
+What is the difference between a Type 1 and a Type 2 hypervisor?,Cloud Computing,Virtualization
+What are the benefits of server virtualization for organizations?,Cloud Computing,Virtualization
+Explain the concept of hardware virtualization with an example.,Cloud Computing,Virtualization
+Explain the concept of full virtualization versus paravirtualization.,Cloud Computing,Virtualization
+"What is a virtual machine snapshot, and why is it useful?",Cloud Computing,Virtualization
+Explain how live migration of virtual machines works in a cloud environment.,Cloud Computing,Virtualization
+"What is nested virtualization, and where is it used?",Cloud Computing,Virtualization
+Explain the concept of resource pooling enabled by virtualization.,Cloud Computing,Virtualization
+What is the difference between application virtualization and desktop virtualization?,Cloud Computing,Virtualization
+Explain the concept of a confusion matrix in evaluating a classification model.,Machine Learning,Classification
+What is the difference between a decision tree classifier and a k-nearest neighbours classifier?,Machine Learning,Classification
+Explain the concept of classification in machine learning with an example.,Machine Learning,Classification
+What is the difference between binary classification and multi-class classification?,Machine Learning,Classification
+Explain how a decision tree is used for classification tasks.,Machine Learning,Classification
+"What is a confusion matrix, and how is it used to evaluate a classification model?",Machine Learning,Classification
+Explain the difference between precision and recall in classification evaluation.,Machine Learning,Classification
+"What is the k-nearest neighbors (KNN) algorithm, and how does it classify data points?",Machine Learning,Classification
+Explain how a support vector machine (SVM) classifies data points.,Machine Learning,Classification
+"What is the ROC curve, and how is it used to evaluate a classification model?",Machine Learning,Classification
+Explain the concept of the Naive Bayes classifier and the assumption it makes.,Machine Learning,Classification
+What is the difference between a hard classifier and a soft classifier?,Machine Learning,Classification
+Explain the basic structure of an artificial neural network.,Machine Learning,Neural Networks
+What is the role of an activation function in a neural network?,Machine Learning,Neural Networks
+Explain the concept of backpropagation in training a neural network.,Machine Learning,Neural Networks
+What is the difference between a shallow neural network and a deep neural network?,Machine Learning,Neural Networks
+Explain the purpose of weights and biases in a neural network.,Machine Learning,Neural Networks
+What is the vanishing gradient problem in deep neural networks?,Machine Learning,Neural Networks
+Explain the difference between a convolutional neural network and a recurrent neural network.,Machine Learning,Neural Networks
+What is the purpose of the softmax activation function in a neural network's output layer?,Machine Learning,Neural Networks
+Explain the concept of dropout regularization in neural networks.,Machine Learning,Neural Networks
+What is the difference between batch gradient descent and stochastic gradient descent?,Machine Learning,Neural Networks
+Explain the concept of a recurrent neural network's hidden state and its role in sequence modeling.,Machine Learning,Neural Networks
+What is the purpose of batch normalization in training deep neural networks?,Machine Learning,Neural Networks
+Explain the concept of overfitting in a machine learning model.,Machine Learning,Overfitting
+What techniques can be used to prevent overfitting in a machine learning model?,Machine Learning,Overfitting
+What is the difference between overfitting and underfitting?,Machine Learning,Overfitting
+Explain how regularization techniques help prevent overfitting.,Machine Learning,Overfitting
+What role does cross-validation play in detecting overfitting?,Machine Learning,Overfitting
+Explain how increasing the size of training data can help reduce overfitting.,Machine Learning,Overfitting
+"What is the bias-variance tradeoff, and how does it relate to overfitting?",Machine Learning,Overfitting
+Explain how dropout is used as a regularization technique to reduce overfitting in neural networks.,Machine Learning,Overfitting
+What is the difference between L1 and L2 regularization in reducing overfitting?,Machine Learning,Overfitting
+Explain how early stopping helps prevent overfitting during model training.,Machine Learning,Overfitting
+What is the effect of model complexity on the likelihood of overfitting?,Machine Learning,Overfitting
+Explain how data augmentation helps reduce overfitting in image classification tasks.,Machine Learning,Overfitting
+Explain the concept of linear regression and how it is used to predict a continuous variable.,Machine Learning,Regression
+What is the difference between simple linear regression and multiple linear regression?,Machine Learning,Regression
+Explain the concept of linear regression with an example.,Machine Learning,Regression
+Explain the purpose of the cost function in linear regression.,Machine Learning,Regression
+What is the difference between linear regression and logistic regression?,Machine Learning,Regression
+Explain the concept of R-squared as a metric for evaluating regression models.,Machine Learning,Regression
+"What is polynomial regression, and when is it used instead of linear regression?",Machine Learning,Regression
+Explain the concept of ridge regression and how it differs from ordinary least squares regression.,Machine Learning,Regression
+What is the purpose of gradient descent in training a regression model?,Machine Learning,Regression
+Explain the concept of multicollinearity and its effect on regression models.,Machine Learning,Regression
+What is the difference between lasso regression and ridge regression?,Machine Learning,Regression
+Explain how residual plots are used to evaluate the fit of a regression model.,Machine Learning,Regression
+Explain the concept of supervised learning with an example.,Machine Learning,Supervised Learning
+What is the difference between classification and regression in supervised learning?,Machine Learning,Supervised Learning
+Explain the concept of supervised learning with a real-world example.,Machine Learning,Supervised Learning
+What is the difference between classification and regression problems in supervised learning?,Machine Learning,Supervised Learning
+Explain the role of labeled data in training a supervised learning model.,Machine Learning,Supervised Learning
+What is the difference between training data and test data in supervised learning?,Machine Learning,Supervised Learning
+Explain the concept of a loss function in supervised learning.,Machine Learning,Supervised Learning
+"What is cross-validation, and why is it used in supervised learning?",Machine Learning,Supervised Learning
+Explain the difference between parametric and non-parametric supervised learning models.,Machine Learning,Supervised Learning
+What is the role of feature scaling in supervised learning algorithms?,Machine Learning,Supervised Learning
+Explain how ensemble methods such as random forests improve prediction accuracy in supervised learning.,Machine Learning,Supervised Learning
+What is the difference between a hyperparameter and a model parameter?,Machine Learning,Supervised Learning
+Explain the components of an expert system and their functions.,Artificial Intelligence,Expert Systems
+What is the difference between an expert system's knowledge base and its inference engine?,Artificial Intelligence,Expert Systems
+Explain the basic components of an expert system.,Artificial Intelligence,Expert Systems
+What is the difference between the knowledge base and the inference engine in an expert system?,Artificial Intelligence,Expert Systems
+Explain the concept of forward chaining and backward chaining in expert systems.,Artificial Intelligence,Expert Systems
+What are the advantages and limitations of expert systems?,Artificial Intelligence,Expert Systems
+Explain how rule-based reasoning is used in an expert system.,Artificial Intelligence,Expert Systems
+Explain the role of the user interface in an expert system.,Artificial Intelligence,Expert Systems
+What is the difference between a rule-based expert system and a case-based expert system?,Artificial Intelligence,Expert Systems
+Explain how uncertainty is handled in expert systems using confidence factors.,Artificial Intelligence,Expert Systems
+What are some real-world applications of expert systems?,Artificial Intelligence,Expert Systems
+Explain the role of a heuristic function in solving AI search problems.,Artificial Intelligence,Heuristics
+What is the difference between an admissible heuristic and an inadmissible heuristic?,Artificial Intelligence,Heuristics
+Explain the concept of a heuristic function in AI search algorithms.,Artificial Intelligence,Heuristics
+Explain how heuristics improve the efficiency of search algorithms.,Artificial Intelligence,Heuristics
+What is the role of heuristics in the A* search algorithm?,Artificial Intelligence,Heuristics
+Explain the concept of hill climbing search and its limitations.,Artificial Intelligence,Heuristics
+Explain the concept of a consistent (monotonic) heuristic in search algorithms.,Artificial Intelligence,Heuristics
+What is the difference between a heuristic function and an evaluation function?,Artificial Intelligence,Heuristics
+Explain how the Manhattan distance heuristic is used in solving the 8-puzzle problem.,Artificial Intelligence,Heuristics
+"What is simulated annealing, and how does it use heuristics to avoid local optima?",Artificial Intelligence,Heuristics
+Explain the concept of a greedy heuristic and how it can lead to suboptimal solutions.,Artificial Intelligence,Heuristics
+What is the difference between a static heuristic and a dynamic heuristic in AI search?,Artificial Intelligence,Heuristics
+Explain the purpose of knowledge representation in artificial intelligence.,Artificial Intelligence,Knowledge Representation
+What is the difference between a semantic network and a frame-based representation in AI?,Artificial Intelligence,Knowledge Representation
+"What is a semantic network, and how is it used to represent knowledge?",Artificial Intelligence,Knowledge Representation
+Explain the difference between declarative and procedural knowledge representation.,Artificial Intelligence,Knowledge Representation
+What is a frame-based representation in AI?,Artificial Intelligence,Knowledge Representation
+Explain how predicate logic is used for knowledge representation in AI systems.,Artificial Intelligence,Knowledge Representation
+Explain the concept of an ontology in knowledge representation.,Artificial Intelligence,Knowledge Representation
+What is the difference between a production rule system and a semantic network for representing knowledge?,Artificial Intelligence,Knowledge Representation
+Explain the concept of default reasoning in knowledge representation.,Artificial Intelligence,Knowledge Representation
+What is the closed-world assumption in the context of knowledge representation?,Artificial Intelligence,Knowledge Representation
+Explain the difference between a description logic and a rule-based knowledge representation approach.,Artificial Intelligence,Knowledge Representation
+"What is a knowledge graph, and how is it used to represent relationships between entities?",Artificial Intelligence,Knowledge Representation
+Explain the difference between the A* search algorithm and the Breadth-First Search algorithm.,Artificial Intelligence,Search Algorithms
+What is the difference between an informed search algorithm and an uninformed search algorithm?,Artificial Intelligence,Search Algorithms
+Explain the difference between uninformed search and informed search algorithms.,Artificial Intelligence,Search Algorithms
+"What is the A* search algorithm, and how does it use heuristics to find optimal paths?",Artificial Intelligence,Search Algorithms
+Explain the difference between breadth-first search and depth-first search in AI.,Artificial Intelligence,Search Algorithms
+What is the concept of a state space in search algorithms?,Artificial Intelligence,Search Algorithms
+Explain how the minimax algorithm is used in game-playing AI.,Artificial Intelligence,Search Algorithms
+Explain the concept of iterative deepening depth-first search and its advantage over plain DFS.,Artificial Intelligence,Search Algorithms
+What is the difference between local search and global search algorithms in AI?,Artificial Intelligence,Search Algorithms
+Explain how the alpha-beta pruning technique improves the efficiency of the minimax algorithm.,Artificial Intelligence,Search Algorithms
+"What is a greedy best-first search, and how does it differ from A* search?",Artificial Intelligence,Search Algorithms
+Explain the purpose of the Turing Test and how it evaluates machine intelligence.,Artificial Intelligence,Turing Test
+What are some criticisms of the Turing Test as a measure of true intelligence?,Artificial Intelligence,Turing Test
+Explain the purpose of the Turing Test in artificial intelligence.,Artificial Intelligence,Turing Test
+What are the criticisms of the Turing Test as a measure of machine intelligence?,Artificial Intelligence,Turing Test
+Explain how the Turing Test is conducted between a human judge and a machine.,Artificial Intelligence,Turing Test
+What is the significance of the Turing Test in the history of AI research?,Artificial Intelligence,Turing Test
+Explain the difference between the Turing Test and the Chinese Room argument.,Artificial Intelligence,Turing Test
+Explain the setup of the imitation game as originally proposed by Alan Turing.,Artificial Intelligence,Turing Test
+What is the difference between the standard Turing Test and the total Turing Test?,Artificial Intelligence,Turing Test
+Explain why passing the Turing Test does not necessarily imply true understanding by a machine.,Artificial Intelligence,Turing Test
+What role has the Turing Test played in shaping public perception of AI capabilities?,Artificial Intelligence,Turing Test
+Explain the core principles of Agile software development.,Software Engineering,Agile Methodology
+What is the difference between Scrum and Kanban as Agile frameworks?,Software Engineering,Agile Methodology
+Explain the purpose of a sprint in Scrum methodology.,Software Engineering,Agile Methodology
+What is the role of a product backlog in Agile development?,Software Engineering,Agile Methodology
+Explain how daily stand-up meetings contribute to Agile project management.,Software Engineering,Agile Methodology
+Explain the concept of a sprint retrospective and its purpose in Agile development.,Software Engineering,Agile Methodology
+What is the role of a Scrum Master in an Agile team?,Software Engineering,Agile Methodology
+Explain the difference between Extreme Programming (XP) and Scrum.,Software Engineering,Agile Methodology
+"What is a user story, and how is it used in Agile requirements gathering?",Software Engineering,Agile Methodology
+Explain the concept of velocity in Agile project tracking.,Software Engineering,Agile Methodology
+What is the purpose of a burndown chart in Agile project management?,Software Engineering,Agile Methodology
+Explain how Agile methodology handles changing requirements compared to the Waterfall model.,Software Engineering,Agile Methodology
+Explain the purpose of the Singleton design pattern with an example.,Software Engineering,Design Patterns
+What is the difference between the Factory design pattern and the Observer design pattern?,Software Engineering,Design Patterns
+Explain the Singleton design pattern with an example use case.,Software Engineering,Design Patterns
+What is the difference between the Factory pattern and the Abstract Factory pattern?,Software Engineering,Design Patterns
+Explain the Observer design pattern and where it is commonly used.,Software Engineering,Design Patterns
+What is the purpose of the MVC (Model-View-Controller) design pattern?,Software Engineering,Design Patterns
+"Explain the difference between creational, structural and behavioral design patterns.",Software Engineering,Design Patterns
+Explain the Strategy design pattern with an example use case.,Software Engineering,Design Patterns
+What is the difference between the Adapter pattern and the Decorator pattern?,Software Engineering,Design Patterns
+Explain the Builder design pattern and when it is useful.,Software Engineering,Design Patterns
+What is the purpose of the Facade design pattern?,Software Engineering,Design Patterns
+Explain the difference between the Composite pattern and the Bridge pattern.,Software Engineering,Design Patterns
+Explain the difference between functional requirements and non-functional requirements.,Software Engineering,Requirements Engineering
+What is the purpose of a requirements traceability matrix in software engineering?,Software Engineering,Requirements Engineering
+Explain the difference between functional and non-functional requirements.,Software Engineering,Requirements Engineering
+What is the purpose of a Software Requirements Specification (SRS) document?,Software Engineering,Requirements Engineering
+Explain the concept of requirements elicitation and the techniques used for it.,Software Engineering,Requirements Engineering
+"What is requirements traceability, and why is it important in software projects?",Software Engineering,Requirements Engineering
+Explain the difference between requirements validation and requirements verification.,Software Engineering,Requirements Engineering
+Explain the difference between user requirements and system requirements.,Software Engineering,Requirements Engineering
+"What is a use case diagram, and how does it help in requirements engineering?",Software Engineering,Requirements Engineering
+Explain the concept of requirements prioritization and why it is necessary.,Software Engineering,Requirements Engineering
+What challenges commonly arise during requirements elicitation from stakeholders?,Software Engineering,Requirements Engineering
+Explain the role of prototyping in clarifying ambiguous requirements.,Software Engineering,Requirements Engineering
+Explain the different phases of the Software Development Life Cycle (SDLC).,Software Engineering,SDLC
+What is the difference between the Waterfall model and the Spiral model of SDLC?,Software Engineering,SDLC
+What is the difference between the Waterfall model and the Spiral model in SDLC?,Software Engineering,SDLC
+Explain the importance of the requirements analysis phase in SDLC.,Software Engineering,SDLC
+What is the difference between verification and validation in the SDLC?,Software Engineering,SDLC
+Explain the role of the maintenance phase in the software development life cycle.,Software Engineering,SDLC
+Explain the difference between the Iterative model and the Incremental model in SDLC.,Software Engineering,SDLC
+"What is the V-model in software development, and how does it differ from the Waterfall model?",Software Engineering,SDLC
+Explain the role of risk analysis in the Spiral model of SDLC.,Software Engineering,SDLC
+What deliverables are typically produced during the design phase of the SDLC?,Software Engineering,SDLC
+Explain the importance of the testing phase in ensuring software quality within the SDLC.,Software Engineering,SDLC
+What is the difference between system testing and acceptance testing in the SDLC?,Software Engineering,SDLC
+Explain the difference between unit testing and integration testing.,Software Engineering,Software Testing
+What is the difference between black-box testing and white-box testing?,Software Engineering,Software Testing
+Explain the difference between white-box testing and black-box testing.,Software Engineering,Software Testing
+What is the difference between unit testing and integration testing?,Software Engineering,Software Testing
+Explain the purpose of regression testing in software development.,Software Engineering,Software Testing
+What is the difference between manual testing and automated testing?,Software Engineering,Software Testing
+Explain the concept of test-driven development (TDD).,Software Engineering,Software Testing
+Explain the difference between functional testing and non-functional testing.,Software Engineering,Software Testing
+What is the purpose of boundary value analysis in test case design?,Software Engineering,Software Testing
+Explain the concept of a test case and its typical components.,Software Engineering,Software Testing
+What is the difference between smoke testing and sanity testing?,Software Engineering,Software Testing
+Explain the concept of code coverage in software testing.,Software Engineering,Software Testing
+Explain the concept of addressing modes in computer architecture with examples.,Computer Architecture,Addressing Modes
+What is the difference between direct addressing and indirect addressing?,Computer Architecture,Addressing Modes
+Explain the concept of addressing modes in computer architecture.,Computer Architecture,Addressing Modes
+Explain the concept of register addressing mode with an example.,Computer Architecture,Addressing Modes
+What is the difference between immediate addressing and indexed addressing?,Computer Architecture,Addressing Modes
+Explain the purpose of relative addressing mode in branch instructions.,Computer Architecture,Addressing Modes
+Explain the concept of base-register addressing mode with an example.,Computer Architecture,Addressing Modes
+What is the difference between auto-increment and auto-decrement addressing modes?,Computer Architecture,Addressing Modes
+Explain the purpose of PC-relative addressing mode in branch instructions.,Computer Architecture,Addressing Modes
+What is the difference between register-indirect addressing and memory-indirect addressing?,Computer Architecture,Addressing Modes
+Explain how displacement addressing mode is used to access array elements.,Computer Architecture,Addressing Modes
+What are the advantages of using immediate addressing mode for constant values?,Computer Architecture,Addressing Modes
+Explain the purpose of cache memory in a computer system.,Computer Architecture,Cache Memory
+What is the difference between direct-mapped cache and set-associative cache?,Computer Architecture,Cache Memory
+What is the difference between direct-mapped cache and fully associative cache?,Computer Architecture,Cache Memory
+Explain the concept of cache hit and cache miss.,Computer Architecture,Cache Memory
+What is the difference between write-through and write-back cache policies?,Computer Architecture,Cache Memory
+Explain the concept of cache locality (temporal and spatial locality).,Computer Architecture,Cache Memory
+Explain the concept of a set-associative cache and how it balances the trade-offs of direct-mapped and fully associative caches.,Computer Architecture,Cache Memory
+"What is the purpose of a cache replacement policy, and name two common examples.",Computer Architecture,Cache Memory
+"Explain the concept of multi-level caching (L1, L2, L3) in modern processors.",Computer Architecture,Cache Memory
+"What is cache coherence, and why is it important in multiprocessor systems?",Computer Architecture,Cache Memory
+Explain how cache size and block size affect the hit rate of a cache.,Computer Architecture,Cache Memory
+What is the difference between a write-allocate and a no-write-allocate cache policy?,Computer Architecture,Cache Memory
+Explain the difference between RISC and CISC instruction set architectures.,Computer Architecture,Instruction Set
+What is the purpose of an instruction set architecture (ISA) in a processor?,Computer Architecture,Instruction Set
+Explain the different types of instruction formats used in a processor.,Computer Architecture,Instruction Set
+What is the difference between a zero-address instruction and a one-address instruction?,Computer Architecture,Instruction Set
+Explain the concept of an opcode and an operand in machine instructions.,Computer Architecture,Instruction Set
+Explain the difference between a two-address instruction and a three-address instruction.,Computer Architecture,Instruction Set
+What is the role of an assembler in translating instructions into machine code?,Computer Architecture,Instruction Set
+Explain the concept of instruction-level parallelism.,Computer Architecture,Instruction Set
+What is the difference between a load-store architecture and a memory-to-memory architecture?,Computer Architecture,Instruction Set
+Explain how variable-length instructions differ from fixed-length instructions.,Computer Architecture,Instruction Set
+What is the purpose of condition codes (flags) in an instruction set?,Computer Architecture,Instruction Set
+Explain the concept of microcode in the context of instruction execution.,Computer Architecture,Instruction Set
+Explain the concept of memory hierarchy in a computer system.,Computer Architecture,Memory Hierarchy
+What is the trade-off between memory speed and memory capacity across the hierarchy?,Computer Architecture,Memory Hierarchy
+What is the trade-off between speed and cost across different levels of memory hierarchy?,Computer Architecture,Memory Hierarchy
+"Explain the role of registers, cache, main memory and secondary storage in the memory hierarchy.",Computer Architecture,Memory Hierarchy
+What is the purpose of virtual memory in the memory hierarchy?,Computer Architecture,Memory Hierarchy
+Explain how the principle of locality supports the design of memory hierarchy.,Computer Architecture,Memory Hierarchy
+Explain the concept of access time and how it varies across the memory hierarchy.,Computer Architecture,Memory Hierarchy
+What is the difference between primary storage and secondary storage in the memory hierarchy?,Computer Architecture,Memory Hierarchy
+Explain how the memory hierarchy design helps balance cost and performance.,Computer Architecture,Memory Hierarchy
+What is the effective access time formula in a system with cache and main memory?,Computer Architecture,Memory Hierarchy
+Explain the role of solid-state drives (SSDs) in modern memory hierarchy design.,Computer Architecture,Memory Hierarchy
+What is the difference between volatile and non-volatile memory in the hierarchy?,Computer Architecture,Memory Hierarchy
+Explain the concept of instruction pipelining in a processor.,Computer Architecture,Pipelining
+"What is a pipeline hazard, and what are its main types?",Computer Architecture,Pipelining
+"What is a pipeline hazard, and what are its different types?",Computer Architecture,Pipelining
+Explain the difference between structural hazards and data hazards in pipelining.,Computer Architecture,Pipelining
+How does pipelining improve the throughput of a processor?,Computer Architecture,Pipelining
+Explain the concept of pipeline stalling and how it affects performance.,Computer Architecture,Pipelining
+Explain the concept of control hazards in a pipelined processor and how branch prediction addresses them.,Computer Architecture,Pipelining
+What is the difference between a 5-stage and a superscalar pipeline?,Computer Architecture,Pipelining
+Explain how forwarding (data bypassing) reduces data hazards in pipelining.,Computer Architecture,Pipelining
+"What is pipeline throughput, and how is it calculated?",Computer Architecture,Pipelining
+Explain the concept of out-of-order execution in modern pipelined processors.,Computer Architecture,Pipelining
+What is the difference between an in-order pipeline and an out-of-order pipeline?,Computer Architecture,Pipelining

@@ -3,6 +3,7 @@ const Student = require("../models/Student");
 const Faculty = require("../models/Faculty");
 const Admin = require("../models/Admin");
 const Notification = require("../models/Notification");
+const AssessmentAttendanceRequest = require("../models/AssessmentAttendanceRequest");
 
 const VALID_RECIPIENT_TYPES = ["student", "faculty", "admin"];
 
@@ -55,7 +56,7 @@ const getActiveRecipients = async (recipientType) => {
     throw new Error("Invalid recipient type for broadcast");
   }
 
-  const recipients = await Model.find({ isActive: true }).select("_id").lean();
+  const recipients = await Model.find({ isActive: { $ne: false } }).select("_id").lean();
   return recipients.map((recipient) => recipient._id.toString());
 };
 
@@ -103,6 +104,87 @@ const createBulkNotification = async ({ recipientType, recipientIds, title, mess
   return Notification.insertMany(documents);
 };
 
+const createAdminStudentRequestNotifications = async ({ request, assessment, student }) => {
+  const admins = await getActiveRecipients("admin");
+  if (!admins.length) throw new Error("No active Admin accounts are available for student request notifications");
+
+  const requestId = request._id.toString();
+  const notification = buildNotificationDocument({
+    recipient: null,
+    recipientType: "admin",
+    title: "Retest Request",
+    message: `${student.name} has requested a retest for ${assessment.title}. Admin action is required.`,
+    type: "Student Request",
+    priority: "Medium",
+    referenceId: assessment._id,
+    referenceModel: "Assessment",
+  });
+  notification.context = {
+    requestId,
+    studentId: student._id.toString(),
+    setIndex: Number(request.setIndex) || 0,
+  };
+
+  const created = [];
+  for (const recipient of admins) {
+    try {
+      const result = await Notification.findOneAndUpdate(
+        { recipient, type: "Student Request", "context.requestId": requestId },
+        { $setOnInsert: { ...notification, recipient } },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      created.push(result);
+    } catch (error) {
+      if (error.code !== 11000) throw error;
+      const existing = await Notification.findOne({
+        recipient,
+        type: "Student Request",
+        "context.requestId": requestId,
+      });
+      if (!existing) throw error;
+      created.push(existing);
+    }
+  }
+
+  return created;
+};
+
+const markAdminStudentRequestNotificationsHandled = async (requestIds) => {
+  const normalizedIds = [...new Set((requestIds || []).map(String))];
+  if (!normalizedIds.length) return { modifiedCount: 0 };
+
+  return Notification.updateMany(
+    {
+      recipientType: "admin",
+      type: "Student Request",
+      "context.requestId": { $in: normalizedIds },
+      isRead: false,
+    },
+    { $set: { isRead: true, readAt: new Date() } }
+  );
+};
+
+const ensurePendingStudentRequestNotifications = async () => {
+  const pendingRequests = await AssessmentAttendanceRequest.find({
+    active: { $ne: false },
+    status: "Requested",
+  })
+    .populate("assessment", "title")
+    .populate("student", "name")
+    .lean();
+
+  for (const request of pendingRequests) {
+    if (!request.assessment || !request.student) {
+      throw new Error(`Cannot create notification for pending request ${request._id}: assessment or student is missing`);
+    }
+    await createAdminStudentRequestNotifications({
+      request,
+      assessment: request.assessment,
+      student: request.student,
+    });
+  }
+};
+
 const getUserNotifications = async (recipientType, recipientId, unreadOnly = false) => {
   if (!validateRecipientType(recipientType)) {
     throw new Error("Invalid recipient type");
@@ -111,6 +193,8 @@ const getUserNotifications = async (recipientType, recipientId, unreadOnly = fal
   if (!mongoose.isValidObjectId(recipientId)) {
     throw new Error("Invalid recipient ID");
   }
+
+  if (recipientType === "admin") await ensurePendingStudentRequestNotifications();
 
   const query = {
     recipient: recipientId,
@@ -195,6 +279,9 @@ const broadcastNotification = async ({ recipientType, recipientIds, title, messa
 module.exports = {
   createNotification,
   createBulkNotification,
+  createAdminStudentRequestNotifications,
+  markAdminStudentRequestNotificationsHandled,
+  ensurePendingStudentRequestNotifications,
   getUserNotifications,
   getAllNotifications,
   markAsRead,

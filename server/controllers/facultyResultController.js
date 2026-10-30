@@ -1,7 +1,9 @@
 const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
 const Student = require("../models/Student");
+const mongoose = require("mongoose");
 const { successResponse, errorResponse } = require("../utils/response");
+const { getAssessmentAssignedStudentCount } = require("../utils/assessmentSetMetrics");
 
 /**
  * GET /api/faculty/results
@@ -16,7 +18,20 @@ const getAllResults = async (req, res) => {
         let query = {};
 
         if (assessmentId) {
-            query.assessment = assessmentId;
+            if (!mongoose.isValidObjectId(assessmentId)) {
+                return errorResponse(res, { message: "Invalid assessment ID", status: 400 });
+            }
+
+            const assessment = await Assessment.findOne({
+                _id: assessmentId,
+                assignedFaculty: facultyId
+            }).select("_id");
+
+            if (!assessment) {
+                return errorResponse(res, { message: "Assessment not found", status: 404 });
+            }
+
+            query.assessment = assessment._id;
         } else {
             // Get all assessments assigned to this faculty
             const facultyAssessments = await Assessment.find({
@@ -43,7 +58,7 @@ const getAllResults = async (req, res) => {
 
         // Get paginated results
         const results = await AssessmentResult.find(query)
-            .populate("student", "name email studentId department year")
+            .populate("student", "name email studentId department year placementReadinessScore")
             .populate("assessment", "_id title assessmentType totalMarks duration")
             .select("_id score percentage submittedAt completed")
             .sort({ [sortBy]: parseInt(order) })
@@ -226,17 +241,8 @@ const getDashboardStatistics = async (req, res) => {
             assessmentQuery._id = assessmentId;
         }
 
-        const assessments = await Assessment.find(assessmentQuery).select("_id title totalMarks");
-
-        if (assessments.length === 0) {
-            return successResponse(res, {
-                message: "No assessments found",
-                data: {
-                    totalAssessments: 0,
-                    statistics: []
-                }
-            });
-        }
+        const assessments = await Assessment.find(assessmentQuery)
+            .select("_id title totalMarks assignedStudents setAssignments");
 
         const assessmentIds = assessments.map((a) => a._id);
 
@@ -254,7 +260,8 @@ const getDashboardStatistics = async (req, res) => {
                     highestScore: { $max: "$score" },
                     lowestScore: { $min: "$score" },
                     highestPercentage: { $max: "$percentage" },
-                    lowestPercentage: { $min: "$percentage" }
+                    lowestPercentage: { $min: "$percentage" },
+                    participatingStudents: { $addToSet: "$student" }
                 }
             }
         ]);
@@ -262,19 +269,26 @@ const getDashboardStatistics = async (req, res) => {
         // Combine with assessment info
         const statistics = assessments.map((assessment) => {
             const stats = aggregateStats.find((s) => s._id.toString() === assessment._id.toString());
+            const assignedCount = getAssessmentAssignedStudentCount(assessment);
+            const participatingStudents = stats?.participatingStudents?.filter(Boolean).length || 0;
 
             return {
                 assessmentId: assessment._id,
+                title: assessment.title,
                 assessmentTitle: assessment.title,
                 totalMarks: assessment.totalMarks,
                 totalAttempts: stats?.totalAttempts || 0,
-                completionPercentage: stats ? ((stats.totalAttempts / assessment.assignedStudents?.length) * 100) : 0,
-                averageScore: stats?.averageScore ? Math.round(stats.averageScore * 100) / 100 : 0,
-                averagePercentage: stats?.averagePercentage ? Math.round(stats.averagePercentage) : 0,
-                highestScore: stats?.highestScore || 0,
-                lowestScore: stats?.lowestScore || 0,
-                highestPercentage: stats?.highestPercentage || 0,
-                lowestPercentage: stats?.lowestPercentage || 0
+                participatingStudents,
+                assignedCount,
+                completionPercentage: assignedCount
+                    ? Math.min(100, Math.round((participatingStudents / assignedCount) * 100))
+                    : null,
+                averageScore: stats?.averageScore == null ? null : Math.round(stats.averageScore * 100) / 100,
+                averagePercentage: stats?.averagePercentage == null ? null : Math.round(stats.averagePercentage),
+                highestScore: stats?.highestScore ?? null,
+                lowestScore: stats?.lowestScore ?? null,
+                highestPercentage: stats?.highestPercentage ?? null,
+                lowestPercentage: stats?.lowestPercentage ?? null
             };
         });
 
@@ -282,20 +296,39 @@ const getDashboardStatistics = async (req, res) => {
         const allResults = await AssessmentResult.find({
             assessment: { $in: assessmentIds },
             completed: true
-        }).lean();
+        }).select("score percentage").lean();
+        const scoredResults = allResults.filter((result) =>
+            result.score !== null && result.score !== undefined && result.score !== "" && Number.isFinite(Number(result.score))
+        );
+        const percentageResults = allResults.filter((result) =>
+            result.percentage !== null
+            && result.percentage !== undefined
+            && result.percentage !== ""
+            && Number.isFinite(Number(result.percentage))
+            && Number(result.percentage) >= 0
+            && Number(result.percentage) <= 100
+        );
 
         const overallStats = {
             totalResults: allResults.length,
-            averageScoreAllAssessments: allResults.length > 0 ? Math.round((allResults.reduce((sum, r) => sum + r.score, 0) / allResults.length) * 100) / 100 : 0,
-            averagePercentageAllAssessments: allResults.length > 0 ? Math.round(allResults.reduce((sum, r) => sum + r.percentage, 0) / allResults.length) : 0,
-            highestScoreAllAssessments: allResults.length > 0 ? Math.max(...allResults.map((r) => r.score)) : 0,
-            lowestScoreAllAssessments: allResults.length > 0 ? Math.min(...allResults.map((r) => r.score)) : 0
+            averageScoreAllAssessments: scoredResults.length
+                ? Math.round((scoredResults.reduce((sum, result) => sum + Number(result.score), 0) / scoredResults.length) * 100) / 100
+                : null,
+            averagePercentageAllAssessments: percentageResults.length
+                ? Math.round(percentageResults.reduce((sum, result) => sum + Number(result.percentage), 0) / percentageResults.length)
+                : null,
+            highestScoreAllAssessments: scoredResults.length ? Math.max(...scoredResults.map((result) => Number(result.score))) : null,
+            lowestScoreAllAssessments: scoredResults.length ? Math.min(...scoredResults.map((result) => Number(result.score))) : null
         };
 
         // Top students
         const topStudents = await AssessmentResult.aggregate([
             {
-                $match: { assessment: { $in: assessmentIds }, completed: true }
+                $match: {
+                    assessment: { $in: assessmentIds },
+                    completed: true,
+                    percentage: { $type: "number", $gte: 0, $lte: 100 }
+                }
             },
             {
                 $group: {

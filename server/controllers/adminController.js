@@ -3,6 +3,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { successResponse, errorResponse } = require("../utils/response");
 const Admin = require("../models/Admin");
+const Student = require("../models/Student");
+const Faculty = require("../models/Faculty");
+const { sendVerificationOtpEmail, sendFacultyApprovalEmail } = require("../services/emailService");
+const { createNotification } = require("../services/notificationService");
 const {
   validateAdminRegistration,
   validateAdminLogin,
@@ -37,6 +41,25 @@ const createToken = (id) => {
   return jwt.sign({ id, role: "admin" }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
+const issueVerificationOtp = async (admin) => {
+  const otp = crypto.randomInt(100000, 1000000).toString();
+  admin.emailVerificationOtpHash = crypto.createHash("sha256").update(otp).digest("hex");
+  admin.emailVerificationOtpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  admin.emailVerificationOtpAttempts = 0;
+  admin.emailVerificationLastSentAt = new Date();
+  await admin.save();
+  try {
+    await sendVerificationOtpEmail({ email: admin.email, name: admin.name, otp });
+  } catch (error) {
+    admin.emailVerificationOtpHash = "";
+    admin.emailVerificationOtpExpiresAt = null;
+    admin.emailVerificationOtpAttempts = 0;
+    admin.emailVerificationLastSentAt = null;
+    await admin.save();
+    throw error;
+  }
+};
+
 const registerAdmin = async (req, res) => {
   try {
     const { errors, data } = validateAdminRegistration(req.body);
@@ -44,9 +67,13 @@ const registerAdmin = async (req, res) => {
       return errorResponse(res, { message: errors[0], status: 400 });
     }
 
-    const existingAdmin = await Admin.findOne({ email: data.email });
-    if (existingAdmin) {
-      return errorResponse(res, { message: "Admin with this email already exists", status: 400 });
+    const [existingAdmin, existingStudent, existingFaculty] = await Promise.all([
+      Admin.findOne({ email: data.email }),
+      Student.findOne({ email: data.email }),
+      Faculty.findOne({ email: data.email })
+    ]);
+    if (existingAdmin || existingStudent || existingFaculty) {
+      return errorResponse(res, { message: "Email already registered. Please login or verify your existing account.", status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -56,18 +83,29 @@ const registerAdmin = async (req, res) => {
       password: hashedPassword,
       role: "admin",
       isActive: true,
+      isVerified: false,
+      emailVerificationRequired: true,
       passwordChangedAt: new Date()
     });
 
-    const token = createToken(admin._id);
+    try {
+      await issueVerificationOtp(admin);
+    } catch (emailError) {
+      console.error("Email verification delivery failed");
+      const message = "Account created, but we could not send a verification email. Please try resending it later.";
+      return errorResponse(res, { message, status: 503 });
+    }
     const adminData = { _id: admin._id, name: admin.name, email: admin.email, role: admin.role };
 
     return successResponse(res, {
       status: 201,
-      message: "Admin registered successfully",
-      data: { token, admin: adminData }
+      message: "Account created successfully. We've sent a 6-digit verification code to your email. Please enter the code to verify your email address.",
+      data: { admin: adminData }
     });
   } catch (error) {
+    if (error && error.code === 11000) {
+      return errorResponse(res, { message: "Email already registered. Please login or verify your existing account.", status: 409 });
+    }
     return errorResponse(res, { message: error.message, status: 500 });
   }
 };
@@ -91,6 +129,10 @@ const loginAdmin = async (req, res) => {
     const isMatch = await bcrypt.compare(data.password, admin.password);
     if (!isMatch) {
       return errorResponse(res, { message: "Invalid Email or Password", status: 400 });
+    }
+
+    if (admin.emailVerificationRequired === true && admin.isVerified !== true) {
+      return errorResponse(res, { message: "Please verify your email before logging in", status: 403 });
     }
 
     const token = createToken(admin._id);
@@ -283,6 +325,53 @@ const removeFaculty = async (req, res) => {
   }
 };
 
+const approveFaculty = async (req, res) => {
+  try {
+    const faculty = await Faculty.findById(req.params.id);
+    if (!faculty) return errorResponse(res, { message: "Faculty not found", status: 404 });
+    if (faculty.emailVerificationRequired === true && faculty.isVerified !== true) {
+      return errorResponse(res, { message: "Faculty must verify their email before approval", status: 400 });
+    }
+    if (faculty.approvalStatus === "APPROVED") {
+      return successResponse(res, { message: "Faculty is already approved" });
+    }
+
+    faculty.approvalStatus = "APPROVED";
+    await faculty.save();
+    try {
+      await sendFacultyApprovalEmail({ email: faculty.email, name: faculty.name });
+    } catch (emailError) {
+      console.error("Faculty approval email delivery failed", emailError);
+    }
+    try {
+      await createNotification({ recipient: faculty._id, recipientType: "faculty", title: "Faculty Registration Approved", message: "Your faculty registration has been approved.", type: "System Notification", priority: "High", referenceId: faculty._id, referenceModel: "Faculty" });
+    } catch (notificationError) {
+      console.error("Faculty approval notification creation failed", notificationError);
+    }
+    return successResponse(res, { message: "Faculty approved", data: { faculty: { _id: faculty._id, approvalStatus: faculty.approvalStatus } } });
+  } catch (error) {
+    return errorResponse(res, { message: error.message, status: 500 });
+  }
+};
+
+const rejectFaculty = async (req, res) => {
+  try {
+    const faculty = await Faculty.findById(req.params.id);
+    if (!faculty) return errorResponse(res, { message: "Faculty not found", status: 404 });
+    if (faculty.approvalStatus === "APPROVED") return errorResponse(res, { message: "Approved faculty cannot be rejected", status: 400 });
+    faculty.approvalStatus = "REJECTED";
+    await faculty.save();
+    try {
+      await createNotification({ recipient: faculty._id, recipientType: "faculty", title: "Faculty Registration Rejected", message: "Your faculty registration request has been rejected.", type: "System Notification", priority: "High", referenceId: faculty._id, referenceModel: "Faculty" });
+    } catch (notificationError) {
+      console.error("Faculty rejection notification creation failed", notificationError);
+    }
+    return successResponse(res, { message: "Faculty rejected", data: { faculty: { _id: faculty._id, approvalStatus: faculty.approvalStatus } } });
+  } catch (error) {
+    return errorResponse(res, { message: error.message, status: 500 });
+  }
+};
+
 const assignStudents = async (req, res) => {
   try {
     const { errors, data } = validateAssignmentPayload(req.body);
@@ -293,7 +382,7 @@ const assignStudents = async (req, res) => {
     const faculty = await assignStudentsToFaculty(req.params.facultyId, data.studentIds);
     return successResponse(res, { message: "Students assigned successfully", data: faculty });
   } catch (error) {
-    return errorResponse(res, { message: error.message, status: 500 });
+    return errorResponse(res, { message: error.message, status: error.status || 500 });
   }
 };
 
@@ -370,6 +459,8 @@ module.exports = {
   createNewFaculty,
   updateExistingFaculty,
   removeFaculty,
+  approveFaculty,
+  rejectFaculty,
   assignStudents,
   unassignStudents,
   getDashboard,

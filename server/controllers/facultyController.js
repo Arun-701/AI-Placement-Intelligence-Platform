@@ -4,6 +4,7 @@ const QuestionBank = require("../models/QuestionBank");
 const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
 const { successResponse, errorResponse } = require("../utils/response");
+const { getDepartmentQuery } = require("../utils/department");
 
 const getProfile = async (req, res) => {
     try {
@@ -21,16 +22,27 @@ const getProfile = async (req, res) => {
 
 const getAssignedStudents = async (req, res) => {
     try {
-        const faculty = await Faculty.findById(req.user.id).populate(
-            "assignedStudents",
-            "name studentId department year section placementReadinessScore"
-        );
+        const faculty = await Faculty.findById(req.user.id).select("department").lean();
 
         if (!faculty) {
             return errorResponse(res, { message: "Faculty not found", status: 404 });
         }
 
-        return successResponse(res, { message: "Assigned students fetched successfully", data: faculty.assignedStudents });
+        const department = String(faculty.department || "").trim().replace(/\s+/g, " ");
+        const students = department
+            ? await Student.find({
+                department: getDepartmentQuery(department),
+                isActive: true
+            })
+                .select("name studentId department year section placementReadinessScore")
+                .sort({ name: 1 })
+                .lean()
+            : [];
+
+        return successResponse(res, {
+            message: "Assigned students fetched successfully",
+            data: { department, students }
+        });
     } catch (error) {
         return errorResponse(res, { message: error.message, status: 500 });
     }

@@ -3,8 +3,9 @@ const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
 const Roadmap = require("../models/Roadmap");
 const Faculty = require("../models/Faculty");
-const { analyzeResume } = require("./resumeAnalysisService");
 const { calculatePlacementReadiness } = require("./readinessScoringService");
+const { getDepartmentQuery } = require("../utils/department");
+const { getAssessmentAssignedStudentCount } = require("../utils/assessmentSetMetrics");
 
 const buildDashboardSnapshot = (payload) => {
     const student = payload.student || {};
@@ -13,6 +14,12 @@ const buildDashboardSnapshot = (payload) => {
     const assessmentSummary = payload.assessmentSummary || {};
     const codingSummary = payload.codingSummary || {};
     const roadmap = payload.roadmap || {};
+    const rawResumeScore = Object.prototype.hasOwnProperty.call(payload, "resumeScore")
+        ? payload.resumeScore
+        : student.resumeJDAnalysis?.atsScore ?? student.resumeScore ?? resumeSummary.resumeScore ?? resumeSummary.overallScore;
+    const resumeScore = rawResumeScore === null || rawResumeScore === undefined || rawResumeScore === ""
+        ? null
+        : Number.isFinite(Number(rawResumeScore)) ? Number(rawResumeScore) : null;
 
     const skillGapSummary = Array.isArray(roadmap.skillGaps) && roadmap.skillGaps.length > 0
         ? roadmap.skillGaps.map((gap) => ({
@@ -46,7 +53,7 @@ const buildDashboardSnapshot = (payload) => {
         },
         {
             title: "Resume Score",
-            value: `${Math.round(resumeSummary.resumeScore || 0)}%`,
+            value: resumeScore === null ? "—" : `${Math.round(resumeScore)}%`,
             description: "Resume quality"
         },
         {
@@ -88,7 +95,7 @@ const buildDashboardSnapshot = (payload) => {
         },
         placementReadinessBreakdown: readiness.factors || [],
         resumeSummary: {
-            resumeScore: resumeSummary.resumeScore || 0,
+            resumeScore,
             summary: resumeSummary.summary || "",
             strengths: Array.isArray(resumeSummary.strengths) ? resumeSummary.strengths : [],
             missingSkills: Array.isArray(resumeSummary.missingSkills) ? resumeSummary.missingSkills : [],
@@ -102,6 +109,7 @@ const buildDashboardSnapshot = (payload) => {
             strengths: Array.isArray(assessmentSummary.strengths) ? assessmentSummary.strengths : [],
             weaknesses: Array.isArray(assessmentSummary.weaknesses) ? assessmentSummary.weaknesses : []
         },
+        skillPerformance: Array.isArray(payload.skillPerformance) ? payload.skillPerformance : [],
         codingSummary: {
             score: codingSummary.score || 0,
             level: codingSummary.level || "Low",
@@ -136,33 +144,89 @@ const buildDashboardSnapshot = (payload) => {
     };
 };
 
+const getSkillCategory = (topic) => {
+    const normalized = String(topic || "").trim();
+    const lower = normalized.toLowerCase();
+    if (/aptitude|reasoning|logical/.test(lower)) return "Aptitude";
+    if (/dsa|data structure|algorithm/.test(lower)) return "DSA";
+    if (/database|\bsql\b|mongodb|mysql|postgres/.test(lower)) return "Database";
+    if (/web|react|javascript|typescript|css|html|frontend|backend/.test(lower)) return "Web Development";
+    if (/machine learning|\bai\b|\bml\b/.test(lower)) return "AI/ML";
+    if (/technical|network|operating system|system design/.test(lower)) return "Technical";
+    return normalized;
+};
+
+const buildSkillPerformance = (assessmentResults) => {
+    const categories = new Map();
+    (assessmentResults || []).forEach((result) => {
+        (Array.isArray(result.topicAnalysis) ? result.topicAnalysis : []).forEach((topic) => {
+            if (!topic) return;
+            const category = getSkillCategory(topic.topic);
+            if (
+                topic.accuracy === null
+                || topic.accuracy === undefined
+                || topic.accuracy === ""
+                || topic.totalQuestions === null
+                || topic.totalQuestions === undefined
+                || topic.totalQuestions === ""
+            ) return;
+            const accuracy = Number(topic.accuracy);
+            const totalQuestions = Number(topic.totalQuestions);
+            if (!category || !Number.isFinite(accuracy) || accuracy < 0 || accuracy > 100 || !Number.isFinite(totalQuestions) || totalQuestions <= 0) return;
+            const entry = categories.get(category) || { category, weightedScore: 0, totalQuestions: 0 };
+            entry.weightedScore += accuracy * totalQuestions;
+            entry.totalQuestions += totalQuestions;
+            categories.set(category, entry);
+        });
+    });
+
+    return Array.from(categories.values())
+        .map(({ category, weightedScore, totalQuestions }) => ({
+            category,
+            score: Math.round(weightedScore / totalQuestions),
+            questionCount: totalQuestions
+        }))
+        .sort((left, right) => right.questionCount - left.questionCount)
+        .slice(0, 6);
+};
+
 const buildDashboardPayload = async (studentId) => {
-    const student = await Student.findById(studentId).select("name department year section skills cgpa placementReadinessScore readinessProfile resume codingProfile");
+    const student = await Student.findById(studentId).select("name department year section skills cgpa placementReadinessScore readinessProfile resume resumeAnalysis resumeScore resumeJDAnalysis codingProfile");
     if (!student) {
         throw new Error("Student not found");
     }
 
     const [assessmentResults, roadmap] = await Promise.all([
         AssessmentResult.find({ student: studentId, completed: true })
-            .select("percentage score strengths weaknesses recommendations submittedAt")
-            .populate("assessment", "title")
+            .select("percentage score strengths weaknesses recommendations submittedAt topicAnalysis")
+            .populate("assessment", "title assessmentType")
             .sort({ submittedAt: -1 })
             .lean(),
         Roadmap.findOne({ student: studentId }).lean()
     ]);
 
-    const resumeAnalysis = student.resume
-        ? await analyzeResume(student.resume)
-        : {
-            summary: "",
-            skills: [],
-            strengths: [],
-            missingSkills: [],
-            improvements: [],
-            resumeScore: 0,
-        };
-
-    const readiness = calculatePlacementReadiness(student, resumeAnalysis, assessmentResults);
+    const resumeAnalysis = student.resumeAnalysis || {};
+    const storedResumeScore = student.resumeJDAnalysis?.atsScore
+        ?? student.resumeScore
+        ?? resumeAnalysis.resumeScore
+        ?? resumeAnalysis.overallScore
+        ?? null;
+    const normalizedResumeScore = storedResumeScore === null
+        || storedResumeScore === undefined
+        || storedResumeScore === ""
+        || typeof storedResumeScore === "boolean"
+        ? null
+        : Number(storedResumeScore);
+    const resumeScore = student.resume
+        ? Number.isFinite(normalizedResumeScore) && normalizedResumeScore >= 0 && normalizedResumeScore <= 100
+            ? normalizedResumeScore
+            : null
+        : null;
+    const readinessAnalysis = {
+        ...resumeAnalysis,
+        resumeScore: resumeAnalysis.resumeScore ?? resumeAnalysis.overallScore ?? 0
+    };
+    const readiness = calculatePlacementReadiness(student, readinessAnalysis, assessmentResults);
 
     const latestAssessment = assessmentResults[0] || null;
     const assessmentSummary = {
@@ -197,11 +261,14 @@ const buildDashboardPayload = async (studentId) => {
             name: student.name,
             department: student.department,
             year: student.year,
-            section: student.section
+            section: student.section,
+            resumeScore
         },
+        resumeScore,
         readiness,
         resumeAnalysis,
         assessmentSummary,
+        skillPerformance: buildSkillPerformance(assessmentResults),
         codingSummary,
         roadmap: roadmap || {
             careerGoal: "General Software Development",
@@ -318,7 +385,7 @@ const buildStudentDashboard = async (studentId) => {
         assessmentPerformanceTrend: buildAssessmentTrend(assessmentResults),
         codingProfileStatistics: buildCodingProfileStatistics(baseDashboard.codingSummary),
         resumeScoreAnalytics: {
-            currentScore: baseDashboard.resumeSummary.resumeScore || 0,
+            currentScore: baseDashboard.resumeSummary.resumeScore ?? null,
             missingSkills: baseDashboard.resumeSummary.missingSkills || [],
             improvementSuggestions: baseDashboard.resumeSummary.improvements || []
         },
@@ -364,59 +431,110 @@ const buildStudentReport = async (studentId) => {
 
 const buildFacultyDashboard = async (facultyId) => {
     const faculty = await Faculty.findById(facultyId)
-        .select("assignedStudents assignedAssessments department name designation")
+        .select("department name designation")
         .lean();
 
     if (!faculty) {
         throw new Error("Faculty not found");
     }
 
-    const assignedStudentIds = Array.isArray(faculty.assignedStudents) ? faculty.assignedStudents : [];
-    const assignedAssessmentIds = Array.isArray(faculty.assignedAssessments) ? faculty.assignedAssessments : [];
-
-    const [students, assessments, assessmentResults] = await Promise.all([
-        Student.find({ _id: { $in: assignedStudentIds } })
-            .select("name studentId department placementReadinessScore readinessProfile")
+    const departmentQuery = getDepartmentQuery(faculty.department);
+    const [students, allAssessments] = await Promise.all([
+        departmentQuery
+            ? Student.find({ department: departmentQuery, isActive: true })
+                .select("name studentId department placementReadinessScore readinessProfile profileCompleted initialAssessmentCompleted")
+                .sort({ name: 1 })
+                .lean()
+            : [],
+        Assessment.find({ assignedFaculty: facultyId, isActive: true })
+            .select("title assessmentType assignedStudents setAssignments questionSets department usesMultiSetAssignment status startDate endDate createdAt updatedAt isActive")
+            .sort({ createdAt: -1 })
             .lean(),
-        Assessment.find({ assignedFaculty: facultyId })
-            .select("title assignedStudents status startDate endDate createdAt updatedAt")
-            .lean(),
-        AssessmentResult.find({ assessment: { $in: assignedAssessmentIds }, completed: true })
+    ]);
+    const assessmentIds = allAssessments.map((assessment) => assessment._id);
+    const activeAssessments = allAssessments;
+    const assessmentResults = assessmentIds.length
+        ? await AssessmentResult.find({ assessment: { $in: assessmentIds }, completed: true })
+            .select("student assessment score percentage submittedAt createdAt strengths weaknesses topicAnalysis")
             .populate("student", "name studentId department placementReadinessScore readinessProfile")
             .populate("assessment", "title")
-            .sort({ submittedAt: -1 })
+            .sort({ submittedAt: -1, createdAt: -1 })
             .lean()
-    ]);
+        : [];
 
     const studentReadinessDistribution = students.reduce((distribution, student) => {
-        const level = student.readinessProfile?.level || (student.placementReadinessScore >= 80 ? "High" : student.placementReadinessScore >= 60 ? "Medium" : "Low");
+        if (!student.profileCompleted || !student.initialAssessmentCompleted) {
+            distribution["Not Started"] = (distribution["Not Started"] || 0) + 1;
+            return distribution;
+        }
+
+        const readinessWasCalculated = Boolean(student.readinessProfile?.lastCalculatedAt);
+        const rawScore = readinessWasCalculated
+            ? student.readinessProfile.score
+            : student.placementReadinessScore;
+        const score = Number(rawScore);
+        const level = readinessWasCalculated && ["High", "Medium", "Low"].includes(student.readinessProfile?.level)
+            ? student.readinessProfile.level
+            : score >= 80 ? "High" : score >= 60 ? "Medium" : "Low";
         distribution[level] = (distribution[level] || 0) + 1;
         return distribution;
-    }, {});
+    }, { High: 0, Medium: 0, Low: 0, "Not Started": 0 });
 
-    const assessmentStats = assessments.map((assessment) => {
-        const results = assessmentResults.filter((result) => result.assessment?._id?.toString() === assessment._id.toString());
-        const totalAttempts = results.length;
-        const averagePercentage = totalAttempts > 0
-            ? round(results.reduce((sum, r) => sum + Number(r.percentage || 0), 0) / totalAttempts)
-            : 0;
-        const completionPercentage = assessment.assignedStudents && assessment.assignedStudents.length > 0
-            ? round((totalAttempts / assessment.assignedStudents.length) * 100)
-            : 0;
+    const resultsByAssessment = new Map();
+    const studentResultsByStudent = new Map();
+    for (const result of assessmentResults) {
+        const assessmentId = String(result.assessment?._id || result.assessment);
+        const assessmentBucket = resultsByAssessment.get(assessmentId) || [];
+        assessmentBucket.push(result);
+        resultsByAssessment.set(assessmentId, assessmentBucket);
+
+        const studentId = String(result.student?._id || result.student);
+        if (!studentId || studentId === "undefined") continue;
+        const studentBucket = studentResultsByStudent.get(studentId) || [];
+        studentBucket.push(result);
+        studentResultsByStudent.set(studentId, studentBucket);
+    }
+
+    const validPercentage = (value) => (
+        value !== null
+        && value !== undefined
+        && value !== ""
+        && Number.isFinite(Number(value))
+        && Number(value) >= 0
+        && Number(value) <= 100
+    );
+
+    const assessmentStats = activeAssessments.map((assessment) => {
+        const results = resultsByAssessment.get(assessment._id.toString()) || [];
+        const percentages = results.filter((result) => validPercentage(result.percentage)).map((result) => Number(result.percentage));
+        const participatingStudents = new Set(
+            results
+                .map((result) => String(result.student?._id || result.student))
+                .filter((studentId) => studentId && studentId !== "undefined" && studentId !== "null")
+        );
+        const participatingCount = participatingStudents.size;
+        const assignedCount = getAssessmentAssignedStudentCount(assessment);
 
         return {
             assessmentId: assessment._id,
             title: assessment.title,
             status: assessment.status,
-            totalAttempts,
-            completionPercentage,
-            averagePercentage
+            totalAttempts: results.length,
+            participatingStudents: participatingCount,
+            assignedCount,
+            completionPercentage: assignedCount ? Math.min(100, round((participatingCount / assignedCount) * 100)) : null,
+            averagePercentage: percentages.length
+                ? round(percentages.reduce((sum, percentage) => sum + percentage, 0) / percentages.length)
+                : null
         };
     });
 
-    const averageAssessmentScore = assessmentResults.length > 0
-        ? round(assessmentResults.reduce((sum, result) => sum + Number(result.percentage || 0), 0) / assessmentResults.length)
-        : 0;
+    const validAssessmentPercentages = assessmentResults
+        .filter((result) => validPercentage(result.percentage))
+        .map((result) => Number(result.percentage));
+    const averageAssessmentScore = validAssessmentPercentages.length
+        ? round(validAssessmentPercentages.reduce((sum, percentage) => sum + percentage, 0) / validAssessmentPercentages.length)
+        : null;
 
     const weakSkillCounts = assessmentResults.reduce((counts, result) => {
         (Array.isArray(result.weaknesses) ? result.weaknesses : []).forEach((weakness) => {
@@ -432,54 +550,66 @@ const buildFacultyDashboard = async (facultyId) => {
         .slice(0, 10)
         .map(([skill, count]) => ({ skill, count }));
 
-    const studentResultsByStudent = assessmentResults.reduce((map, result) => {
-        const studentId = result.student?._id?.toString();
-        if (!studentId) return map;
-        if (!map[studentId]) {
-            map[studentId] = { student: result.student, results: [] };
-        }
-        map[studentId].results.push(result);
-        return map;
-    }, {});
-
-    const topPerformingStudents = Object.values(studentResultsByStudent)
-        .map(({ student, results }) => ({
-            studentId: student.studentId || "",
-            studentName: student.name || "",
-            department: student.department || "",
-            averagePercentage: round(results.reduce((sum, r) => sum + Number(r.percentage || 0), 0) / results.length),
-            assessmentsAttempted: results.length,
-            readinessLevel: student.readinessProfile?.level || "Low"
-        }))
+    const topPerformingStudents = Array.from(studentResultsByStudent.values())
+        .map((results) => {
+            const student = results[0]?.student || {};
+            const percentages = results.filter((result) => validPercentage(result.percentage)).map((result) => Number(result.percentage));
+            return {
+                studentId: student.studentId || "",
+                studentName: student.name || "",
+                department: student.department || "",
+                averagePercentage: percentages.length
+                    ? round(percentages.reduce((sum, percentage) => sum + percentage, 0) / percentages.length)
+                    : null,
+                assessmentsAttempted: results.length,
+                readinessLevel: student.readinessProfile?.level || "Low"
+            };
+        })
+        .filter((student) => student.averagePercentage !== null)
         .sort((a, b) => b.averagePercentage - a.averagePercentage)
         .slice(0, 5);
 
     const attentionStudents = students.map((student) => {
-        const resultBucket = studentResultsByStudent[student._id?.toString()];
-        const averagePercentage = resultBucket && resultBucket.results.length > 0
-            ? round(resultBucket.results.reduce((sum, r) => sum + Number(r.percentage || 0), 0) / resultBucket.results.length)
-            : 0;
+        const resultBucket = studentResultsByStudent.get(student._id?.toString()) || [];
+        const percentages = resultBucket.filter((result) => validPercentage(result.percentage)).map((result) => Number(result.percentage));
+        const averagePercentage = percentages.length
+            ? round(percentages.reduce((sum, percentage) => sum + percentage, 0) / percentages.length)
+            : null;
+        const readinessWasCalculated = Boolean(student.readinessProfile?.lastCalculatedAt);
+        const rawReadinessScore = readinessWasCalculated
+            ? student.readinessProfile.score
+            : student.placementReadinessScore;
+        const readinessScore = Number(rawReadinessScore);
+        const readinessAvailable = readinessWasCalculated
+            || student.initialAssessmentCompleted
+            || (Number.isFinite(readinessScore) && readinessScore > 0);
+        const latestScoredResult = resultBucket.find((result) => validPercentage(result.percentage));
+        const needsAttention = (readinessAvailable && readinessScore < 60)
+            || (averagePercentage !== null && averagePercentage < 50);
 
         return {
             studentName: student.name || "",
             studentId: student.studentId || "",
             department: student.department || "",
-            readinessScore: student.placementReadinessScore || 0,
+            readinessScore: readinessAvailable && Number.isFinite(readinessScore) ? readinessScore : null,
             readinessLevel: student.readinessProfile?.level || "Low",
             averageAssessmentPercentage: averagePercentage,
-            needsAttention: student.placementReadinessScore < 60 || averagePercentage < 50
+            lastScore: latestScoredResult ? Number(latestScoredResult.percentage) : null,
+            lastScoreSubmittedAt: latestScoredResult?.submittedAt || null,
+            status: readinessAvailable && readinessScore < 60 ? "At Risk" : "Needs Practice",
+            needsAttention
         };
     }).filter((student) => student.needsAttention)
-        .sort((a, b) => a.readinessScore - b.readinessScore)
+        .sort((a, b) => (a.readinessScore ?? Infinity) - (b.readinessScore ?? Infinity))
         .slice(0, 10);
 
-    const recentAssessments = assessments.slice().sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)).slice(0, 5);
-    const recentAssessmentResults = assessmentResults.slice(0, 5).map((result) => ({
+    const recentAssessments = activeAssessments.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+    const recentAssessmentResults = assessmentResults.filter((result) => validPercentage(result.percentage)).slice(0, 5).map((result) => ({
         studentName: result.student?.name || "",
         studentId: result.student?.studentId || "",
         assessmentTitle: result.assessment?.title || "Assessment",
-        percentage: round(result.percentage || 0),
-        score: round(result.score || 0),
+        percentage: round(result.percentage),
+        score: result.score === null || result.score === undefined || result.score === "" ? null : round(result.score),
         submittedAt: result.submittedAt
     }));
 
@@ -489,17 +619,18 @@ const buildFacultyDashboard = async (facultyId) => {
             department: faculty.department || "",
             designation: faculty.designation || ""
         },
-        totalAssignedStudents: assignedStudentIds.length,
-        totalAssignedAssessments: assignedAssessmentIds.length,
+        totalAssignedStudents: students.length,
+        totalAssignedAssessments: activeAssessments.length,
         studentReadinessDistribution,
         assessmentCompletionStatistics: {
-            totalAssessments: assessments.length,
+            totalAssessments: activeAssessments.length,
             completedResults: assessmentResults.length,
             overallAverageScore: averageAssessmentScore,
             assessmentStats
         },
         averageAssessmentScores: averageAssessmentScore,
         weakSkillsAnalysis,
+        skillPerformance: buildSkillPerformance(assessmentResults),
         topPerformingStudents,
         studentsNeedingAttention: attentionStudents,
         recentAssessments,
@@ -518,6 +649,7 @@ const buildFacultyAnalytics = async (facultyId) => {
         assessmentCompletionStatistics: facultyDashboard.assessmentCompletionStatistics,
         averageAssessmentScores: facultyDashboard.averageAssessmentScores,
         weakSkillsAnalysis: facultyDashboard.weakSkillsAnalysis,
+        skillPerformance: facultyDashboard.skillPerformance,
         topPerformingStudents: facultyDashboard.topPerformingStudents,
         studentsNeedingAttention: facultyDashboard.studentsNeedingAttention,
         recentAssessments: facultyDashboard.recentAssessments,
@@ -612,6 +744,7 @@ const buildAssessmentReport = async (facultyId) => {
 
 module.exports = {
     buildDashboardSnapshot,
+    buildSkillPerformance,
     buildDashboardPayload,
     buildStudentDashboard,
     buildStudentAnalytics,

@@ -1,7 +1,8 @@
 const Student = require("../models/Student");
 const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
-const { calculateCodingSkillScore, buildPlatformAdapter, getPlatformConnectionSummary, validatePlatformUrl } = require("../services/codingProfileService");
+const { calculateCodingSkillScore, getPlatformConnectionSummary, validatePlatformUrl, fetchPlatformStatistics } = require("../services/codingProfileService");
+const { analyzeResume } = require("../services/resumeAnalysisService");
 const fs = require("fs");
 const path = require("path");
 const { successResponse, errorResponse } = require("../utils/response");
@@ -42,19 +43,48 @@ const profileFields = [
     "section"
 ];
 
-const codingProfileFields = [
-    "score",
-    "level",
-    "explanation",
-    "updatedAt",
-    "totalProblemsSolved",
-    "easySolved",
-    "mediumSolved",
-    "hardSolved",
-    "contestsParticipated",
-    "topicAnalysis",
-    "platforms"
-];
+const codingPlatformFields = ["github", "leetcode", "hackerrank", "codechef", "codeforces"];
+
+const buildCodingProfileResponse = (student) => {
+    const profile = student.codingProfile?.toObject
+        ? student.codingProfile.toObject()
+        : (student.codingProfile || {});
+
+    return {
+        ...profile,
+        ...getPlatformConnectionSummary(student),
+        profileUrls: {
+            leetcode: student.leetcode || "",
+            hackerrank: student.hackerrank || "",
+            codechef: student.codechef || "",
+            github: student.github || "",
+            codeforces: student.codeforces || ""
+        }
+    };
+};
+
+const retainDifficultyBreakdown = (latest, existing) => {
+    const previous = existing?.toObject ? existing.toObject() : existing;
+    if (latest.difficultyBreakdownAvailable || !previous?.profileVerified
+        || previous.difficultyBreakdownAvailable !== true
+        || previous.profileUrl !== latest.profileUrl) {
+        return latest;
+    }
+
+    const classifiedSolved = ["easySolved", "mediumSolved", "hardSolved"]
+        .reduce((sum, field) => sum + (Number.isFinite(previous[field]) ? previous[field] : 0), 0);
+    const latestTotal = Number.isFinite(latest.totalSolved) ? latest.totalSolved : null;
+    return {
+        ...latest,
+        easySolved: previous.easySolved,
+        mediumSolved: previous.mediumSolved,
+        hardSolved: previous.hardSolved,
+        difficultyBreakdownAvailable: true,
+        difficultyBreakdownStatus: "stale",
+        difficultyBreakdownUpdatedAt: previous.difficultyBreakdownUpdatedAt,
+        unclassifiedSolved: latestTotal === null ? previous.unclassifiedSolved : Math.max(0, latestTotal - classifiedSolved)
+    };
+};
 
 const getProfile = async (req, res) => {
     try {
@@ -117,7 +147,7 @@ const updateProfile = async (req, res) => {
 
 const getCodingProfile = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id).select("codingProfile github leetcode hackerrank codechef linkedin");
+        const student = await Student.findById(req.user.id).select("codingProfile github leetcode hackerrank codechef codeforces");
         if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
 
         const defaultProfile = {
@@ -134,14 +164,13 @@ const getCodingProfile = async (req, res) => {
             platforms: []
         };
 
-        const profile = student.codingProfile || defaultProfile;
-        const platformSummary = getPlatformConnectionSummary(student);
+        const profile = student.codingProfile ? buildCodingProfileResponse(student) : defaultProfile;
 
         return successResponse(res, {
             message: "Coding profile fetched successfully",
             data: {
                 ...profile,
-                ...platformSummary
+                profileUrls: profile.profileUrls || buildCodingProfileResponse(student).profileUrls
             }
         });
     } catch (error) {
@@ -154,56 +183,70 @@ const updateCodingProfile = async (req, res) => {
         const student = await Student.findById(req.user.id).select("-password");
         if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
 
+        const platformFields = codingPlatformFields;
         const requestFields = Object.keys(req.body || {});
-        const invalidFields = requestFields.filter((f) => !codingProfileFields.includes(f) && !["github", "leetcode", "hackerrank", "codechef", "linkedin"].includes(f));
+        const requestedPlatformFields = platformFields.filter((field) => Object.prototype.hasOwnProperty.call(req.body, field));
+        const invalidFields = requestFields.filter((field) => !platformFields.includes(field));
         if (invalidFields.length > 0) return errorResponse(res, { message: "Invalid coding profile field(s) provided", status: 400 });
 
-        const updates = {};
-        codingProfileFields.forEach((field) => {
-            if (Object.prototype.hasOwnProperty.call(req.body, field)) updates[field] = req.body[field];
-        });
-
-        const platformFields = ["github", "leetcode", "hackerrank", "codechef", "linkedin"];
-        platformFields.forEach((field) => {
-            if (Object.prototype.hasOwnProperty.call(req.body, field)) {
-                const value = req.body[field];
-                if (value === "" || value === null || value === undefined) {
-                    student[field] = "";
-                } else if (typeof value !== "string") {
-                    return errorResponse(res, { message: `${field} must be a string`, status: 400 });
-                } else if (!validatePlatformUrl(field, value.trim())) {
-                    return errorResponse(res, { message: `${field} must be a valid URL`, status: 400 });
-                } else {
-                    student[field] = value.trim();
-                }
-            }
-        });
-
-        if (Object.keys(updates).length === 0 && platformFields.every((field) => !Object.prototype.hasOwnProperty.call(req.body, field))) {
+        if (platformFields.every((field) => !Object.prototype.hasOwnProperty.call(req.body, field))) {
             return errorResponse(res, { message: "No coding profile fields provided", status: 400 });
         }
 
-        if (updates.score !== undefined && (!Number.isFinite(updates.score) || updates.score < 0 || updates.score > 100)) {
-            return errorResponse(res, { message: "Coding score must be between 0 and 100", status: 400 });
+        const submittedUrls = {};
+        const fieldErrors = {};
+        for (const field of platformFields) {
+            const value = Object.prototype.hasOwnProperty.call(req.body, field)
+                ? req.body[field]
+                : (student[field] || "");
+            if (value === "" || value === null || value === undefined) {
+                submittedUrls[field] = "";
+            } else if (typeof value !== "string" || !validatePlatformUrl(field, value.trim())) {
+                fieldErrors[field] = `Enter a valid ${field} profile URL.`;
+            } else {
+                submittedUrls[field] = value.trim();
+            }
+        }
+        if (Object.keys(fieldErrors).length > 0) {
+            return errorResponse(res, { message: "Please correct the invalid profile URLs", data: { fieldErrors }, status: 400 });
         }
 
-        if (updates.totalProblemsSolved !== undefined && (!Number.isInteger(updates.totalProblemsSolved) || updates.totalProblemsSolved < 0)) {
-            return errorResponse(res, { message: "Total problems solved must be a non-negative integer", status: 400 });
-        }
-
-        if (updates.platforms !== undefined && (!Array.isArray(updates.platforms))) {
-            return errorResponse(res, { message: "Platforms must be an array", status: 400 });
+        const platforms = [];
+        try {
+            const existingPlatforms = student.codingProfile?.platforms || [];
+            const existingPlatformsByName = new Map(existingPlatforms.map((platform) => [platform.platform.toLowerCase(), platform]));
+            for (const field of platformFields) {
+                if (!requestedPlatformFields.includes(field)) {
+                    const existingPlatform = existingPlatformsByName.get(field);
+                    if (existingPlatform) platforms.push(existingPlatform.toObject ? existingPlatform.toObject() : existingPlatform);
+                    continue;
+                }
+                if (!submittedUrls[field]) continue;
+                const latest = await fetchPlatformStatistics(field, submittedUrls[field]);
+                platforms.push(retainDifficultyBreakdown(latest, existingPlatformsByName.get(field)));
+            }
+        } catch (error) {
+            return errorResponse(res, {
+                message: "Unable to verify this profile. Please check the URL and make sure the profile is publicly accessible.",
+                data: { detail: error.message },
+                status: 422
+            });
         }
 
         const existingProfile = student.codingProfile || {};
-        const normalizedPlatforms = Array.isArray(updates.platforms)
-            ? updates.platforms.map((p) => buildPlatformAdapter(p.platform || "Unknown", p))
-            : (existingProfile.platforms || []);
+        platformFields.forEach((field) => { student[field] = submittedUrls[field]; });
+        const totals = platforms.reduce((summary, platform) => ({
+            totalProblemsSolved: summary.totalProblemsSolved + (Number.isFinite(platform.totalSolved) ? platform.totalSolved : 0),
+            easySolved: summary.easySolved + (Number.isFinite(platform.easySolved) ? platform.easySolved : 0),
+            mediumSolved: summary.mediumSolved + (Number.isFinite(platform.mediumSolved) ? platform.mediumSolved : 0),
+            hardSolved: summary.hardSolved + (Number.isFinite(platform.hardSolved) ? platform.hardSolved : 0),
+            contestsParticipated: summary.contestsParticipated + (Number.isFinite(platform.contestsParticipated) ? platform.contestsParticipated : 0)
+        }), { totalProblemsSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0, contestsParticipated: 0 });
 
         const mergedProfile = {
             ...(existingProfile || {}),
-            ...updates,
-            platforms: normalizedPlatforms,
+            ...totals,
+            platforms,
             updatedAt: new Date()
         };
 
@@ -220,14 +263,67 @@ const updateCodingProfile = async (req, res) => {
         student.codingProfile = mergedProfile;
         await student.save();
 
-        const platformSummary = getPlatformConnectionSummary(student);
-
         return successResponse(res, {
             message: "Coding profile updated successfully",
-            data: {
-                ...student.codingProfile.toObject ? student.codingProfile.toObject() : student.codingProfile,
-                ...platformSummary
+            data: buildCodingProfileResponse(student)
+        });
+    } catch (error) {
+        return errorResponse(res, { message: error.message, status: 500 });
+    }
+};
+
+const refreshCodingProfile = async (req, res) => {
+    try {
+        const student = await Student.findById(req.user.id).select("-password");
+        if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
+
+        const existingPlatforms = student.codingProfile?.platforms || [];
+        const existingPlatformsByName = new Map(existingPlatforms.map((platform) => [platform.platform.toLowerCase(), platform]));
+        const refreshResults = await Promise.all(codingPlatformFields.map(async (field) => {
+            const profileUrl = student[field] || "";
+            if (!profileUrl) return { field, platform: null };
+            try {
+                return { field, platform: await fetchPlatformStatistics(field, profileUrl) };
+            } catch (error) {
+                return { field, error: `Could not be refreshed: ${error.message}` };
             }
+        }));
+
+        const refreshErrors = [];
+        const platforms = refreshResults.reduce((items, result) => {
+            if (result.platform) {
+                items.push(retainDifficultyBreakdown(result.platform, existingPlatformsByName.get(result.field)));
+            } else if (result.error) {
+                const existing = existingPlatformsByName.get(result.field);
+                if (existing) items.push(existing.toObject ? existing.toObject() : existing);
+                refreshErrors.push({ platform: result.field, message: result.error });
+            }
+            return items;
+        }, []);
+
+        const totals = platforms.reduce((summary, platform) => ({
+            totalProblemsSolved: summary.totalProblemsSolved + (Number.isFinite(platform.totalSolved) ? platform.totalSolved : 0),
+            easySolved: summary.easySolved + (Number.isFinite(platform.easySolved) ? platform.easySolved : 0),
+            mediumSolved: summary.mediumSolved + (Number.isFinite(platform.mediumSolved) ? platform.mediumSolved : 0),
+            hardSolved: summary.hardSolved + (Number.isFinite(platform.hardSolved) ? platform.hardSolved : 0),
+            contestsParticipated: summary.contestsParticipated + (Number.isFinite(platform.contestsParticipated) ? platform.contestsParticipated : 0)
+        }), { totalProblemsSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0, contestsParticipated: 0 });
+
+        const scoredProfile = calculateCodingSkillScore(totals);
+        student.codingProfile = {
+            ...(student.codingProfile?.toObject ? student.codingProfile.toObject() : (student.codingProfile || {})),
+            ...totals,
+            platforms,
+            score: scoredProfile.score,
+            level: scoredProfile.level,
+            explanation: scoredProfile.explanation,
+            updatedAt: new Date()
+        };
+        await student.save();
+
+        return successResponse(res, {
+            message: refreshErrors.length > 0 ? "Coding profile refreshed with some errors" : "Coding profile refreshed successfully",
+            data: { ...buildCodingProfileResponse(student), refreshErrors }
         });
     } catch (error) {
         return errorResponse(res, { message: error.message, status: 500 });
@@ -284,34 +380,122 @@ const getDashboard = async (req, res) => {
     }
 };
 
-const uploadResume = async (req, res) => {
+const removeUploadedFileSafely = async (file) => {
     try {
-        if (!req.file) return errorResponse(res, { message: "Resume PDF file is required", status: 400 });
-
-        const student = await Student.findById(req.user.id);
-        if (!student) {
-            await removeUploadedFile(req.file);
-            return errorResponse(res, { message: "Student not found", status: 404 });
-        }
-
-        if (student.resume) {
-            await removeUploadedFile(req.file);
-            return errorResponse(res, { message: "Resume already exists. Use PUT to replace it", status: 409 });
-        }
-
-        student.resume = `uploads/resumes/${req.file.filename}`;
-        await student.save();
-
-        return successResponse(res, { status: 201, message: "Resume uploaded successfully", data: { resume: student.resume } });
+        await removeUploadedFile(file);
     } catch (error) {
-        await removeUploadedFile(req.file);
-        return errorResponse(res, { message: error.message, status: 500 });
+        console.error("Uploaded resume cleanup failed:", error.message);
     }
 };
 
+const uploadStudentResume = async (req, res, replace) => {
+    if (!req.file) return errorResponse(res, { message: "Resume file is required", status: 400 });
+
+    const newResume = `uploads/resumes/${req.file.filename}`;
+    let student;
+    try {
+        student = await Student.findById(req.user.id);
+    } catch (error) {
+        await removeUploadedFileSafely(req.file);
+        return errorResponse(res, { message: "Unable to load the student record.", status: 500 });
+    }
+
+    if (!student) {
+        await removeUploadedFileSafely(req.file);
+        return errorResponse(res, { message: "Student not found", status: 404 });
+    }
+
+    const previousResume = student.resume;
+    const previousFilePath = getResumeFilePath(previousResume);
+    const previousFileExists = previousFilePath && fs.existsSync(previousFilePath);
+
+    if (!replace && previousFileExists) {
+        await removeUploadedFileSafely(req.file);
+        return errorResponse(res, { message: "Resume already exists. Use PUT to replace it", status: 409 });
+    }
+
+    if (replace && !previousResume) {
+        await removeUploadedFileSafely(req.file);
+        return errorResponse(res, { message: "Resume not found", status: 404 });
+    }
+
+    let resumeAnalysis;
+    try {
+        resumeAnalysis = await analyzeResume(newResume);
+    } catch (error) {
+        await removeUploadedFileSafely(req.file);
+        if (error.message === "No selectable text found in PDF") {
+            return errorResponse(res, { message: "This PDF contains no selectable text. Please upload a text-based PDF.", status: 400 });
+        }
+        if (error.message === "Uploaded file is not a valid PDF") {
+            return errorResponse(res, { message: "Uploaded file is not a valid PDF.", status: 400 });
+        }
+        if (error.message === "Uploaded file is not a valid DOCX") {
+            return errorResponse(res, { message: "Uploaded file is not a valid DOCX.", status: 400 });
+        }
+        if (error.message === "No readable text found in resume file") {
+            return errorResponse(res, { message: "Unable to find readable text in this resume.", status: 400 });
+        }
+        if (error.message === "Unable to extract resume text") {
+            return errorResponse(res, { message: "Unable to extract text from this resume.", status: 400 });
+        }
+        console.error("Resume analysis failed:", error.message);
+        return errorResponse(res, { message: "Resume analysis failed. Your existing resume was not changed.", status: 500 });
+    }
+
+    student.resume = newResume;
+    student.resumeOriginalName = req.file.originalname || req.file.filename;
+    student.resumeMimeType = req.file.mimetype || "application/octet-stream";
+    student.resumeSize = Number(req.file.size) || 0;
+    student.resumeAnalysis = resumeAnalysis;
+    student.lastResumeAnalysisDate = new Date();
+    const rawAnalyzedScore = resumeAnalysis?.resumeScore ?? resumeAnalysis?.overallScore;
+    const analyzedScore = Number(rawAnalyzedScore);
+    if (rawAnalyzedScore !== null && rawAnalyzedScore !== undefined && rawAnalyzedScore !== "" && Number.isFinite(analyzedScore)) {
+        student.resumeScore = Math.max(0, Math.min(100, Math.round(analyzedScore)));
+    }
+    try {
+        await student.save();
+    } catch (error) {
+        try {
+            const savedStudent = await Student.findById(req.user.id).select("resume");
+            if (savedStudent && savedStudent.resume !== newResume) {
+                await removeUploadedFileSafely(req.file);
+            }
+        } catch (readError) {
+            console.error("Unable to verify resume after database update failure:", readError.message);
+        }
+        console.error("Resume database update failed:", error.message);
+        return errorResponse(res, { message: "Resume could not be saved. Your existing resume was not changed.", status: 500 });
+    }
+
+    if (previousResume && previousResume !== newResume) {
+        try {
+            await deleteResumeFile(previousResume);
+        } catch (error) {
+            console.error("Previous resume cleanup failed:", error.message);
+        }
+    }
+
+    return successResponse(res, {
+        status: replace ? 200 : 201,
+        message: "Resume uploaded and analyzed successfully.",
+        data: {
+            resume: student.resume,
+            resumeAnalysis: student.resumeAnalysis,
+            resumeScore: student.resumeScore,
+            lastResumeAnalysisDate: student.lastResumeAnalysisDate
+        }
+    });
+};
+
+const uploadResume = (req, res) => uploadStudentResume(req, res, false);
+
 const getResume = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id).select("resume resumeAnalysis");
+        const student = await Student.findById(req.user.id).select(
+            "resume resumeAnalysis resumeScore lastResumeAnalysisDate resumeOriginalName resumeMimeType resumeSize"
+        );
         if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
 
         const resumeFilePath = getResumeFilePath(student.resume);
@@ -319,40 +503,50 @@ const getResume = async (req, res) => {
             return errorResponse(res, { message: "Resume not found", status: 404 });
         }
 
-        return successResponse(res, { message: "Resume fetched successfully", data: { resume: student.resume, resumeAnalysis: student.resumeAnalysis || {} } });
+        return successResponse(res, {
+            message: "Resume fetched successfully",
+            data: {
+                resume: student.resume,
+                resumeUrl: "/api/student/resume/file",
+                fileName: student.resumeOriginalName || path.basename(student.resume),
+                mimeType: student.resumeMimeType || "application/octet-stream",
+                size: Number(student.resumeSize) || 0,
+                resumeAnalysis: student.resumeAnalysis || {},
+                resumeScore: student.resumeScore ?? null,
+                lastResumeAnalysisDate: student.lastResumeAnalysisDate || null
+            }
+        });
     } catch (error) {
         return errorResponse(res, { message: error.message, status: 500 });
     }
 };
 
-const replaceResume = async (req, res) => {
-    let resumeSaved = false;
+const viewResume = async (req, res) => {
     try {
-        if (!req.file) return errorResponse(res, { message: "Resume PDF file is required", status: 400 });
+        const student = await Student.findById(req.user.id)
+            .select("resume resumeOriginalName resumeMimeType");
+        if (!student) return res.status(404).json({ success: false, message: "Student not found" });
 
-        const student = await Student.findById(req.user.id);
-        if (!student) {
-            await removeUploadedFile(req.file);
-            return errorResponse(res, { message: "Student not found", status: 404 });
+        const resumeFilePath = getResumeFilePath(student.resume);
+        if (!resumeFilePath || !fs.existsSync(resumeFilePath)) {
+            return res.status(404).json({ success: false, message: "Resume not found" });
         }
 
-        if (!student.resume) {
-            await removeUploadedFile(req.file);
-            return errorResponse(res, { message: "Resume not found", status: 404 });
-        }
-
-        const previousResume = student.resume;
-        student.resume = `uploads/resumes/${req.file.filename}`;
-        await student.save();
-        resumeSaved = true;
-        await deleteResumeFile(previousResume);
-
-        return successResponse(res, { message: "Resume replaced successfully", data: { resume: student.resume } });
+        if (student.resumeMimeType) res.type(student.resumeMimeType);
+        const fileName = String(student.resumeOriginalName || path.basename(student.resume))
+            .replace(/["\r\n]/g, "");
+        return res.sendFile(resumeFilePath, {
+            headers: { "Content-Disposition": `inline; filename="${fileName}"` }
+        });
     } catch (error) {
-        if (!resumeSaved) await removeUploadedFile(req.file);
-        return errorResponse(res, { message: error.message, status: 500 });
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Unable to view resume"
+        });
     }
 };
+
+const replaceResume = (req, res) => uploadStudentResume(req, res, true);
 
 const deleteResume = async (req, res) => {
     try {
@@ -362,6 +556,9 @@ const deleteResume = async (req, res) => {
 
         await deleteResumeFile(student.resume);
         student.resume = "";
+        student.resumeOriginalName = "";
+        student.resumeMimeType = "";
+        student.resumeSize = 0;
         await student.save();
 
         return successResponse(res, { message: "Resume deleted successfully", data: {} });
@@ -375,9 +572,11 @@ module.exports = {
     updateProfile,
     getCodingProfile,
     updateCodingProfile,
+    refreshCodingProfile,
     getDashboard,
     uploadResume,
     getResume,
+    viewResume,
     replaceResume,
     deleteResume
 };

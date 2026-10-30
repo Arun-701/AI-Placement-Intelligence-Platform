@@ -153,18 +153,27 @@ All responses follow a standard wrapper format:
 
 ### Verify Email
 - Method: POST
-- URL: `/api/auth/verify-email`
-- Description: Verify a student account email using a token.
+- URL: `/api/auth/verify-email-otp`
+- Description: Verify an account email using a six-digit one-time code sent by email.
 - Authentication Required: No
 - Required Role: None
 - Request Body:
-  - `token` (string, required)
+  - `email` (string, required)
+  - `otp` (six-digit string, required)
 - Success Response:
   - `success: true`
   - `message`: email verified successfully
 - Error Responses:
-  - 400 invalid token or payload
+  - 400 invalid, expired, or already-used verification code
   - 500 server error
+
+### Resend Verification Code
+- Method: POST
+- URL: `/api/auth/resend-verification`
+- Description: Send a new six-digit verification code to an unverified account. Requests are limited to one per minute.
+- Authentication Required: No
+- Request Body:
+  - `email` (string, required)
 
 ### Student Profile - Authenticated
 #### Get Profile
@@ -235,10 +244,10 @@ All responses follow a standard wrapper format:
 ### Get Coding Profile
 - Method: GET
 - URL: `/api/student/coding-profile`
-- Description: Retrieve student's coding profile and platform summary.
+- Description: Retrieve the student's coding profile, platform statistics, and any available per-platform difficulty breakdowns.
 - Authentication Required: Yes
 - Required Role: student
-- Success Response: coding profile object
+- Success Response: coding profile object. Each platform may include `totalSolved`, `easySolved`, `mediumSolved`, `hardSolved`, `difficultyBreakdownAvailable`, `difficultyBreakdownStatus`, `difficultyBreakdownUpdatedAt`, and `unclassifiedSolved`. Difficulty fields are unavailable when the source does not provide a reliable classification; `unclassifiedSolved` records the platform-reported total without assigning difficulty bands.
 - Error Responses: 404 student not found, 500 server error
 
 ### Update Coding Profile
@@ -250,6 +259,15 @@ All responses follow a standard wrapper format:
 - Request Body: subset of allowed fields
 - Success Response: saved coding profile
 - Error Responses: 400 invalid payload, 404 student not found, 500 server error
+
+### Refresh Coding Profile
+- Method: POST
+- URL: `/api/student/coding-profile/refresh`
+- Description: Refresh connected platform statistics. Previously retrieved difficulty counts are retained as stale when the platform no longer returns a breakdown.
+- Authentication Required: Yes
+- Required Role: student
+- Success Response: refreshed coding profile and any per-platform refresh errors
+- Error Responses: 404 student not found, 500 server error
 
 ### Upload Resume
 - Method: POST
@@ -662,6 +680,52 @@ All responses follow a standard wrapper format:
 - Required Role: student
 - Success Response: resume analysis and readiness profile
 - Error Responses: 404 student or resume not found, 500 server error
+
+### Analyze Resume Against a Job Description
+- Method: POST
+- URL: `/api/ai/analyze-resume-jd`
+- Description: Analyze the student's current or newly uploaded resume against a required job description. The resume, comparison, ATS score, and latest report are saved only after the analysis succeeds.
+- Authentication Required: Yes
+- Required Role: student
+- Content Type: `multipart/form-data`
+- Fields:
+  - `resume` (file, optional when the student already has a saved resume; PDF, DOC, or DOCX)
+  - `jobDescription` (string, required; maximum 5,000 characters)
+  - `jobDescriptionSource` (`paste` or `file`)
+  - `jobDescriptionFileName` (string, optional; display name when the JD was uploaded and extracted)
+  - `jobDescriptionFile` (file, optional alternative to `jobDescription`; PDF, DOC, DOCX, or TXT)
+- Success Response: saved report including `analysisId`, `atsScore`, `jobMatchScore`, keyword/skill comparison, strengths, recommendations, section analysis, and optional semantic metrics
+- Error Responses: 400 invalid input, 404 student or resume not found, 500 analysis or persistence failure
+
+### Extract an Uploaded Job Description
+- Method: POST
+- URL: `/api/ai/resume-jd/extract`
+- Description: Extract and validate text from an uploaded PDF or DOCX before analysis.
+- Authentication Required: Yes
+- Required Role: student
+- Content Type: `multipart/form-data`
+- Fields:
+  - `jobDescription` (file, required; PDF or DOCX)
+- Success Response: extracted `text`, file metadata, and character count
+- Error Responses: 400 invalid file or extracted text, 500 extraction failure
+
+### Get Latest Resume/JD Analysis
+- Method: GET
+- URL: `/api/ai/resume-jd-analysis`
+- Description: Retrieve the authenticated student's latest successfully saved Resume AI report.
+- Authentication Required: Yes
+- Required Role: student
+- Success Response: latest report and persisted ATS score
+- Error Responses: 404 no saved analysis, 500 server error
+
+### Get a Resume/JD Analysis Report
+- Method: GET
+- URL: `/api/ai/resume-jd-analysis/:analysisId`
+- Description: Retrieve a saved report by ID. The report is available only to its owning authenticated student and only while it is the student's latest report.
+- Authentication Required: Yes
+- Required Role: student
+- Success Response: saved report
+- Error Responses: 404 report not found for the authenticated student, 500 server error
 
 ### Refresh Resume Analysis
 - Method: POST
