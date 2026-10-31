@@ -367,7 +367,7 @@ const studentSchema = new mongoose.Schema(
 
     cgpa: {
       type: Number,
-      default: 0,
+      default: null,
       min: 0,
       max: 10,
     },

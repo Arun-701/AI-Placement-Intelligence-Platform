@@ -249,12 +249,45 @@
 
 .students-table tbody tr:last-child td { border-bottom: 0; }
 .students-table tbody tr:hover { background: #f8fbff; }
-.students-table th:nth-child(1) { width: 21%; }
-.students-table th:nth-child(2) { width: 24%; }
+.students-table th:nth-child(1) { width: 20%; }
+.students-table th:nth-child(2) { width: 23%; }
 .students-table th:nth-child(3) { width: 20%; }
 .students-table th:nth-child(4) { width: 10%; }
 .students-table th:nth-child(5) { width: 11%; }
-.students-table th:nth-child(6) { width: 14%; }
+.students-table th:nth-child(6) { width: 16%; }
+.students-table.has-actions { min-width: 900px; }
+.students-table.has-actions th:nth-child(1) { width: 18.06%; }
+.students-table.has-actions th:nth-child(2) { width: 20.64%; }
+.students-table.has-actions th:nth-child(3) { width: 17.2%; }
+.students-table.has-actions th:nth-child(4) { width: 8.6%; }
+.students-table.has-actions th:nth-child(5) { width: 9.46%; }
+.students-table.has-actions th:nth-child(6) { width: 12.04%; }
+.students-table.has-actions th:nth-child(7) { width: 14%; }
+.students-table.has-actions th:last-child,
+.students-table.has-actions .students-action-cell { text-align: center; }
+
+.student-view-details,
+.faculty-view-details {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 1px solid #cbdcf4;
+  border-radius: 8px;
+  background: #f3f7ff;
+  color: #2d66ad;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.student-view-details:hover,
+.faculty-view-details:hover { border-color: #a9c5ed; background: #eaf2ff; }
+.student-view-details svg,
+.faculty-view-details svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
 
 .student-name-cell {
   display: flex;

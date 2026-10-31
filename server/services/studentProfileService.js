@@ -2,6 +2,7 @@ const Student = require("../models/Student");
 const Roadmap = require("../models/Roadmap");
 const AssessmentResult = require("../models/AssessmentResult");
 const { getMissingProfileFields } = require("../validators/studentProfileValidator");
+const { calculatePlacementReadinessScore, updateStudentReadinessProfile } = require("./readinessService");
 
 const toOptionalScore = (value) => {
   if (value === null || value === undefined || value === "" || typeof value === "boolean") return null;
@@ -99,8 +100,16 @@ const getStudentProfile = async (studentId) => {
 
   const completion = calculateProfileCompletion(student);
   const profileCompleteness = calculateProfileCompleteness(student);
-  const storedResumeScore = toOptionalScore(student.resumeScore);
-  const analyzedResumeScore = toOptionalScore(student.resumeAnalysis?.resumeScore ?? student.resumeAnalysis?.overallScore);
+  const readiness = await calculatePlacementReadinessScore(student);
+  const readinessProfile = {
+    score: readiness.score,
+    level: readiness.level,
+    explanation: readiness.explanation,
+    recommendedActions: readiness.recommendedActions,
+    lastCalculatedAt: new Date(),
+    breakdown: readiness.breakdown,
+    factors: readiness.factors
+  };
   return {
     student: {
       fullName: student.fullName || "",
@@ -127,10 +136,10 @@ const getStudentProfile = async (studentId) => {
       codeforces: student.codeforces || "",
       codingProfile: student.codingProfile || { score: 0 },
       resumeAnalysis: student.resumeAnalysis || null,
-      resumeScore: student.resume ? (storedResumeScore ?? analyzedResumeScore) : null,
+      resumeScore: readiness.breakdown.resume.score,
       lastResumeAnalysisDate: student.lastResumeAnalysisDate || null,
-      placementReadinessScore: student.placementReadinessScore ?? null,
-      readinessProfile: student.readinessProfile || null,
+      placementReadinessScore: readiness.score,
+      readinessProfile,
       resume: student.resume || "",
       resumeFileName: student.resumeOriginalName || "",
       resumeSize: Number(student.resumeSize) || 0,
@@ -166,13 +175,7 @@ const getStudentDashboard = async (studentId) => {
     ? storedCodingScore
     : null;
   const readinessProfile = profile.student.readinessProfile;
-  const hasCalculatedReadiness = Boolean(readinessProfile?.lastCalculatedAt);
-  const resumeAnalysis = profile.student.resumeAnalysis;
-  const resumeScore = toOptionalScore(resumeAnalysis?.resumeScore);
-  const storedResumeScore = profile.student.resume ? resumeScore : null;
-  const calculatedReadinessScore = hasCalculatedReadiness ? toOptionalScore(readinessProfile.score) : null;
-  const storedReadinessScore = toOptionalScore(profile.student.placementReadinessScore);
-  const placementReadinessScore = calculatedReadinessScore ?? (storedReadinessScore > 0 ? storedReadinessScore : null);
+  const placementReadinessScore = profile.student.placementReadinessScore;
 
   return {
    profileCompletion: profile.student.profileCompletion,
@@ -182,11 +185,10 @@ const getStudentDashboard = async (studentId) => {
     assessmentsCompleted,
     codingScore: totalProblemsSolved,
     codingSkillScore,
-    resumeScore: storedResumeScore,
+    resumeScore: profile.student.resumeScore,
     placementReadinessScore,
-    readinessSummary: hasCalculatedReadiness
-      ? (readinessProfile.explanation || readinessProfile.level || null)
-      : null,
+    readinessSummary: readinessProfile.explanation || readinessProfile.level || null,
+    readinessProfile,
     kpiCards: {
       codingScore: totalProblemsSolved,
       codingSkillScore,
@@ -227,6 +229,7 @@ const updateStudentProfile = async (studentId, updates) => {
   const completion = calculateProfileCompletion(student);
   student.profileCompleted = completion.profileCompleted;
   await student.save();
+  await updateStudentReadinessProfile(studentId);
   const profile = await getStudentProfile(studentId);
 
   return {

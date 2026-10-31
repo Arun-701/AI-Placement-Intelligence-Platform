@@ -6,6 +6,7 @@ const { authLimiter } = require("../middleware/rateLimit");
 const questionUploadMiddleware = require("../middleware/questionUploadMiddleware");
 const { uploadQuestions, importQuestions } = require("../controllers/adminQuestionController");
 const announcementController = require("../controllers/announcementController");
+const { getAdminStudentDetails } = require("../controllers/studentDetailsController");
 const {
   registerAdmin,
   loginAdmin,
@@ -46,6 +47,7 @@ router.post("/questions/import", verifyToken, authorizeRoles("admin"), importQue
 
 // Student management
 router.get("/students", verifyToken, authorizeRoles("admin"), getStudents);
+router.get("/students/:id/details", verifyToken, authorizeRoles("admin"), getAdminStudentDetails);
 router.get("/students/:id", verifyToken, authorizeRoles("admin"), getStudent);
 router.post("/students", verifyToken, authorizeRoles("admin"), createNewStudent);
 router.put("/students/:id", verifyToken, authorizeRoles("admin"), updateExistingStudent);

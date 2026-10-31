@@ -166,6 +166,10 @@
   font-size: 13px;
 }
 
+.faculty-students-table.has-actions { min-width: 880px; }
+.faculty-students-table.has-actions th:last-child,
+.faculty-students-table.has-actions td:last-child { width: 130px; text-align: center; }
+
 .faculty-students-table th,
 .faculty-leaderboard-table th {
   padding: 12px 14px;

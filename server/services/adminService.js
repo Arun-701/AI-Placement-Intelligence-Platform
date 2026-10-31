@@ -8,6 +8,7 @@ const AssessmentResult = require("../models/AssessmentResult");
 const AssessmentAttendanceRequest = require("../models/AssessmentAttendanceRequest");
 const Roadmap = require("../models/Roadmap");
 const { normalizeDepartment } = require("../utils/department");
+const { attachPlacementReadinessScores } = require("./readinessService");
 
 const round = (value, precision = 2) => {
   const numberValue = Number(value);
@@ -30,7 +31,8 @@ const getAdminProfile = async (adminId) => {
 };
 
 const listStudents = async () => {
-  return Student.find().select("-password").lean();
+  const students = await Student.find().select("-password").lean();
+  return attachPlacementReadinessScores(students);
 };
 
 const getStudentById = async (studentId) => {
@@ -317,22 +319,41 @@ const buildAdminDashboard = async () => {
     AssessmentAttendanceRequest.countDocuments({ active: { $ne: false }, status: "Requested" })
   ]);
 
-  const averageReadinessResult = await Student.aggregate([
-    { $group: { _id: null, averageReadiness: { $avg: "$placementReadinessScore" } } }
-  ]);
+  const scoredStudents = await attachPlacementReadinessScores(await Student.find()
+    .select("department cgpa skills resume resumeAnalysis codingProfile readinessProfile")
+    .lean());
+  const departmentGroups = new Map();
+  const readinessStats = { High: 0, Medium: 0, Low: 0 };
+  let totalReadiness = 0;
+  scoredStudents.forEach((student) => {
+    const level = student.readinessProfile.level;
+    readinessStats[level] += 1;
+    totalReadiness += student.placementReadinessScore;
 
-  const departmentSummary = await Student.aggregate([
-    {
-      $group: {
-        _id: "$department",
-        count: { $sum: 1 },
-        averageReadiness: { $avg: "$placementReadinessScore" },
-        averageCgpa: { $avg: "$cgpa" }
-      }
-    },
-    { $project: { department: "$_id", count: 1, averageReadiness: { $round: ["$averageReadiness", 2] }, averageCgpa: { $round: ["$averageCgpa", 2] }, _id: 0 } },
-    { $sort: { count: -1 } }
-  ]);
+    const department = student.department || "";
+    const group = departmentGroups.get(department) || {
+      department,
+      count: 0,
+      totalReadiness: 0,
+      totalCgpa: 0,
+      cgpaCount: 0
+    };
+    group.count += 1;
+    group.totalReadiness += student.placementReadinessScore;
+    if (Number.isFinite(Number(student.cgpa)) && student.cgpa !== null && student.cgpa !== undefined) {
+      group.totalCgpa += Number(student.cgpa);
+      group.cgpaCount += 1;
+    }
+    departmentGroups.set(department, group);
+  });
+  const departmentSummary = Array.from(departmentGroups.values())
+    .map((group) => ({
+      department: group.department,
+      count: group.count,
+      averageReadiness: round(group.totalReadiness / group.count),
+      averageCgpa: group.cgpaCount ? round(group.totalCgpa / group.cgpaCount) : null
+    }))
+    .sort((left, right) => right.count - left.count);
 
   const roadmapMetrics = await Roadmap.aggregate([
     {
@@ -348,35 +369,13 @@ const buildAdminDashboard = async () => {
     { $group: { _id: "$status", count: { $sum: 1 } } }
   ]);
 
-  const readinessDistribution = await Student.aggregate([
-    {
-      $project: {
-        readinessLevel: {
-          $switch: {
-            branches: [
-              { case: { $gte: ["$placementReadinessScore", 80] }, then: "High" },
-              { case: { $gte: ["$placementReadinessScore", 60] }, then: "Medium" }
-            ],
-            default: "Low"
-          }
-        }
-      }
-    },
-    { $group: { _id: "$readinessLevel", count: { $sum: 1 } } }
-  ]);
-
-  const readinessStats = readinessDistribution.reduce((acc, item) => {
-    acc[item._id] = item.count;
-    return acc;
-  }, {});
-
   return {
     studentRequestCount,
     studentOverview: {
       totalStudents,
       activeStudents,
       inactiveStudents: totalStudents - activeStudents,
-      averagePlacementReadiness: round(averageReadinessResult[0]?.averageReadiness || 0),
+      averagePlacementReadiness: scoredStudents.length ? round(totalReadiness / scoredStudents.length) : 0,
       departments: departmentSummary
     },
     facultyOverview: {
@@ -397,11 +396,7 @@ const buildAdminDashboard = async () => {
       averageCompletion: round(roadmapMetrics[0]?.averageCompletion || 0),
       completedRoadmaps: roadmapMetrics[0]?.completedRoadmaps || 0
     },
-    placementReadinessDistribution: {
-      High: readinessStats.High || 0,
-      Medium: readinessStats.Medium || 0,
-      Low: readinessStats.Low || 0
-    }
+    placementReadinessDistribution: readinessStats
   };
 };
 
@@ -415,15 +410,16 @@ const buildAdminStatistics = async () => {
 
 const buildAdminStudentReport = async () => {
   const students = await Student.find()
-    .select("name email department year placementReadinessScore codingProfile assessmentsCompleted profileCompleted isActive createdAt")
+    .select("name email department year cgpa skills resume resumeAnalysis codingProfile readinessProfile placementReadinessScore assessmentsCompleted profileCompleted isActive createdAt")
     .lean();
   const resultStats = await AssessmentResult.aggregate([
     { $match: { completed: true } },
     { $group: { _id: "$student", assessmentCount: { $sum: 1 }, averageAssessmentScore: { $avg: "$percentage" } } }
   ]);
   const statsByStudent = new Map(resultStats.map((item) => [item._id.toString(), item]));
+  const studentsWithReadiness = await attachPlacementReadinessScores(students);
 
-  const sortedStudents = students
+  const sortedStudents = studentsWithReadiness
     .map((student) => {
       const stats = statsByStudent.get(student._id.toString());
       return {
@@ -431,7 +427,7 @@ const buildAdminStudentReport = async () => {
         problemsSolved: student.codingProfile?.totalProblemsSolved || 0,
         assessmentCount: stats?.assessmentCount || student.assessmentsCompleted || 0,
         averageAssessmentScore: round(stats?.averageAssessmentScore || 0),
-        placementReadinessScore: student.placementReadinessScore || 0
+        placementReadinessScore: student.placementReadinessScore
       };
     })
     .sort((a, b) => (b.placementReadinessScore - a.placementReadinessScore) || (b.averageAssessmentScore - a.averageAssessmentScore) || (b.problemsSolved - a.problemsSolved));

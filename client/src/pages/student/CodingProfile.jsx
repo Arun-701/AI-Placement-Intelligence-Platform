@@ -94,7 +94,7 @@ function EmptyState({ children }) {
 }
 
 export default function CodingProfile() {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const { unreadCount = 0 } = useOutletContext() || {}
   const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
@@ -165,6 +165,7 @@ export default function CodingProfile() {
         return
       }
       if (!applyProfileResponse(response)) return
+      await refreshUser()
       setInfo('Coding profile verified and updated successfully.')
       setEditingPlatform(null)
     } catch {
@@ -185,6 +186,7 @@ export default function CodingProfile() {
         return
       }
       if (!applyProfileResponse(response)) return
+      await refreshUser()
       const refreshErrors = response.data?.data?.refreshErrors || []
       setInfo(refreshErrors.length
         ? refreshErrors.map((item) => `${item.platform}: ${item.message}`).join(' | ')

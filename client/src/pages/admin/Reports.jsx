@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../api'
+import { formatReadinessPercentage } from '../../readinessUtils'
 import './Reports.css'
 
 const csvValue = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`
@@ -52,11 +53,11 @@ export default function AdminReports() {
   const metrics = useMemo(() => {
     const readiness = students.map((student) => Number(student.placementReadinessScore) || 0)
     const scores = students.map((student) => Number(student.averageAssessmentScore) || 0)
-    return { problems: students.reduce((sum, student) => sum + (Number(student.problemsSolved) || 0), 0), assessments: students.reduce((sum, student) => sum + (Number(student.assessmentCount) || 0), 0), averageScore: scores.length ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : null, averageReadiness: readiness.length ? Math.round(readiness.reduce((sum, score) => sum + score, 0) / readiness.length) : null, ready: students.filter((student) => Number(student.placementReadinessScore) >= 80).length }
+    return { problems: students.reduce((sum, student) => sum + (Number(student.problemsSolved) || 0), 0), assessments: students.reduce((sum, student) => sum + (Number(student.assessmentCount) || 0), 0), averageScore: scores.length ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : null, averageReadiness: readiness.length ? Math.round(readiness.reduce((sum, score) => sum + score, 0) / readiness.length) : null, ready: students.filter((student) => student.readinessProfile?.level === 'High').length }
   }, [students])
 
   const exportCsv = () => {
-    const rows = [['Rank', 'Student', 'Department', 'Problems Solved', 'Assessments', 'Average Score', 'Placement Readiness'], ...filtered.map((student, index) => [index + 1, student.name, student.department, student.problemsSolved, student.assessmentCount, `${student.averageAssessmentScore}%`, `${student.placementReadinessScore}%`])]
+    const rows = [['Rank', 'Student', 'Department', 'Problems Solved', 'Assessments', 'Average Score', 'Placement Readiness'], ...filtered.map((student, index) => [index + 1, student.name, student.department, student.problemsSolved, student.assessmentCount, `${student.averageAssessmentScore}%`, formatReadinessPercentage(student.placementReadinessScore)])]
     const blob = new Blob([`\uFEFF${rows.map((row) => row.map(csvValue).join(',')).join('\r\n')}`], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'placement-leaderboard.csv'; anchor.click(); URL.revokeObjectURL(url)
   }
@@ -91,11 +92,11 @@ export default function AdminReports() {
           <td><strong className="leaderboard-problems">{student.problemsSolved}</strong></td>
           <td><span className="leaderboard-assessment-count">{student.assessmentCount}</span></td>
           <td><div className="leaderboard-progress-cell"><span className={`leaderboard-score leaderboard-score--${scoreTone}`}>{student.averageAssessmentScore}%</span><span className="leaderboard-progress-track" role="progressbar" aria-label="Average score" aria-valuemin="0" aria-valuemax="100" aria-valuenow={scoreProgress}><span className={`leaderboard-progress-fill leaderboard-progress-fill--${scoreTone}`} style={{ width: `${scoreProgress}%` }} /></span></div></td>
-          <td><div className="leaderboard-progress-cell"><span className="leaderboard-readiness">{student.placementReadinessScore}%</span><span className="leaderboard-progress-track" role="progressbar" aria-label="Placement readiness" aria-valuemin="0" aria-valuemax="100" aria-valuenow={readinessProgress}><span className="leaderboard-progress-fill leaderboard-progress-fill--readiness" style={{ width: `${readinessProgress}%` }} /></span></div></td>
+          <td><div className="leaderboard-progress-cell"><span className="leaderboard-readiness">{formatReadinessPercentage(student.placementReadinessScore)}</span><span className="leaderboard-progress-track" role="progressbar" aria-label="Placement readiness" aria-valuemin="0" aria-valuemax="100" aria-valuenow={readinessProgress}><span className="leaderboard-progress-fill leaderboard-progress-fill--readiness" style={{ width: `${readinessProgress}%` }} /></span></div></td>
         </tr>
       })}</tbody></table></div>
       {!filtered.length && <p className="muted mt">No students match the selected filters.</p>}
     </div>
-    {selected && <div className="card mt"><div className="row between"><h3>{selected.name} Performance</h3><button className="btn small secondary" onClick={() => setSelected(null)}>Close</button></div><div className="stat-inline"><span>Department</span><strong>{selected.department || '—'}</strong></div><div className="stat-inline"><span>Problems solved</span><strong>{selected.problemsSolved}</strong></div><div className="stat-inline"><span>Assessments completed</span><strong>{selected.assessmentCount}</strong></div><div className="stat-inline"><span>Average assessment score</span><strong>{selected.averageAssessmentScore}%</strong></div><div className="stat-inline"><span>Placement readiness</span><strong>{selected.placementReadinessScore}%</strong></div></div>}
+    {selected && <div className="card mt"><div className="row between"><h3>{selected.name} Performance</h3><button className="btn small secondary" onClick={() => setSelected(null)}>Close</button></div><div className="stat-inline"><span>Department</span><strong>{selected.department || '—'}</strong></div><div className="stat-inline"><span>Problems solved</span><strong>{selected.problemsSolved}</strong></div><div className="stat-inline"><span>Assessments completed</span><strong>{selected.assessmentCount}</strong></div><div className="stat-inline"><span>Average assessment score</span><strong>{selected.averageAssessmentScore}%</strong></div><div className="stat-inline"><span>Placement readiness</span><strong>{formatReadinessPercentage(selected.placementReadinessScore)}</strong></div></div>}
   </div>
 }

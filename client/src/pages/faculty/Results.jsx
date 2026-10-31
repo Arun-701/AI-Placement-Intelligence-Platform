@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { api } from '../../api'
+import { formatReadinessPercentage } from '../../readinessUtils'
 import './FacultyPages.css'
 
 export default function FacultyResults() {
@@ -63,7 +64,7 @@ export default function FacultyResults() {
       entry.student.department || '',
       entry.assessments,
       `${entry.averageScore}%`,
-      `${entry.readiness}%`
+      formatReadinessPercentage(entry.readiness)
     ])]
     const blob = new Blob([`\uFEFF${rows.map((row) => row.map(csvValue).join(',')).join('\r\n')}`], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
@@ -109,7 +110,7 @@ export default function FacultyResults() {
                       <td>{entry.student.department || '—'}</td>
                       <td>{entry.assessments}</td>
                       <td><span className={`faculty-leaderboard-score ${scoreTone}`}>{entry.averageScore}%</span></td>
-                      <td><span className="faculty-leaderboard-score">{entry.readiness}%</span></td>
+                      <td><span className="faculty-leaderboard-score">{formatReadinessPercentage(entry.readiness)}</span></td>
                     </tr>
                   )
                 })}

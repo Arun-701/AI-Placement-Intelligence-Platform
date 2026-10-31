@@ -5,6 +5,7 @@ const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
 const { successResponse, errorResponse } = require("../utils/response");
 const { getDepartmentQuery } = require("../utils/department");
+const { attachPlacementReadinessScores } = require("../services/readinessService");
 
 const getProfile = async (req, res) => {
     try {
@@ -22,22 +23,25 @@ const getProfile = async (req, res) => {
 
 const getAssignedStudents = async (req, res) => {
     try {
-        const faculty = await Faculty.findById(req.user.id).select("department").lean();
+        const faculty = await Faculty.findById(req.user.id).select("department assignedStudents").lean();
 
         if (!faculty) {
             return errorResponse(res, { message: "Faculty not found", status: 404 });
         }
 
         const department = String(faculty.department || "").trim().replace(/\s+/g, " ");
-        const students = department
+        const assignedStudentIds = faculty.assignedStudents || [];
+        const assignedStudents = department && assignedStudentIds.length
             ? await Student.find({
+                _id: { $in: assignedStudentIds },
                 department: getDepartmentQuery(department),
                 isActive: true
             })
-                .select("name studentId department year section placementReadinessScore")
+                .select("name studentId department year section cgpa skills resume resumeAnalysis codingProfile readinessProfile placementReadinessScore")
                 .sort({ name: 1 })
                 .lean()
             : [];
+        const students = await attachPlacementReadinessScores(assignedStudents);
 
         return successResponse(res, {
             message: "Assigned students fetched successfully",

@@ -13,7 +13,7 @@ const { createNotification } = require("../services/notificationService");
 
 const analyzeStudentResume = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id).select("resume skills cgpa placementReadinessScore readinessProfile");
+        const student = await Student.findById(req.user.id).select("resume skills cgpa codingProfile resumeAnalysis placementReadinessScore readinessProfile");
 
         if (!student) {
             return errorResponse(res, { message: "Student not found", status: 404 });
@@ -25,9 +25,12 @@ const analyzeStudentResume = async (req, res) => {
 
         const analysis = await analyzeResume(student.resume);
         const assessmentResults = await AssessmentResult.find({ student: req.user.id, completed: true })
-            .select("percentage")
+            .select("score totalMarks completed status expired")
             .lean();
-        const readiness = calculatePlacementReadiness(student, analysis, assessmentResults);
+        const readiness = calculatePlacementReadiness({
+            ...student.toObject(),
+            resumeAnalysis: analysis
+        }, assessmentResults);
 
         const readinessProfile = {
             score: readiness.score,

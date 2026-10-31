@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../../api'
+import { formatReadinessPercentage } from '../../readinessUtils'
 import './Students.css'
+
+const SHOW_STUDENT_DETAILS_ACTION = true
 
 export default function AdminStudents() {
   const [students, setStudents] = useState([])
@@ -23,8 +27,8 @@ export default function AdminStudents() {
   const years = [...new Set(students.map((student) => student.year).filter(Boolean))].sort((a, b) => a - b)
   const filteredStudents = students.filter((student) => {
     const matchesSearch = `${student.name || ''} ${student.fullName || ''} ${student.email || ''}`.toLowerCase().includes(search.toLowerCase())
-    const score = Number(student.placementReadinessScore) || 0
-    const matchesReadiness = readiness === 'ALL' || (readiness === 'READY' ? score >= 80 : readiness === 'DEVELOPING' ? score >= 60 && score < 80 : score < 60)
+    const level = student.readinessProfile?.level
+    const matchesReadiness = readiness === 'ALL' || (readiness === 'READY' ? level === 'High' : readiness === 'DEVELOPING' ? level === 'Medium' : level === 'Low')
     return matchesSearch && (department === 'ALL' || student.department === department) && (year === 'ALL' || String(student.year) === year) && matchesReadiness
   })
 
@@ -41,7 +45,7 @@ export default function AdminStudents() {
 
   const csvValue = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`
   const exportCsv = () => {
-    const rows = [['Student Name', 'Email', 'Department', 'Year / Batch', 'CGPA', 'Placement Readiness'], ...filteredStudents.map((student) => [student.fullName || student.name, student.email, student.department || '', student.year || '', student.cgpa ?? '', `${student.placementReadinessScore ?? 0}%`])]
+    const rows = [['Student Name', 'Email', 'Department', 'Year / Batch', 'CGPA', 'Placement Readiness'], ...filteredStudents.map((student) => [student.fullName || student.name, student.email, student.department || '', student.year || '', student.cgpa ?? '', formatReadinessPercentage(student.placementReadinessScore)])]
     const blob = new Blob([`\uFEFF${rows.map((row) => row.map(csvValue).join(',')).join('\r\n')}`], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'admin-students.csv'; anchor.click(); URL.revokeObjectURL(url)
   }
@@ -132,14 +136,13 @@ export default function AdminStudents() {
         </div>
       </div>
       <div className="card table-wrap students-table-card">
-        <table className="students-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Year</th><th>CGPA</th><th>Readiness</th></tr></thead>
+        <table className={`students-table${SHOW_STUDENT_DETAILS_ACTION ? ' has-actions' : ''}`}>
+          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Year</th><th>CGPA</th><th>Readiness</th>{SHOW_STUDENT_DETAILS_ACTION && <th>Actions</th>}</tr></thead>
           <tbody>
             {filteredStudents.map((s, index) => {
               const studentName = getStudentName(s)
-              const readinessScore = Number(s.placementReadinessScore) || 0
               const cgpaTone = s.cgpa == null ? 'neutral' : Number(s.cgpa) >= 8 ? 'high' : Number(s.cgpa) >= 6 ? 'medium' : 'low'
-              const readinessTone = readinessScore >= 80 ? 'ready' : readinessScore >= 60 ? 'developing' : 'support'
+              const readinessTone = s.readinessProfile?.level === 'High' ? 'ready' : s.readinessProfile?.level === 'Medium' ? 'developing' : 'support'
               return (
               <tr key={s._id}>
                 <td><div className="student-name-cell"><span className={`student-avatar student-avatar--${index % 4}`}>{getInitial(studentName)}</span><span className="student-name-text">{studentName}</span></div></td>
@@ -147,7 +150,11 @@ export default function AdminStudents() {
                 <td><span className={`department-badge department-badge--${index % 4}`} title={s.department}>{s.department}</span></td>
                 <td>{s.year}</td>
                 <td><span className={`student-value-badge cgpa-badge cgpa-badge--${cgpaTone}`}>{s.cgpa ?? '—'}</span></td>
-                <td><span className={`student-value-badge readiness-badge readiness-badge--${readinessTone}`}>{s.placementReadinessScore ?? 0}%</span></td>
+                <td><span className={`student-value-badge readiness-badge readiness-badge--${readinessTone}`}>{formatReadinessPercentage(s.placementReadinessScore)}</span></td>
+                {SHOW_STUDENT_DETAILS_ACTION && <td className="students-action-cell"><Link className="student-view-details" to={`/admin/students/${encodeURIComponent(s._id)}`} aria-label={`View details for ${studentName}`}>
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M1.8 10s2.9-5 8.2-5 8.2 5 8.2 5-2.9 5-8.2 5-8.2-5-8.2-5Z" /><circle cx="10" cy="10" r="2.3" /></svg>
+                  <span>View Details</span>
+                </Link></td>}
               </tr>
             )})}
           </tbody>

@@ -3,7 +3,11 @@ const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
 const Roadmap = require("../models/Roadmap");
 const Faculty = require("../models/Faculty");
-const { calculatePlacementReadiness } = require("./readinessScoringService");
+const {
+    calculatePlacementReadiness,
+    getValidAssessmentResults
+} = require("./readinessScoringService");
+const { attachPlacementReadinessScores } = require("./readinessService");
 const { getDepartmentQuery } = require("../utils/department");
 const { getAssessmentAssignedStudentCount } = require("../utils/assessmentSetMetrics");
 
@@ -30,7 +34,6 @@ const buildDashboardSnapshot = (payload) => {
             evidence: Array.isArray(gap.evidence) ? gap.evidence : []
         }))
         : [];
-
     const recommendedNextActions = [];
     if (readiness.recommendedActions && readiness.recommendedActions.length > 0) {
         recommendedNextActions.push(...readiness.recommendedActions);
@@ -89,6 +92,7 @@ const buildDashboardSnapshot = (payload) => {
         },
         overallPlacementReadiness: {
             score: readiness.score || 0,
+            targetScore: readiness.targetScore,
             level: readiness.level || "Low",
             explanation: readiness.explanation || "",
             breakdown: readiness.factors || []
@@ -198,7 +202,7 @@ const buildDashboardPayload = async (studentId) => {
 
     const [assessmentResults, roadmap] = await Promise.all([
         AssessmentResult.find({ student: studentId, completed: true })
-            .select("percentage score strengths weaknesses recommendations submittedAt topicAnalysis")
+            .select("percentage score totalMarks completed status expired strengths weaknesses recommendations submittedAt topicAnalysis")
             .populate("assessment", "title assessmentType")
             .sort({ submittedAt: -1 })
             .lean(),
@@ -206,35 +210,15 @@ const buildDashboardPayload = async (studentId) => {
     ]);
 
     const resumeAnalysis = student.resumeAnalysis || {};
-    const storedResumeScore = student.resumeJDAnalysis?.atsScore
-        ?? student.resumeScore
-        ?? resumeAnalysis.resumeScore
-        ?? resumeAnalysis.overallScore
-        ?? null;
-    const normalizedResumeScore = storedResumeScore === null
-        || storedResumeScore === undefined
-        || storedResumeScore === ""
-        || typeof storedResumeScore === "boolean"
-        ? null
-        : Number(storedResumeScore);
-    const resumeScore = student.resume
-        ? Number.isFinite(normalizedResumeScore) && normalizedResumeScore >= 0 && normalizedResumeScore <= 100
-            ? normalizedResumeScore
-            : null
-        : null;
-    const readinessAnalysis = {
-        ...resumeAnalysis,
-        resumeScore: resumeAnalysis.resumeScore ?? resumeAnalysis.overallScore ?? 0
-    };
-    const readiness = calculatePlacementReadiness(student, readinessAnalysis, assessmentResults);
+    const readiness = calculatePlacementReadiness(student, assessmentResults);
+    const resumeScore = readiness.breakdown.resume.score;
 
     const latestAssessment = assessmentResults[0] || null;
+    const validAssessmentResults = getValidAssessmentResults(assessmentResults);
     const assessmentSummary = {
-        averageScore: assessmentResults.length > 0
-            ? Number((assessmentResults.reduce((sum, result) => sum + Number(result.percentage || 0), 0) / assessmentResults.length).toFixed(2))
-            : 0,
-        totalAssessments: assessmentResults.length,
-        completedAssessments: assessmentResults.length,
+        averageScore: readiness.breakdown.assessment.score ?? 0,
+        totalAssessments: validAssessmentResults.length,
+        completedAssessments: validAssessmentResults.length,
         latestAssessment: latestAssessment ? {
             title: latestAssessment.assessment?.title || "Assessment",
             score: latestAssessment.score || 0,
@@ -439,10 +423,10 @@ const buildFacultyDashboard = async (facultyId) => {
     }
 
     const departmentQuery = getDepartmentQuery(faculty.department);
-    const [students, allAssessments] = await Promise.all([
+    const [departmentStudents, allAssessments] = await Promise.all([
         departmentQuery
             ? Student.find({ department: departmentQuery, isActive: true })
-                .select("name studentId department placementReadinessScore readinessProfile profileCompleted initialAssessmentCompleted")
+                .select("name studentId department placementReadinessScore readinessProfile profileCompleted initialAssessmentCompleted cgpa skills resume resumeAnalysis codingProfile")
                 .sort({ name: 1 })
                 .lean()
             : [],
@@ -451,16 +435,25 @@ const buildFacultyDashboard = async (facultyId) => {
             .sort({ createdAt: -1 })
             .lean(),
     ]);
+    const students = await attachPlacementReadinessScores(departmentStudents);
     const assessmentIds = allAssessments.map((assessment) => assessment._id);
     const activeAssessments = allAssessments;
     const assessmentResults = assessmentIds.length
         ? await AssessmentResult.find({ assessment: { $in: assessmentIds }, completed: true })
-            .select("student assessment score percentage submittedAt createdAt strengths weaknesses topicAnalysis")
+            .select("student assessment score percentage submittedAt createdAt strengths weaknesses topicAnalysis status expired")
             .populate("student", "name studentId department placementReadinessScore readinessProfile")
             .populate("assessment", "title")
             .sort({ submittedAt: -1, createdAt: -1 })
             .lean()
         : [];
+    const readinessByStudent = new Map(students.map((student) => [student._id.toString(), student]));
+    assessmentResults.forEach((result) => {
+        const currentStudent = readinessByStudent.get(String(result.student?._id || result.student));
+        if (currentStudent && result.student && typeof result.student === "object") {
+            result.student.placementReadinessScore = currentStudent.placementReadinessScore;
+            result.student.readinessProfile = currentStudent.readinessProfile;
+        }
+    });
 
     const studentReadinessDistribution = students.reduce((distribution, student) => {
         if (!student.profileCompleted || !student.initialAssessmentCompleted) {
@@ -468,14 +461,7 @@ const buildFacultyDashboard = async (facultyId) => {
             return distribution;
         }
 
-        const readinessWasCalculated = Boolean(student.readinessProfile?.lastCalculatedAt);
-        const rawScore = readinessWasCalculated
-            ? student.readinessProfile.score
-            : student.placementReadinessScore;
-        const score = Number(rawScore);
-        const level = readinessWasCalculated && ["High", "Medium", "Low"].includes(student.readinessProfile?.level)
-            ? student.readinessProfile.level
-            : score >= 80 ? "High" : score >= 60 ? "Medium" : "Low";
+        const level = student.readinessProfile.level;
         distribution[level] = (distribution[level] || 0) + 1;
         return distribution;
     }, { High: 0, Medium: 0, Low: 0, "Not Started": 0 });
@@ -575,14 +561,10 @@ const buildFacultyDashboard = async (facultyId) => {
         const averagePercentage = percentages.length
             ? round(percentages.reduce((sum, percentage) => sum + percentage, 0) / percentages.length)
             : null;
-        const readinessWasCalculated = Boolean(student.readinessProfile?.lastCalculatedAt);
-        const rawReadinessScore = readinessWasCalculated
-            ? student.readinessProfile.score
-            : student.placementReadinessScore;
-        const readinessScore = Number(rawReadinessScore);
-        const readinessAvailable = readinessWasCalculated
+        const readinessScore = Number(student.placementReadinessScore);
+        const readinessAvailable = Boolean(student.readinessProfile?.lastCalculatedAt)
             || student.initialAssessmentCompleted
-            || (Number.isFinite(readinessScore) && readinessScore > 0);
+            || readinessScore > 0 && student.profileCompleted;
         const latestScoredResult = resultBucket.find((result) => validPercentage(result.percentage));
         const needsAttention = (readinessAvailable && readinessScore < 60)
             || (averagePercentage !== null && averagePercentage < 50);
@@ -658,27 +640,43 @@ const buildFacultyAnalytics = async (facultyId) => {
 };
 
 const buildPlacementAnalytics = async () => {
-    const totalStudents = await Student.countDocuments();
-    const totalResumes = await Student.countDocuments({ resume: { $exists: true, $ne: "" } });
-    const codingProfilesComplete = await Student.countDocuments({ "codingProfile.score": { $gt: 0 } });
-    const totalRoadmaps = await Roadmap.countDocuments();
+    const [scoringStudents, totalResumes, codingProfilesComplete, totalRoadmaps] = await Promise.all([
+        Student.find().select("department cgpa skills resume resumeAnalysis codingProfile readinessProfile").lean(),
+        Student.countDocuments({ resume: { $exists: true, $ne: "" } }),
+        Student.countDocuments({ "codingProfile.score": { $gt: 0 } }),
+        Roadmap.countDocuments()
+    ]);
+    const students = await attachPlacementReadinessScores(scoringStudents);
+    const totalStudents = students.length;
     const roadmapStats = await Roadmap.aggregate([
         { $group: { _id: null, averageCompletion: { $avg: "$progress.completionPercentage" }, completedRoadmaps: { $sum: { $cond: [{ $gte: ["$progress.completionPercentage", 75] }, 1, 0] } } } }
     ]);
-    const departmentStatistics = await Student.aggregate([
-        { $group: { _id: "$department", studentCount: { $sum: 1 }, averageReadiness: { $avg: "$placementReadinessScore" }, averageCgpa: { $avg: "$cgpa" } } },
-        { $project: { department: "$_id", studentCount: 1, averageReadiness: { $round: ["$averageReadiness", 2] }, averageCgpa: { $round: ["$averageCgpa", 2] }, _id: 0 } }
-    ]);
-
-    const readinessDistribution = await Student.aggregate([
-        { $project: { readinessLevel: { $switch: { branches: [ { case: { $gte: ["$placementReadinessScore", 80] }, then: "High" }, { case: { $gte: ["$placementReadinessScore", 60] }, then: "Medium" } ], default: "Low" } } } },
-        { $group: { _id: "$readinessLevel", count: { $sum: 1 } } }
-    ]);
-
-    const readinessDistributionMap = readinessDistribution.reduce((map, entry) => {
-        map[entry._id] = entry.count;
-        return map;
-    }, {});
+    const departmentGroups = new Map();
+    const readinessDistributionMap = { High: 0, Medium: 0, Low: 0 };
+    students.forEach((student) => {
+        readinessDistributionMap[student.readinessProfile.level] += 1;
+        const department = student.department || "";
+        const group = departmentGroups.get(department) || {
+            department,
+            studentCount: 0,
+            readinessTotal: 0,
+            cgpaTotal: 0,
+            cgpaCount: 0
+        };
+        group.studentCount += 1;
+        group.readinessTotal += student.placementReadinessScore;
+        if (student.cgpa !== null && student.cgpa !== undefined && Number.isFinite(Number(student.cgpa))) {
+            group.cgpaTotal += Number(student.cgpa);
+            group.cgpaCount += 1;
+        }
+        departmentGroups.set(department, group);
+    });
+    const departmentStatistics = Array.from(departmentGroups.values()).map((group) => ({
+        department: group.department,
+        studentCount: group.studentCount,
+        averageReadiness: round(group.readinessTotal / group.studentCount),
+        averageCgpa: group.cgpaCount ? round(group.cgpaTotal / group.cgpaCount) : null
+    }));
 
     const assignedCounts = await Assessment.aggregate([
         { $project: { assignedCount: { $size: { $ifNull: ["$assignedStudents", []] } } } },

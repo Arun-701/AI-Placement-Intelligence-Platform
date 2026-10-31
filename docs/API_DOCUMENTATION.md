@@ -650,7 +650,15 @@ All responses follow a standard wrapper format:
 - Description: Retrieve the student's placement readiness score.
 - Authentication Required: Yes
 - Required Role: student
-- Success Response: readiness score data
+- Success Response: `data` contains `score`/`percentage`, `targetScore` (the High-readiness benchmark), `level`, `explanation`, `recommendedActions`, and a weighted component breakdown.
+- Calculation:
+  - CGPA 15%: normalize against the Student model's 10-point maximum.
+  - Resume 25%: use the latest stored Resume AI ATS score.
+  - Assessment 25%: arithmetic mean of valid completed results, each normalized as `score / totalMarks * 100`.
+  - Technical Skills 15%: unique saved skills normalized against eight skills.
+  - Coding Profile 20%: use the existing bounded coding score only when verified supported-platform performance metrics are available.
+  - Each component is normalized to 0–100 before weighting. Missing components are reported as unavailable and contribute zero; they do not increase the other weights.
+  - The response includes each component's score, weight, weighted contribution, and availability. Levels are Low below 40, Medium from 40, and High from 70.
 - Error Responses: 500 server error
 
 ---

@@ -1,7 +1,8 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth } from '../AuthContext'
 import { api } from '../api'
+import { formatReadinessPercentage } from '../readinessUtils'
 import FacultySidebar from './faculty/FacultySidebar'
 import './Layout.css'
 
@@ -29,13 +30,13 @@ function AdminSidebarIcon({ name, className = '' }) {
 export default function Layout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [unreadCount, setUnreadCount] = useState(0)
+  const [readiness, setReadiness] = useState(null)
   const isStudent = user?.role === 'student'
   const isFaculty = user?.role === 'faculty'
-  const readinessScore = user?.readinessProfile?.score ?? user?.placementReadinessScore
-  const readinessValue = readinessScore === null || readinessScore === undefined || readinessScore === ''
-    ? '—'
-    : Number.isFinite(Number(readinessScore)) ? `${Math.round(Number(readinessScore))}%` : '—'
+  const readinessScore = readiness?.score
+  const readinessValue = formatReadinessPercentage(readinessScore)
 
   useEffect(() => {
     if (!isStudent && !isFaculty) return undefined
@@ -49,6 +50,20 @@ export default function Layout() {
     })
     return () => { active = false }
   }, [isFaculty, isStudent])
+
+  useEffect(() => {
+    if (!isStudent) return undefined
+
+    let active = true
+    api.get('/assessment/readiness-score').then((response) => {
+      if (active && response.ok && response.data?.data) {
+        setReadiness(response.data.data)
+      }
+    }).catch(() => {
+      if (active) console.warn('Unable to load the current placement readiness score.')
+    })
+    return () => { active = false }
+  }, [isStudent, location.pathname, user?.readinessProfile?.lastCalculatedAt])
 
   const handleLogout = () => {
     logout()
@@ -116,10 +131,10 @@ export default function Layout() {
             </NavLink>
           ))}
           {isStudent && (
-            <NavLink className="student-readiness-mini" to="/student" title="Placement readiness details">
+            <NavLink className="student-readiness-mini" to="/student/readiness" title="Placement readiness details">
               <span className="student-readiness-mini-label">Placement Readiness</span>
               <strong>{readinessValue}</strong>
-              <small>{user?.readinessProfile?.level || 'View your progress'}</small>
+              <small>{readiness?.level || 'View your progress'}</small>
             </NavLink>
           )}
           <button className="logout" onClick={handleLogout}>

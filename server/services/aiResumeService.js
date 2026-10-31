@@ -36,7 +36,7 @@ const parseAIResponse = (responseText) => {
 const buildStudentProfile = async (studentId) => {
   const student = await Student.findById(studentId)
     .select(
-      "name department year section skills cgpa placementReadinessScore readinessProfile resume codingProfile"
+      "name department year section skills cgpa placementReadinessScore readinessProfile resume resumeAnalysis codingProfile"
     )
     .lean();
 
@@ -45,7 +45,7 @@ const buildStudentProfile = async (studentId) => {
   }
 
   const assessmentResults = await AssessmentResult.find({ student: studentId, completed: true })
-    .select("percentage score recommendations strengths weaknesses topicAnalysis")
+    .select("percentage score totalMarks completed status expired recommendations strengths weaknesses topicAnalysis")
     .lean();
 
   return {
@@ -220,7 +220,7 @@ const normalizeLearningRecommendationResult = (result) => ({
 });
 
 const refreshResumeAnalysis = async (studentId) => {
-  const student = await Student.findById(studentId).select("resume skills cgpa placementReadinessScore readinessProfile");
+  const student = await Student.findById(studentId).select("resume resumeAnalysis skills cgpa codingProfile placementReadinessScore readinessProfile");
 
   if (!student) {
     throw new Error("Student not found");
@@ -231,8 +231,11 @@ const refreshResumeAnalysis = async (studentId) => {
   }
 
   const analysis = await analyzeResume(student.resume);
-  const assessmentResults = await AssessmentResult.find({ student: studentId, completed: true }).select("percentage").lean();
-  const readiness = calculatePlacementReadiness(student, analysis, assessmentResults);
+  const assessmentResults = await AssessmentResult.find({ student: studentId, completed: true }).select("score totalMarks completed status expired").lean();
+  const readiness = calculatePlacementReadiness({
+    ...student.toObject(),
+    resumeAnalysis: analysis
+  }, assessmentResults);
   const readinessProfile = {
     score: readiness.score,
     level: readiness.level,
@@ -266,7 +269,7 @@ const getSkillGapAnalysis = async (studentId) => {
   }
 
   const resumeAnalysis = await analyzeResume(student.resume);
-  const readiness = calculatePlacementReadiness(student, resumeAnalysis, assessmentResults);
+  const readiness = calculatePlacementReadiness(student, assessmentResults);
   const assessmentSignals = buildAssessmentSignals(assessmentResults);
   const skillGaps = buildSkillGaps(student, resumeAnalysis, readiness, assessmentSignals);
 
@@ -289,7 +292,7 @@ const getLearningRecommendations = async (studentId) => {
   }
 
   const resumeAnalysis = await analyzeResume(student.resume);
-  const readiness = calculatePlacementReadiness(student, resumeAnalysis, assessmentResults);
+  const readiness = calculatePlacementReadiness(student, assessmentResults);
   const assessmentSummary = assessmentResults.map((result) => ({
     percentage: result.percentage,
     score: result.score,
@@ -328,7 +331,7 @@ Year: ${student.year || ""}
 Section: ${student.section || ""}
 Skills: ${Array.isArray(student.skills) ? student.skills.join(", ") : ""}
 CGPA: ${student.cgpa || 0}
-Placement Readiness Score: ${student.placementReadinessScore || readiness.score}
+Placement Readiness Score: ${readiness.score}
 
 Resume Analysis:
 ${JSON.stringify(resumeAnalysis)}

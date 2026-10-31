@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../../api'
+import { formatReadinessPercentage } from '../../readinessUtils'
 import { normalizeDepartment } from '../../department'
 import './FacultyPages.css'
+
+const SHOW_STUDENT_DETAILS_ACTION = true
 
 export default function FacultyStudents() {
   const [students, setStudents] = useState([])
@@ -49,8 +53,8 @@ export default function FacultyStudents() {
   const years = [...new Set(students.map((student) => student.year).filter(Boolean))].sort((a, b) => a - b)
   const filteredStudents = students.filter((student) => {
     const text = `${student.name || ''} ${student.studentId || ''} ${student.department || ''}`.toLowerCase()
-    const score = Number(student.placementReadinessScore) || 0
-    const matchesReadiness = readiness === 'ALL' || (readiness === 'READY' ? score >= 80 : readiness === 'DEVELOPING' ? score >= 60 && score < 80 : score < 60)
+    const level = student.readinessProfile?.level
+    const matchesReadiness = readiness === 'ALL' || (readiness === 'READY' ? level === 'High' : readiness === 'DEVELOPING' ? level === 'Medium' : level === 'Low')
     return text.includes(search.toLowerCase())
       && (department === 'ALL' || student.department === department)
       && (year === 'ALL' || String(student.year) === year)
@@ -65,7 +69,7 @@ export default function FacultyStudents() {
       student.department || '',
       student.year || '',
       student.section || '',
-      `${student.placementReadinessScore ?? 0}%`
+      formatReadinessPercentage(student.placementReadinessScore)
     ])]
     const blob = new Blob([`\uFEFF${rows.map((row) => row.map(csvValue).join(',')).join('\r\n')}`], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
@@ -109,9 +113,9 @@ export default function FacultyStudents() {
         </select>
         <select aria-label="Filter by readiness" value={readiness} onChange={(event) => setReadiness(event.target.value)}>
           <option value="ALL">All Readiness</option>
-          <option value="READY">Ready (80%+)</option>
-          <option value="DEVELOPING">Developing (60–79%)</option>
-          <option value="NEEDS_SUPPORT">Needs Support (&lt;60%)</option>
+          <option value="READY">High (70%+)</option>
+          <option value="DEVELOPING">Medium (40–69%)</option>
+          <option value="NEEDS_SUPPORT">Low (&lt;40%)</option>
         </select>
         <button className="btn secondary faculty-export-button" disabled={!filteredStudents.length} onClick={exportCsv}>Export CSV</button>
       </div>
@@ -120,13 +124,12 @@ export default function FacultyStudents() {
         <div className="faculty-content-state" role="status">Loading assigned students…</div>
       ) : (
         <div className="faculty-data-card table-wrap">
-          <table className="faculty-students-table">
-            <thead><tr><th>Student</th><th>Student ID</th><th>Department</th><th>Year</th><th>Section</th><th>Readiness</th></tr></thead>
+          <table className={`faculty-students-table${SHOW_STUDENT_DETAILS_ACTION ? ' has-actions' : ''}`}>
+            <thead><tr><th>Student</th><th>Student ID</th><th>Department</th><th>Year</th><th>Section</th><th>Readiness</th>{SHOW_STUDENT_DETAILS_ACTION && <th>Actions</th>}</tr></thead>
             <tbody>
               {filteredStudents.map((student, index) => {
                 const name = student.name || 'Student'
-                const score = Number(student.placementReadinessScore) || 0
-                const readinessTone = score >= 80 ? 'ready' : score >= 60 ? 'developing' : 'support'
+                const readinessTone = student.readinessProfile?.level === 'High' ? 'ready' : student.readinessProfile?.level === 'Medium' ? 'developing' : 'support'
                 return (
                   <tr key={student._id}>
                     <td><div className="faculty-student-name"><span className={`faculty-student-avatar avatar-${index % 4}`}>{Array.from(name.trim())[0]?.toUpperCase() || '?'}</span><strong>{name}</strong></div></td>
@@ -134,7 +137,11 @@ export default function FacultyStudents() {
                     <td>{student.department || '—'}</td>
                     <td>{student.year || '—'}</td>
                     <td>{student.section || '—'}</td>
-                    <td><span className={`faculty-readiness-badge ${readinessTone}`}>{student.placementReadinessScore ?? 0}%</span></td>
+                    <td><span className={`faculty-readiness-badge ${readinessTone}`}>{formatReadinessPercentage(student.placementReadinessScore)}</span></td>
+                    {SHOW_STUDENT_DETAILS_ACTION && <td><Link className="faculty-view-details" to={`/faculty/students/${encodeURIComponent(student._id)}`} aria-label={`View details for ${name}`}>
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M1.8 10s2.9-5 8.2-5 8.2 5 8.2 5-2.9 5-8.2 5-8.2-5-8.2-5Z" /><circle cx="10" cy="10" r="2.3" /></svg>
+                      <span>View Details</span>
+                    </Link></td>}
                   </tr>
                 )
               })}

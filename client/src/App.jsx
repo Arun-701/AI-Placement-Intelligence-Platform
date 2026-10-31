@@ -7,7 +7,9 @@ import ResetPassword from './pages/ResetPassword'
 import VerifyEmail from './pages/VerifyEmail'
 import Layout from './pages/Layout'
 import StudentDashboard from './pages/student/Dashboard'
+import PlacementReadinessDetails from './pages/student/PlacementReadinessDetails'
 import AssessmentList from './pages/student/AssessmentList'
+import MyResults from './pages/student/MyResults'
 import TakeAssessment from './pages/student/TakeAssessment'
 import AssessmentResult from './pages/student/AssessmentResult'
 import ResumeAnalysis from './pages/student/ResumeAnalysis'
@@ -20,6 +22,7 @@ import AdaptiveAssessment from './pages/student/AdaptiveAssessment'
 import AdaptiveAssessmentResult from './pages/student/AdaptiveAssessmentResult'
 import FacultyDashboard from './pages/faculty/Dashboard'
 import FacultyStudents from './pages/faculty/Students'
+import StudentDetails from './pages/StudentDetails'
 import FacultyResults from './pages/faculty/Results'
 import FacultyAssessments from './pages/faculty/Assessments'
 import FacultyAssessmentResults from './pages/faculty/AssessmentResults'
@@ -105,7 +108,9 @@ function App() {
 
           <Route path="/student" element={<Protected role="student"><Layout /></Protected>}>
             <Route index element={<StudentDashboard />} />
+            <Route path="readiness" element={<PlacementReadinessDetails />} />
             <Route path="assessments" element={<AssessmentList />} />
+            <Route path="assessment-history" element={<MyResults />} />
             <Route path="assessments/:id/take" element={<TakeAssessment />} />
             <Route path="assessments/result/:resultId" element={<AssessmentResult />} />
             <Route path="resume" element={<ResumeAnalysis />} />
@@ -130,6 +135,7 @@ function App() {
             <Route path="assessments/assign/:assessmentId" element={<FacultyAssessmentAssign />} />
             <Route path="assessments/edit/:assessmentId" element={<FacultyAssessmentEdit />} />
             <Route path="students" element={<FacultyStudents />} />
+            <Route path="students/:id" element={<StudentDetails role="faculty" />} />
             <Route path="results" element={<FacultyResults />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="announcements" element={<Announcements />} />
@@ -139,6 +145,7 @@ function App() {
           <Route path="/admin" element={<Protected role="admin"><Layout /></Protected>}>
             <Route index element={<AdminDashboard />} />
             <Route path="students" element={<AdminStudents />} />
+            <Route path="students/:id" element={<StudentDetails role="admin" />} />
             <Route path="faculties" element={<AdminFaculties />} />
             <Route path="reports" element={<AdminReports />} />
             <Route path="assessments" element={<AdminAssessments />} />

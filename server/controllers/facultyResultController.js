@@ -4,6 +4,7 @@ const Student = require("../models/Student");
 const mongoose = require("mongoose");
 const { successResponse, errorResponse } = require("../utils/response");
 const { getAssessmentAssignedStudentCount } = require("../utils/assessmentSetMetrics");
+const { attachPlacementReadinessScores } = require("../services/readinessService");
 
 /**
  * GET /api/faculty/results
@@ -65,6 +66,23 @@ const getAllResults = async (req, res) => {
             .limit(parseInt(limit))
             .skip((parseInt(page) - 1) * parseInt(limit))
             .lean();
+        const studentIds = [...new Set(results
+            .filter((result) => result.student?._id)
+            .map((result) => result.student._id.toString()))];
+        const studentsForReadiness = studentIds.length > 0
+            ? await Student.find({ _id: { $in: studentIds } })
+                .select("cgpa skills resume resumeAnalysis codingProfile readinessProfile")
+                .lean()
+            : [];
+        const readinessByStudent = new Map(
+            (await attachPlacementReadinessScores(studentsForReadiness))
+                .map((student) => [student._id.toString(), student.placementReadinessScore])
+        );
+        results.forEach((result) => {
+            if (result.student?._id) {
+                result.student.placementReadinessScore = readinessByStudent.get(result.student._id.toString()) ?? 0;
+            }
+        });
 
         return successResponse(res, {
             message: "Results fetched successfully",

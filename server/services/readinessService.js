@@ -1,10 +1,11 @@
 const Student = require("../models/Student");
 const AssessmentResult = require("../models/AssessmentResult");
+const {
+    calculatePlacementReadiness,
+    getReadinessLevel,
+    getValidAssessmentResults
+} = require("./readinessScoringService");
 
-/**
- * Calculate profile completion percentage
- * Based on: name, email, fullName, phone, department, year, skills, interests, linkedin, github, leetcode, codechef, hackerrank
- */
 const calculateProfileCompletion = (student) => {
     const profileFields = [
         "name",
@@ -22,205 +23,136 @@ const calculateProfileCompletion = (student) => {
         "hackerrank"
     ];
 
-    let completedFields = 0;
-
-    profileFields.forEach((field) => {
+    const completedFields = profileFields.filter((field) => {
         const value = student[field];
-        if (field === "skills" || field === "interests") {
-            if (Array.isArray(value) && value.length > 0) completedFields++;
-        } else {
-            if (value && value.toString().trim().length > 0) completedFields++;
-        }
-    });
+        if (field === "skills" || field === "interests") return Array.isArray(value) && value.length > 0;
+        return value !== null && value !== undefined && String(value).trim().length > 0;
+    }).length;
 
     return Math.round((completedFields / profileFields.length) * 100);
 };
 
-/**
- * Calculate average assessment score
- */
+const loadAssessmentResults = async (studentId) => AssessmentResult.find({
+    student: studentId,
+    completed: true
+}).select("score totalMarks completed status expired").lean();
+
 const calculateAverageAssessmentScore = async (studentId) => {
+    const assessmentResults = await loadAssessmentResults(studentId);
+    const readiness = calculatePlacementReadiness({}, assessmentResults);
+    const validResults = getValidAssessmentResults(assessmentResults);
+
+    return {
+        average: readiness.breakdown.assessment.score === null
+            ? 0
+            : Math.round(readiness.breakdown.assessment.score),
+        count: validResults.length,
+        percentage: readiness.breakdown.assessment.score === null
+            ? 0
+            : readiness.breakdown.assessment.score
+    };
+};
+
+const getCodingProfileScore = (student) => {
+    const readiness = calculatePlacementReadiness(student);
+    return readiness.breakdown.codingProfile.score ?? 0;
+};
+
+const isResumeUploaded = (student) => !!(student.resume && student.resume.trim().length > 0);
+const isEmailVerified = (student) => !!student.isVerified;
+
+const calculatePlacementReadinessScore = async (student, assessmentResults) => {
+    const results = assessmentResults || await loadAssessmentResults(student._id);
+    return calculatePlacementReadiness(student, results);
+};
+
+const attachPlacementReadinessScores = async (students) => {
+    const records = Array.isArray(students) ? students : [];
+    if (records.length === 0) return records;
+
+    const ids = records.map((student) => student._id);
     const results = await AssessmentResult.find({
-        student: studentId,
+        student: { $in: ids },
         completed: true
+    }).select("student score totalMarks completed status expired").lean();
+    const resultsByStudent = new Map();
+    results.forEach((result) => {
+        const studentId = result.student.toString();
+        const studentResults = resultsByStudent.get(studentId) || [];
+        studentResults.push(result);
+        resultsByStudent.set(studentId, studentResults);
     });
 
-    if (results.length === 0) {
-        return { average: 0, count: 0, percentage: 0 };
-    }
-
-    const totalScore = results.reduce((sum, result) => sum + (result.percentage || 0), 0);
-    const average = Math.round(totalScore / results.length);
-
-    return {
-        average,
-        count: results.length,
-        percentage: average
-    };
+    return records.map((student) => {
+        const readiness = calculatePlacementReadiness(
+            student,
+            resultsByStudent.get(student._id.toString()) || []
+        );
+        return {
+            ...student,
+            placementReadinessScore: readiness.score,
+            readinessProfile: {
+                ...student.readinessProfile,
+                score: readiness.score,
+                level: readiness.level,
+                explanation: readiness.explanation,
+                recommendedActions: readiness.recommendedActions,
+                breakdown: readiness.breakdown,
+                factors: readiness.factors
+            }
+        };
+    });
 };
 
-/**
- * Get coding profile score
- */
-const getCodingProfileScore = (student) => {
-    return student.codingProfile?.score || 0;
-};
-
-/**
- * Check if resume is uploaded
- */
-const isResumeUploaded = (student) => {
-    return !!(student.resume && student.resume.trim().length > 0);
-};
-
-/**
- * Check if email is verified
- */
-const isEmailVerified = (student) => {
-    return !!student.isVerified;
-};
-
-/**
- * Calculate overall placement readiness score
- * Formula:
- * - Profile Completion: 20%
- * - Assessment Score: 40%
- * - Coding Profile: 20%
- * - Resume Uploaded: 10%
- * - Email Verified: 10%
- */
-const calculatePlacementReadinessScore = async (student) => {
-    const profileCompletion = calculateProfileCompletion(student);
-    const assessmentScore = await calculateAverageAssessmentScore(student._id);
-    const codingScore = getCodingProfileScore(student);
-    const resumeUploaded = isResumeUploaded(student) ? 100 : 0;
-    const emailVerified = isEmailVerified(student) ? 100 : 0;
-
-    // Weighted calculation
-    const score = Math.round(
-        (profileCompletion * 0.2) +
-        (assessmentScore.percentage * 0.4) +
-        (codingScore * 0.2) +
-        (resumeUploaded * 0.1) +
-        (emailVerified * 0.1)
-    );
-
-    return {
-        score: Math.min(100, Math.max(0, score)),
-        breakdown: {
-            profileCompletion,
-            assessmentScore: assessmentScore.percentage,
-            codingProfile: codingScore,
-            resumeUploaded: resumeUploaded > 0,
-            emailVerified: emailVerified > 0
-        }
-    };
-};
-
-/**
- * Determine readiness level
- */
-const getReadinessLevel = (score) => {
-    if (score >= 70) return "High";
-    if (score >= 40) return "Medium";
-    return "Low";
-};
-
-/**
- * Generate readiness recommendations based on score breakdown
- */
 const generateReadinessRecommendations = (breakdown, score) => {
     const recommendations = [];
-
-    if (breakdown.profileCompletion < 75) {
-        recommendations.push("Complete your profile information to improve placement chances");
-    }
-
-    if (breakdown.assessmentScore < 60) {
-        recommendations.push("Attempt more assessments and practice to improve your score");
-    }
-
-    if (breakdown.codingProfile < 60) {
-        recommendations.push("Practice coding problems on platforms like LeetCode, CodeChef");
-    }
-
-    if (!breakdown.resumeUploaded) {
-        recommendations.push("Upload your resume to increase readiness score");
-    }
-
-    if (!breakdown.emailVerified) {
-        recommendations.push("Verify your email address");
-    }
-
-    if (score >= 70) {
-        recommendations.push("Great! You are ready for placements. Keep preparing!");
-    } else if (score >= 40) {
-        recommendations.push("You are on the right track. Focus on weak areas to improve");
-    } else {
-        recommendations.push("Focus on profile completion and assessment practice");
-    }
-
+    if (breakdown.cgpa?.available === false) recommendations.push("Add your CGPA to your profile");
+    if (breakdown.resume?.available === false) recommendations.push("Complete a successful Resume AI analysis");
+    if (breakdown.assessment?.available === false) recommendations.push("Complete an assessment to establish your performance score");
+    if (breakdown.technicalSkills?.available === false) recommendations.push("Add technical skills to your profile");
+    if (breakdown.codingProfile?.available === false) recommendations.push("Connect a supported coding profile with performance metrics");
+    if (score >= 70) recommendations.push("You are on track for placements. Keep building your skills.");
     return recommendations;
 };
 
-/**
- * Update student readiness profile
- */
 const updateStudentReadinessProfile = async (studentId) => {
     const student = await Student.findById(studentId);
+    if (!student) throw new Error("Student not found");
 
-    if (!student) {
-        throw new Error("Student not found");
-    }
-
-    const readinessData = await calculatePlacementReadinessScore(student);
-    const level = getReadinessLevel(readinessData.score);
-    const recommendations = generateReadinessRecommendations(readinessData.breakdown, readinessData.score);
-
-    const explanation = `Your placement readiness score is ${readinessData.score}%. Profile: ${readinessData.breakdown.profileCompletion}%, Assessments: ${readinessData.breakdown.assessmentScore}%, Coding: ${readinessData.breakdown.codingProfile}%`;
-
-    student.placementReadinessScore = readinessData.score;
+    const readiness = await calculatePlacementReadinessScore(student);
+    const lastCalculatedAt = new Date();
+    student.placementReadinessScore = readiness.score;
     student.readinessProfile = {
-        score: readinessData.score,
-        level,
-        explanation,
-        recommendedActions: recommendations,
-        lastCalculatedAt: new Date()
+        score: readiness.score,
+        level: readiness.level,
+        explanation: readiness.explanation,
+        recommendedActions: readiness.recommendedActions,
+        lastCalculatedAt
     };
-
     await student.save();
 
     return {
-        score: readinessData.score,
-        level,
-        explanation,
-        recommendations,
-        breakdown: readinessData.breakdown,
-        lastCalculatedAt: new Date()
+        ...readiness,
+        percentage: readiness.score,
+        lastCalculatedAt
     };
 };
 
-/**
- * Get student readiness score
- */
 const getStudentReadinessScore = async (studentId) => {
     const student = await Student.findById(studentId);
+    if (!student) throw new Error("Student not found");
 
-    if (!student) {
-        throw new Error("Student not found");
-    }
-
+    const readiness = await calculatePlacementReadinessScore(student);
     return {
-        score: student.placementReadinessScore || 0,
-        level: student.readinessProfile?.level || "Low",
-        explanation: student.readinessProfile?.explanation || "",
-        recommendations: student.readinessProfile?.recommendedActions || [],
-        lastCalculatedAt: student.readinessProfile?.lastCalculatedAt || null
+        ...readiness,
+        percentage: readiness.score,
+        lastCalculatedAt: new Date()
     };
 };
 
 module.exports = {
     calculatePlacementReadinessScore,
+    attachPlacementReadinessScores,
     getReadinessLevel,
     generateReadinessRecommendations,
     updateStudentReadinessProfile,

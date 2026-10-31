@@ -6,7 +6,7 @@ const { calculatePlacementReadiness } = require("./readinessScoringService");
 
 const buildStudentProfile = async (studentId) => {
     const student = await Student.findById(studentId).select(
-        "name department year section skills cgpa placementReadinessScore resume readinessProfile"
+        "name department year section skills cgpa placementReadinessScore resume resumeAnalysis codingProfile readinessProfile"
     );
 
     if (!student) {
@@ -14,7 +14,7 @@ const buildStudentProfile = async (studentId) => {
     }
 
     const assessmentResults = await AssessmentResult.find({ student: studentId, completed: true })
-        .select("assessment percentage score recommendations strengths weaknesses")
+        .select("assessment percentage score totalMarks completed status expired recommendations strengths weaknesses")
         .lean();
 
     return {
@@ -79,7 +79,7 @@ const generateCareerRecommendation = async (studentId) => {
     }
 
     const resumeAnalysis = await analyzeResume(student.resume);
-    const readiness = calculatePlacementReadiness(student, resumeAnalysis, assessmentResults);
+    const readiness = calculatePlacementReadiness(student, assessmentResults);
 
     const assessmentSummary = assessmentResults.map((result) => ({
         percentage: result.percentage,
@@ -120,7 +120,7 @@ Year: ${student.year || ""}
 Section: ${student.section || ""}
 Skills: ${Array.isArray(student.skills) ? student.skills.join(", ") : ""}
 CGPA: ${student.cgpa || 0}
-Placement Readiness Score: ${student.placementReadinessScore || readiness.score}
+Placement Readiness Score: ${readiness.score}
 
 Resume Analysis:
 ${JSON.stringify(resumeAnalysis)}

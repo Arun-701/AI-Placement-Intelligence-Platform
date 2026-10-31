@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import { useAuth } from '../../AuthContext'
 import { api } from '../../api'
+import { formatReadinessPercentage } from '../../readinessUtils'
 import './Dashboard.css'
 
 const dashboardEndpoints = [
@@ -207,7 +208,7 @@ export default function StudentDashboard() {
   const department = profilePayload.department || student.department || user?.department || ''
   const year = profilePayload.year || student.year || user?.year
   const academicLine = [department, year ? `Year ${year}` : ''].filter(Boolean).join(' · ')
-  const readinessScore = numberOrNull(readiness.score, profilePayload.readinessProfile?.score, profilePayload.placementReadinessScore)
+  const readinessScore = numberOrNull(readiness.score)
   const profileProgress = numberOrNull(profilePayload.profileCompletion)
   const resumeScore = numberOrNull(dashboard.resumeSummary?.resumeScore, dashboard.resumeScore, student.resumeScore)
   const resumeUploaded = Boolean(profilePayload.resume || resumeScore !== null)
@@ -305,7 +306,7 @@ export default function StudentDashboard() {
       </section>
 
       <section className="student-dash-metrics" aria-label="Key performance indicators">
-        <MetricCard icon="chart" tone="blue" label="Placement Readiness" value={readinessScore === null ? '—' : `${Math.round(readinessScore)}%`} note={readiness.level || 'Current score'} progress={readinessScore} />
+        <MetricCard icon="chart" tone="blue" label="Placement Readiness" value={formatReadinessPercentage(readinessScore)} note={readiness.level || 'Current score'} progress={readinessScore} />
         <MetricCard icon="assessment" tone="green" label="Assessments Completed" value={`${completedAssessments} / ${relevantAssessments.length}`} note={relevantAssessments.length ? 'Completed / relevant' : 'No assigned assessments'} progress={assessmentRatio} />
         <MetricCard icon="resume" tone="purple" label="Resume Score" value={resumeScore === null ? '—' : `${Math.round(resumeScore)}%`} note={!resumeUploaded ? 'Resume not uploaded' : resumeScore === null ? 'Analysis not available' : 'Latest stored analysis'} progress={resumeScore} />
         <MetricCard icon="code" tone="orange" label="Coding Score" value={codingScore === null ? '—' : `${Math.round(codingScore)}%`} note={codingScore === null ? 'No verified coding stats' : `${coding.totalProblemsSolved || 0} problems solved`} progress={codingScore} />
@@ -319,7 +320,7 @@ export default function StudentDashboard() {
             { label: 'Assessments', value: relevantAssessments.length ? `${completedAssessments}/${relevantAssessments.length} completed` : 'No assigned assessments', complete: relevantAssessments.length > 0 && completedAssessments === relevantAssessments.length, to: '/student/assessments' },
             { label: 'Resume', value: resumeScore === null ? (resumeUploaded ? 'Analysis pending' : 'Not uploaded') : `${Math.round(resumeScore)}% score`, complete: resumeScore !== null, to: '/student/resume' },
             { label: 'Coding', value: codingScore === null ? 'Not connected' : `${Math.round(codingScore)}% score`, complete: codingScore !== null, to: '/student/coding' },
-            { label: 'Placement ready', value: readinessScore === null ? 'Not calculated' : `${Math.round(readinessScore)}% readiness`, complete: readinessScore !== null && readinessScore >= 70, to: '/student' },
+            { label: 'Placement ready', value: readinessScore === null ? 'Not calculated' : `${formatReadinessPercentage(readinessScore)} readiness`, complete: readinessScore !== null && readinessScore >= 70, to: '/student' },
           ].map((step, index) => (
             <Link className={`student-dash-step${step.complete ? ' is-complete' : ''}`} key={step.label} to={step.to}>
               <span className="student-dash-step-marker">{step.complete ? <Icon name="check" size={16} /> : String(index + 1).padStart(2, '0')}</span>
@@ -430,10 +431,12 @@ export default function StudentDashboard() {
 
       <section className="student-dash-readiness-footer">
         <div className="student-dash-readiness-ring" style={{ '--readiness': `${clampPercent(readinessScore)}%` }}>
-          <span>{readinessScore === null ? '—' : `${Math.round(readinessScore)}%`}</span>
+          <span>{formatReadinessPercentage(readinessScore)}</span>
         </div>
         <div><span className="student-dash-overline">PLACEMENT READINESS</span><h2>{readiness.level || 'Your next step starts here'}</h2><p>{readiness.explanation || 'Your readiness score will reflect your profile, resume, and assessment progress.'}</p></div>
-        <Link to="/student">View details<Icon name="arrow" size={16} /></Link>
+        <Link to="/student/readiness" aria-label="View Details">
+          View Details<Icon name="arrow" size={16} />
+        </Link>
       </section>
     </div>
   )

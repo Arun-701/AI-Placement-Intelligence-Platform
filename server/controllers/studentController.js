@@ -3,6 +3,7 @@ const Assessment = require("../models/Assessment");
 const AssessmentResult = require("../models/AssessmentResult");
 const { calculateCodingSkillScore, getPlatformConnectionSummary, validatePlatformUrl, fetchPlatformStatistics } = require("../services/codingProfileService");
 const { analyzeResume } = require("../services/resumeAnalysisService");
+const { getStudentReadinessScore, updateStudentReadinessProfile } = require("../services/readinessService");
 const fs = require("fs");
 const path = require("path");
 const { successResponse, errorResponse } = require("../utils/response");
@@ -262,6 +263,7 @@ const updateCodingProfile = async (req, res) => {
 
         student.codingProfile = mergedProfile;
         await student.save();
+        await updateStudentReadinessProfile(student._id);
 
         return successResponse(res, {
             message: "Coding profile updated successfully",
@@ -320,6 +322,7 @@ const refreshCodingProfile = async (req, res) => {
             updatedAt: new Date()
         };
         await student.save();
+        await updateStudentReadinessProfile(student._id);
 
         return successResponse(res, {
             message: refreshErrors.length > 0 ? "Coding profile refreshed with some errors" : "Coding profile refreshed successfully",
@@ -335,7 +338,7 @@ const getDashboard = async (req, res) => {
         const student = await Student.findById(req.user.id).select("name department year section resume placementReadinessScore");
         if (!student) return errorResponse(res, { message: "Student not found", status: 404 });
 
-        const [totalAssessments, completedAssessments, averageResult, recentResults] = await Promise.all([
+        const [totalAssessments, completedAssessments, averageResult, recentResults, readiness] = await Promise.all([
             Assessment.countDocuments({ assignedStudents: student._id, isActive: true }),
             AssessmentResult.countDocuments({ student: student._id, completed: true }),
             AssessmentResult.aggregate([
@@ -347,7 +350,8 @@ const getDashboard = async (req, res) => {
                 .populate("assessment", "title")
                 .sort({ submittedAt: -1 })
                 .limit(5)
-                .lean()
+                .lean(),
+            getStudentReadinessScore(student._id)
         ]);
 
         return successResponse(res, {
@@ -364,7 +368,8 @@ const getDashboard = async (req, res) => {
                     completedAssessments,
                     pendingAssessments: totalAssessments - completedAssessments,
                     averageScore: averageResult.length > 0 ? Number(averageResult[0].averageScore.toFixed(2)) : 0,
-                    placementReadinessScore: student.placementReadinessScore,
+                    placementReadinessScore: readiness.score,
+                    readinessProfile: readiness,
                     resumeUploaded: Boolean(student.resume)
                 },
                 recentResults: recentResults.map((result) => ({
@@ -477,6 +482,8 @@ const uploadStudentResume = async (req, res, replace) => {
         }
     }
 
+    await updateStudentReadinessProfile(student._id);
+
     return successResponse(res, {
         status: replace ? 200 : 201,
         message: "Resume uploaded and analyzed successfully.",
@@ -560,6 +567,7 @@ const deleteResume = async (req, res) => {
         student.resumeMimeType = "";
         student.resumeSize = 0;
         await student.save();
+        await updateStudentReadinessProfile(student._id);
 
         return successResponse(res, { message: "Resume deleted successfully", data: {} });
     } catch (error) {
