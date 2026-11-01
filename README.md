@@ -2,6 +2,27 @@
 
 A full-stack AI-powered campus placement readiness platform with three roles: **Student**, **Faculty**, and **Admin**. It includes resume analysis (AI), assessments, coding profile tracking, personalized learning roadmaps, career recommendations, and an AI career assistant chat.
 
+
+## Application Screenshots
+
+### 1. Admin Dashboard
+![Admin Dashboard](Admin.png)
+
+### 2. Student Dashboard
+![Student Dashboard](Student.png)
+
+### 3. Faculty Dashboard
+![Faculty Dashboard](Faculty.png)
+
+### 4. Placement Readiness
+![Placement Readiness](Readiness.png)
+
+### 5. Resume Analysis
+![Resume Analysis](Resume%20image.png)
+
+### 6. Coding Profile
+![Coding Profile](Coding%20Profile.png)
+
 ## Tech Stack
 
 | Layer | Technology |
